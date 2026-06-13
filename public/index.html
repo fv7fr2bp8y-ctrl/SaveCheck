@@ -229,6 +229,8 @@ const REASONS = {
 const UNIT = {
   l:{bg:'л',sr:'l',mk:'л',ro:'l',el:'λ',tr:'L',sq:'l',bs:'l',hr:'l',sl:'l'},
   kg:{bg:'кг',sr:'kg',mk:'кг',ro:'kg',el:'κιλό',tr:'kg',sq:'kg',bs:'kg',hr:'kg',sl:'kg'},
+  pcs:{bg:'бр',sr:'kom',mk:'бр',ro:'buc',el:'τεμ',tr:'adet',sq:'copë',bs:'kom',hr:'kom',sl:'kos'},
+  pack:{bg:'оп.',sr:'pak',mk:'оп.',ro:'pachet',el:'συσκ.',tr:'paket',sq:'pako',bs:'pak',hr:'pak',sl:'pak'},
 };
 const PRODUCTS = {
   milk:  { name:{bg:'Прясно мляко',sr:'Sveže mleko',mk:'Свежо млеко',ro:'Lapte proaspăt',el:'Φρέσκο γάλα',tr:'Taze süt',sq:'Qumësht i freskët',bs:'Svježe mlijeko',hr:'Svježe mlijeko',sl:'Sveže mleko'},
@@ -239,30 +241,44 @@ const PRODUCTS = {
            pack:{bg:'400 г',sr:'400 g',mk:'400 г',ro:'400 g',el:'400 γρ',tr:'400 g',sq:'400 g',bs:'400 g',hr:'400 g',sl:'400 g'} },
   coffee:{ name:{bg:'Кафе',sr:'Kafa',mk:'Кафе',ro:'Cafea',el:'Καφές',tr:'Kahve',sq:'Kafe',bs:'Kafa',hr:'Kava',sl:'Kava'},
            pack:{bg:'250 г',sr:'250 g',mk:'250 г',ro:'250 g',el:'250 γρ',tr:'250 g',sq:'250 g',bs:'250 g',hr:'250 g',sl:'250 g'} },
+  // Extra fridge items (стълб 2) — names only.
+  eggs:  { name:{bg:'Яйца',sr:'Jaja',mk:'Јајца',ro:'Ouă',el:'Αυγά',tr:'Yumurta',sq:'Vezë',bs:'Jaja',hr:'Jaja',sl:'Jajca'} },
+  butter:{ name:{bg:'Масло',sr:'Maslac',mk:'Путер',ro:'Unt',el:'Βούτυρο',tr:'Tereyağı',sq:'Gjalpë',bs:'Maslac',hr:'Maslac',sl:'Maslo'} },
+  yogurt:{ name:{bg:'Кисело мляко',sr:'Jogurt',mk:'Кисело млеко',ro:'Iaurt',el:'Γιαούρτι',tr:'Yoğurt',sq:'Kos',bs:'Jogurt',hr:'Jogurt',sl:'Jogurt'} },
 };
 
 // Extra UI strings for tabs / chains / basket, keyed by language.
 const BX = {
-  bg:{ tabProducts:'Продукти', tabBasket:'Кошница', chains:'Цени по вериги', cheapest:'най-евтина',
-       basketTitle:'Цена на кошницата по верига', cheapestBasket:'Най-евтина кошница', save:'спестяваш', perItem:'Най-евтино по продукт' },
-  sr:{ tabProducts:'Proizvodi', tabBasket:'Korpa', chains:'Cene po lancima', cheapest:'najjeftinije',
-       basketTitle:'Cena korpe po lancu', cheapestBasket:'Najjeftinija korpa', save:'uštedite', perItem:'Najjeftinije po proizvodu' },
-  mk:{ tabProducts:'Производи', tabBasket:'Кошница', chains:'Цени по синџири', cheapest:'најевтино',
-       basketTitle:'Цена на кошницата по синџир', cheapestBasket:'Најевтина кошница', save:'заштедуваш', perItem:'Најевтино по производ' },
-  ro:{ tabProducts:'Produse', tabBasket:'Coș', chains:'Prețuri pe lanțuri', cheapest:'cel mai ieftin',
-       basketTitle:'Costul coșului pe lanț', cheapestBasket:'Cel mai ieftin coș', save:'economisești', perItem:'Cel mai ieftin pe produs' },
-  el:{ tabProducts:'Προϊόντα', tabBasket:'Καλάθι', chains:'Τιμές ανά αλυσίδα', cheapest:'φθηνότερο',
-       basketTitle:'Κόστος καλαθιού ανά αλυσίδα', cheapestBasket:'Φθηνότερο καλάθι', save:'εξοικονομείς', perItem:'Φθηνότερο ανά προϊόν' },
-  tr:{ tabProducts:'Ürünler', tabBasket:'Sepet', chains:'Zincirlere göre fiyatlar', cheapest:'en ucuz',
-       basketTitle:'Zincire göre sepet tutarı', cheapestBasket:'En ucuz sepet', save:'tasarruf', perItem:'Ürün başına en ucuz' },
-  sq:{ tabProducts:'Produktet', tabBasket:'Shporta', chains:'Çmimet sipas zinxhirëve', cheapest:'më i liri',
-       basketTitle:'Kostoja e shportës sipas zinxhirit', cheapestBasket:'Shporta më e lirë', save:'kurseni', perItem:'Më i liri për produkt' },
-  bs:{ tabProducts:'Proizvodi', tabBasket:'Korpa', chains:'Cijene po lancima', cheapest:'najjeftinije',
-       basketTitle:'Cijena korpe po lancu', cheapestBasket:'Najjeftinija korpa', save:'uštedite', perItem:'Najjeftinije po proizvodu' },
-  hr:{ tabProducts:'Proizvodi', tabBasket:'Košarica', chains:'Cijene po lancima', cheapest:'najjeftinije',
-       basketTitle:'Cijena košarice po lancu', cheapestBasket:'Najjeftinija košarica', save:'uštedite', perItem:'Najjeftinije po proizvodu' },
-  sl:{ tabProducts:'Izdelki', tabBasket:'Košarica', chains:'Cene po trgovinah', cheapest:'najceneje',
-       basketTitle:'Cena košarice po trgovini', cheapestBasket:'Najcenejša košarica', save:'prihranite', perItem:'Najceneje po izdelku' },
+  bg:{ tabProducts:'Продукти', tabBasket:'Кошница', tabFridge:'Хладилник', chains:'Цени по вериги', cheapest:'най-евтина',
+       basketTitle:'Цена на кошницата по верига', cheapestBasket:'Най-евтина кошница', save:'спестяваш', perItem:'Най-евтино по продукт',
+       recognized:'Разпознато в хладилника', shopping:'Списък за пазаруване', missing:'липсва', low:'свършва' },
+  sr:{ tabProducts:'Proizvodi', tabBasket:'Korpa', tabFridge:'Frižider', chains:'Cene po lancima', cheapest:'najjeftinije',
+       basketTitle:'Cena korpe po lancu', cheapestBasket:'Najjeftinija korpa', save:'uštedite', perItem:'Najjeftinije po proizvodu',
+       recognized:'Prepoznato u frižideru', shopping:'Lista za kupovinu', missing:'nedostaje', low:'pri kraju' },
+  mk:{ tabProducts:'Производи', tabBasket:'Кошница', tabFridge:'Фрижидер', chains:'Цени по синџири', cheapest:'најевтино',
+       basketTitle:'Цена на кошницата по синџир', cheapestBasket:'Најевтина кошница', save:'заштедуваш', perItem:'Најевтино по производ',
+       recognized:'Препознато во фрижидерот', shopping:'Список за пазарување', missing:'недостасува', low:'снемнува' },
+  ro:{ tabProducts:'Produse', tabBasket:'Coș', tabFridge:'Frigider', chains:'Prețuri pe lanțuri', cheapest:'cel mai ieftin',
+       basketTitle:'Costul coșului pe lanț', cheapestBasket:'Cel mai ieftin coș', save:'economisești', perItem:'Cel mai ieftin pe produs',
+       recognized:'Recunoscut în frigider', shopping:'Listă de cumpărături', missing:'lipsește', low:'se termină' },
+  el:{ tabProducts:'Προϊόντα', tabBasket:'Καλάθι', tabFridge:'Ψυγείο', chains:'Τιμές ανά αλυσίδα', cheapest:'φθηνότερο',
+       basketTitle:'Κόστος καλαθιού ανά αλυσίδα', cheapestBasket:'Φθηνότερο καλάθι', save:'εξοικονομείς', perItem:'Φθηνότερο ανά προϊόν',
+       recognized:'Αναγνωρίστηκαν στο ψυγείο', shopping:'Λίστα αγορών', missing:'λείπει', low:'τελειώνει' },
+  tr:{ tabProducts:'Ürünler', tabBasket:'Sepet', tabFridge:'Buzdolabı', chains:'Zincirlere göre fiyatlar', cheapest:'en ucuz',
+       basketTitle:'Zincire göre sepet tutarı', cheapestBasket:'En ucuz sepet', save:'tasarruf', perItem:'Ürün başına en ucuz',
+       recognized:'Buzdolabında tanındı', shopping:'Alışveriş listesi', missing:'eksik', low:'azalıyor' },
+  sq:{ tabProducts:'Produktet', tabBasket:'Shporta', tabFridge:'Frigorifer', chains:'Çmimet sipas zinxhirëve', cheapest:'më i liri',
+       basketTitle:'Kostoja e shportës sipas zinxhirit', cheapestBasket:'Shporta më e lirë', save:'kurseni', perItem:'Më i liri për produkt',
+       recognized:'Të njohura në frigorifer', shopping:'Lista e blerjeve', missing:'mungon', low:'po mbaron' },
+  bs:{ tabProducts:'Proizvodi', tabBasket:'Korpa', tabFridge:'Frižider', chains:'Cijene po lancima', cheapest:'najjeftinije',
+       basketTitle:'Cijena korpe po lancu', cheapestBasket:'Najjeftinija korpa', save:'uštedite', perItem:'Najjeftinije po proizvodu',
+       recognized:'Prepoznato u frižideru', shopping:'Lista za kupovinu', missing:'nedostaje', low:'pri kraju' },
+  hr:{ tabProducts:'Proizvodi', tabBasket:'Košarica', tabFridge:'Hladnjak', chains:'Cijene po lancima', cheapest:'najjeftinije',
+       basketTitle:'Cijena košarice po lancu', cheapestBasket:'Najjeftinija košarica', save:'uštedite', perItem:'Najjeftinije po proizvodu',
+       recognized:'Prepoznato u hladnjaku', shopping:'Popis za kupnju', missing:'nedostaje', low:'pri kraju' },
+  sl:{ tabProducts:'Izdelki', tabBasket:'Košarica', tabFridge:'Hladilnik', chains:'Cene po trgovinah', cheapest:'najceneje',
+       basketTitle:'Cena košarice po trgovini', cheapestBasket:'Najcenejša košarica', save:'prihranite', perItem:'Najceneje po izdelku',
+       recognized:'Prepoznano v hladilniku', shopping:'Nakupovalni seznam', missing:'manjka', low:'zmanjkuje' },
 };
 
 const DEMO = (window.SAVECHECK_DEMO || {products:[]});
@@ -304,6 +320,8 @@ const ddmm = iso => { if(!iso) return ''; const [ , m, d] = iso.split('-'); retu
 const disp = x => x.toFixed(country.dec).replace('.', ',');        // a converted number
 const money = vBgn => vBgn == null ? '—' : disp(vBgn * country.fx) + ' ' + country.sym;
 const unitLabel = kind => country.sym + '/' + UNIT[kind][country.lang];
+const unitWord = kind => (UNIT[kind] ? UNIT[kind][country.lang] : '');
+const fmtQty = v => Number.isInteger(v) ? String(v) : String(Math.round(v * 100) / 100);
 const t = () => UI[country.lang];
 
 function renderFlags() {
@@ -368,7 +386,28 @@ function renderTabs() {
   const X = BX[country.lang];
   document.getElementById('tabs').innerHTML =
     `<button class="${view==='products'?'on':''}" onclick="setView('products')">${X.tabProducts}</button>
-     <button class="${view==='basket'?'on':''}" onclick="setView('basket')">${X.tabBasket}</button>`;
+     <button class="${view==='basket'?'on':''}" onclick="setView('basket')">${X.tabBasket}</button>
+     <button class="${view==='fridge'?'on':''}" onclick="setView('fridge')">${X.tabFridge}</button>`;
+}
+
+function renderFridge() {
+  const X = BX[country.lang], F = DEMO.fridge || { recognized: [], shopping: [] };
+  const nameOf = id => (PRODUCTS[id] ? PRODUCTS[id].name[country.lang] : id);
+  const recognized = F.recognized.map(r => `
+    <div class="irow"><span>${nameOf(r.id)}</span>
+      <span>${fmtQty(r.quantity)} ${unitWord(r.unit)} · ${Math.round(r.confidence*100)}%</span></div>`).join('');
+  const shopping = F.shopping.map(s => {
+    const prod = products.find(p => p.id === s.id);  // links to стълб 1 verdict
+    const pill = prod ? `<span class="tag" style="background:${C[prod.verdict]};margin-left:7px">${TAG[prod.verdict][country.lang]}</span>` : '';
+    const reason = s.reason_code === 'missing' ? X.missing : X.low;
+    return `<div class="brow"><span>${nameOf(s.id)}${pill}</span>
+      <span>${fmtQty(s.needed_quantity)} ${unitWord(s.unit)} <span class="date">· ${reason}</span></span></div>`;
+  }).join('');
+  document.getElementById('basket').innerHTML = `
+    <div class="panel">
+      <div class="otitle">${X.recognized}</div>${recognized}
+      <div class="otitle" style="margin-top:14px">${X.shopping}</div>${shopping}
+    </div>`;
 }
 
 function renderBasket() {
@@ -460,7 +499,9 @@ function render() {
   document.getElementById('cards').style.display = prod ? '' : 'none';
   document.getElementById('panel').style.display = prod ? '' : 'none';
   document.getElementById('basket').style.display = prod ? 'none' : '';
-  if (prod) { renderCards(); renderPanel(); } else { renderBasket(); }
+  if (prod) { renderCards(); renderPanel(); }
+  else if (view === 'basket') { renderBasket(); }
+  else { renderFridge(); }
 }
 function select(i){ active = i; renderCards(); renderPanel(); }
 function setCountry(i){ country = COUNTRIES[i]; document.documentElement.lang = country.lang; render(); }

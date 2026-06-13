@@ -21,6 +21,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from savecheck.pricing import PricePoint, Verdict, build_chart, evaluate_series  # noqa: E402
+from savecheck.shopping import (  # noqa: E402
+    Staple,
+    build_shopping_list,
+    merge_inventory,
+    to_inventory_item,
+)
 
 REF = date(2026, 6, 13)
 
@@ -103,9 +109,47 @@ def build_entry(pid, unit_kind, size_base, pts) -> dict:
     }
 
 
+# Стълб 2 demo: a fridge scan + desired staples, run through the REAL shopping
+# core so the resulting list is genuine, not hand-written. Known products
+# (milk/oil/cheese/coffee) link back to стълб 1's verdict.
+ID_BG = {
+    "milk": "Прясно мляко", "oil": "Олио", "cheese": "Кашкавал", "coffee": "Кафе",
+    "eggs": "Яйца", "butter": "Масло", "yogurt": "Кисело мляко",
+}
+
+
+def build_fridge() -> dict:
+    recognized = [
+        {"id": "milk", "quantity": 1, "unit": "l", "confidence": 0.95},
+        {"id": "butter", "quantity": 1, "unit": "pack", "confidence": 0.90},
+        {"id": "yogurt", "quantity": 2, "unit": "pcs", "confidence": 0.80},
+        {"id": "cheese", "quantity": 1, "unit": "pack", "confidence": 0.70},
+    ]
+    inventory = merge_inventory(
+        [to_inventory_item({**r, "name": ID_BG[r["id"]]}) for r in recognized]
+    )
+    staples_def = [("milk", 3, "l"), ("oil", 1, "l"), ("eggs", 10, "pcs"),
+                   ("coffee", 1, "pack"), ("butter", 1, "pack")]
+    unit_by_id = {sid: u for sid, _, u in staples_def}
+    staples = [Staple(ID_BG[sid], q, u) for sid, q, u in staples_def]
+    bg_to_id = {v: k for k, v in ID_BG.items()}
+
+    shopping = []
+    for it in build_shopping_list(inventory, staples):
+        sid = bg_to_id[it.name]
+        shopping.append({
+            "id": sid,
+            "needed_quantity": it.needed_quantity,
+            "unit": unit_by_id.get(sid),
+            "reason_code": "missing" if it.reason.startswith("липсва") else "low",
+        })
+    return {"recognized": recognized, "shopping": shopping}
+
+
 def main() -> None:
     products = [build_entry(*sc()) for sc in (fake_milk, real_oil, cosmetic_cheese, unknown_coffee)]
-    payload = {"generated_for": REF.isoformat(), "base_currency": "BGN", "products": products}
+    payload = {"generated_for": REF.isoformat(), "base_currency": "BGN",
+               "products": products, "fridge": build_fridge()}
     out = ROOT / "public" / "data.js"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(
