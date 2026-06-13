@@ -59,6 +59,31 @@ def unknown_coffee():
     return "coffee", "kg", Decimal("0.25"), pts
 
 
+def real_flour():
+    pts = flat("1.59", 90, 1) + [PricePoint.of(REF, "1.29", is_promo=True)]
+    return "flour", "kg", Decimal("1"), pts
+
+
+def fake_sugar():
+    pts = flat("2.19", 90, 15) + flat("2.59", 14, 1) + [PricePoint.of(REF, "2.29", is_promo=True)]
+    return "sugar", "kg", Decimal("1"), pts
+
+
+def cosmetic_bread():
+    pts = flat("1.49", 90, 1) + [PricePoint.of(REF, "1.45", is_promo=True)]
+    return "bread", "kg", Decimal("0.7"), pts
+
+
+def cosmetic_rice():
+    pts = flat("2.99", 90, 1) + [PricePoint.of(REF, "2.92", is_promo=True)]
+    return "rice", "kg", Decimal("1"), pts
+
+
+def real_tomatoes():
+    pts = flat("3.49", 90, 1) + [PricePoint.of(REF, "2.49", is_promo=True)]
+    return "tomatoes", "kg", Decimal("1"), pts
+
+
 def _recent_day_at(series, value) -> str | None:
     if value is None:
         return None
@@ -147,7 +172,11 @@ def build_fridge() -> dict:
 
 
 def main() -> None:
-    products = [build_entry(*sc()) for sc in (fake_milk, real_oil, cosmetic_cheese, unknown_coffee)]
+    scenarios = (
+        fake_milk, real_oil, cosmetic_cheese, unknown_coffee,
+        real_flour, fake_sugar, cosmetic_bread, cosmetic_rice, real_tomatoes,
+    )
+    products = [build_entry(*sc()) for sc in scenarios]
     payload = {"generated_for": REF.isoformat(), "base_currency": "BGN",
                "products": products, "fridge": build_fridge()}
     out = ROOT / "public" / "data.js"
