@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SaveCheck — реална ли е промоцията?</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="./data.js"></script>
+<style>
+  :root {
+    --green:#16a34a; --yellow:#f59e0b; --red:#dc2626; --gray:#6b7280;
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9; --card:#ffffff;
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased;
+  }
+  .wrap { max-width:760px; margin:0 auto; padding:20px 16px 60px; }
+  .top { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; }
+  header h1 { font-size:22px; margin:0 0 2px; letter-spacing:-.02em; }
+  header h1 b { color:var(--green); }
+  header p { margin:0 0 4px; color:var(--muted); font-size:13.5px; max-width:460px; }
+  .flags { display:flex; gap:6px; }
+  .flags button {
+    border:1px solid var(--line); background:var(--card); border-radius:10px; cursor:pointer;
+    padding:5px 8px; font-size:16px; line-height:1; display:flex; align-items:center; gap:5px;
+    transition:border-color .12s, box-shadow .12s;
+  }
+  .flags button .cc { font-size:11px; font-weight:700; color:var(--muted); }
+  .flags button.active { border-color:var(--ink); box-shadow:0 2px 8px rgba(15,23,42,.10); }
+  .flags button.active .cc { color:var(--ink); }
+  .cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(155px,1fr)); gap:10px; margin-top:16px; }
+  .card {
+    background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 13px;
+    cursor:pointer; transition:transform .08s, box-shadow .12s, border-color .12s; text-align:left;
+  }
+  .card:hover { transform:translateY(-1px); box-shadow:0 6px 18px rgba(15,23,42,.07); }
+  .card.active { border-color:var(--ink); box-shadow:0 6px 18px rgba(15,23,42,.10); }
+  .card .tag {
+    display:inline-block; font-size:10.5px; font-weight:750; color:#fff;
+    padding:2px 9px; border-radius:999px; margin-bottom:9px; letter-spacing:.02em;
+  }
+  .card .nm { font-weight:650; font-size:14px; }
+  .card .pk { color:var(--muted); font-size:12px; margin-bottom:8px; }
+  .card .pr { font-size:18px; font-weight:750; }
+  .card .unit { color:var(--muted); font-size:11.5px; font-weight:600; margin-top:1px; }
+  .panel { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:18px; margin-top:16px; }
+  .badge {
+    display:inline-flex; align-items:center; gap:8px; color:#fff; font-weight:750; font-size:14px;
+    padding:7px 13px; border-radius:999px;
+  }
+  .badge .ico { font-size:15px; }
+  .ptitle { font-weight:750; font-size:16px; margin:12px 0 0; }
+  .ptitle span { color:var(--muted); font-weight:500; font-size:13px; }
+  .reason { margin:6px 0 4px; font-size:14.5px; line-height:1.45; }
+  .chart-box { position:relative; height:230px; margin:10px 0 2px; }
+  .sum { width:100%; border-collapse:collapse; margin-top:8px; font-size:13.5px; }
+  .sum td { padding:7px 4px; border-top:1px solid var(--line); }
+  .sum td:first-child { color:var(--muted); }
+  .sum td:last-child { text-align:right; font-weight:700; font-variant-numeric:tabular-nums; }
+  .sum .date { color:var(--muted); font-weight:500; font-size:12px; }
+  .pill { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:7px; vertical-align:middle; }
+  .tabs { display:flex; gap:8px; margin-top:18px; }
+  .tabs button {
+    border:1px solid var(--line); background:var(--card); border-radius:10px; padding:7px 15px;
+    font-size:13px; font-weight:650; cursor:pointer; color:var(--muted);
+  }
+  .tabs button.on { border-color:var(--ink); color:var(--ink); box-shadow:0 2px 8px rgba(15,23,42,.08); }
+  .offers { margin-top:16px; }
+  .otitle { font-size:11.5px; font-weight:750; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; margin-bottom:4px; }
+  .orow, .brow, .irow {
+    display:flex; justify-content:space-between; align-items:center; gap:10px;
+    padding:9px 4px; border-top:1px solid var(--line); font-size:13.5px;
+  }
+  .orow.best span:first-child, .brow.best span:first-child { color:var(--green); font-weight:700; }
+  .orow span:last-child, .brow span:last-child, .irow span:last-child { font-variant-numeric:tabular-nums; font-weight:700; }
+  .bbadge { background:var(--green); color:#fff; font-size:10px; font-weight:750; padding:2px 7px; border-radius:999px; margin-left:7px; }
+  .save { color:var(--green); font-size:12px; font-weight:700; margin-left:8px; }
+  .irow span:last-child { color:var(--muted); font-weight:600; }
+  footer { color:var(--muted); font-size:12px; margin-top:22px; line-height:1.5; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <header>
+      <h1>Save<b>Check</b></h1>
+      <p id="tagline"></p>
+    </header>
+    <div class="flags" id="flags"></div>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="cards" id="cards"></div>
+  <div class="panel" id="panel"></div>
+  <div id="basket"></div>
+  <footer id="footer"></footer>
+</div>
+
+<script>
+const C = { red:'#dc2626', green:'#16a34a', yellow:'#f59e0b', gray:'#6b7280' };
+const ICON = { red:'✕', green:'✓', yellow:'≈', gray:'?' };
+
+// code -> language. fx multiplies the BGN base price; dec = currency decimals.
+const COUNTRIES = [
+  // fx multiplies the BGN(lev) base price. Bulgaria adopted the euro, fixed at
+  // 1 € = 1.95583 лв; Bosnia's mark (KM) shares the same peg, so fx = 1.
+  { code:'BG', flag:'🇧🇬', lang:'bg', fx:0.5113, sym:'€',   dec:2 },
+  { code:'RS', flag:'🇷🇸', lang:'sr', fx:60,     sym:'дин', dec:0 },
+  { code:'MK', flag:'🇲🇰', lang:'mk', fx:31.5,   sym:'ден', dec:0 },
+  { code:'BA', flag:'🇧🇦', lang:'bs', fx:1,      sym:'KM',  dec:2 },
+  { code:'ME', flag:'🇲🇪', lang:'sr', fx:0.5113, sym:'€',   dec:2 },
+  { code:'XK', flag:'🇽🇰', lang:'sq', fx:0.5113, sym:'€',   dec:2 },
+  { code:'AL', flag:'🇦🇱', lang:'sq', fx:50,     sym:'lek', dec:0 },
+  { code:'HR', flag:'🇭🇷', lang:'hr', fx:0.5113, sym:'€',   dec:2 },
+  { code:'SI', flag:'🇸🇮', lang:'sl', fx:0.5113, sym:'€',   dec:2 },
+  { code:'RO', flag:'🇷🇴', lang:'ro', fx:2.5,    sym:'lei', dec:2 },
+  { code:'GR', flag:'🇬🇷', lang:'el', fx:0.5113, sym:'€',   dec:2 },
+  { code:'TR', flag:'🇹🇷', lang:'tr', fx:22,     sym:'₺',   dec:2 },
+];
+
+const UI = {
+  bg:{ tagline:'Сравнява цената с историята за 90 дни и казва дали промоцията е реална.',
+       now:'Сега', avg:'Средна цена (90 дни)', low:'Най-ниска (90 дни)', high:'Най-висока (90 дни)',
+       floor30:'Дъно за последните 30 дни', price:'цена', avgLeg:'средна (90д)',
+       footer:'Демо с примерни данни, изчислени от реалното ядро (логика по духа на EU Omnibus). Референция за намалението е най-ниската цена през предходните 30 дни, не „старата цена“ от етикета.' },
+  sr:{ tagline:'Upoređuje cenu sa istorijom od 90 dana i kaže da li je akcija prava.',
+       now:'Sada', avg:'Prosečna cena (90 dana)', low:'Najniža (90 dana)', high:'Najviša (90 dana)',
+       floor30:'Dno poslednjih 30 dana', price:'cena', avgLeg:'prosek (90d)',
+       footer:'Demo sa primerima podataka, izračunato pravim jezgrom (logika u duhu EU Omnibus). Referenca za sniženje je najniža cena u prethodnih 30 dana, a ne „stara cena“ sa etikete.' },
+  ro:{ tagline:'Compară prețul cu istoricul de 90 de zile și spune dacă reducerea e reală.',
+       now:'Acum', avg:'Preț mediu (90 zile)', low:'Cel mai mic (90 zile)', high:'Cel mai mare (90 zile)',
+       floor30:'Minim ultimele 30 zile', price:'preț', avgLeg:'medie (90z)',
+       footer:'Demo cu date exemplificative, calculate de nucleul real (logică în spiritul EU Omnibus). Referința reducerii este cel mai mic preț din ultimele 30 de zile, nu „prețul vechi” de pe etichetă.' },
+  el:{ tagline:'Συγκρίνει την τιμή με το ιστορικό 90 ημερών και λέει αν η προσφορά είναι αληθινή.',
+       now:'Τώρα', avg:'Μέση τιμή (90 ημ.)', low:'Χαμηλότερη (90 ημ.)', high:'Υψηλότερη (90 ημ.)',
+       floor30:'Ελάχιστο τελευτ. 30 ημ.', price:'τιμή', avgLeg:'μέσος (90η)',
+       footer:'Επίδειξη με ενδεικτικά δεδομένα, υπολογισμένα από τον πραγματικό πυρήνα (λογική στο πνεύμα της EU Omnibus). Η αναφορά της έκπτωσης είναι η χαμηλότερη τιμή των προηγούμενων 30 ημερών, όχι η «παλιά τιμή» της ετικέτας.' },
+  mk:{ tagline:'Ја споредува цената со историјата за 90 дена и кажува дали промоцијата е вистинска.',
+       now:'Сега', avg:'Просечна цена (90 дена)', low:'Најниска (90 дена)', high:'Највисока (90 дена)',
+       floor30:'Дно последни 30 дена', price:'цена', avgLeg:'просек (90д)',
+       footer:'Демо со примерни податоци, пресметани од вистинското јадро (логика во духот на ЕУ Omnibus). Референца за попустот е најниската цена во претходните 30 дена, не „старата цена“ од етикетата.' },
+  tr:{ tagline:'Fiyatı 90 günlük geçmişle karşılaştırır ve indirimin gerçek olup olmadığını söyler.',
+       now:'Şimdi', avg:'Ortalama fiyat (90 gün)', low:'En düşük (90 gün)', high:'En yüksek (90 gün)',
+       floor30:'Son 30 günün dibi', price:'fiyat', avgLeg:'ortalama (90g)',
+       footer:'Örnek verilerle demo, gerçek çekirdek tarafından hesaplanmıştır (AB Omnibus mantığı). İndirim referansı, etiketteki „eski fiyat" değil, önceki 30 gündeki en düşük fiyattır.' },
+  sq:{ tagline:'Krahason çmimin me historikun 90-ditor dhe thotë nëse oferta është e vërtetë.',
+       now:'Tani', avg:'Çmimi mesatar (90 ditë)', low:'Më i ulëti (90 ditë)', high:'Më i larti (90 ditë)',
+       floor30:'Minimumi 30 ditët e fundit', price:'çmimi', avgLeg:'mesatar (90d)',
+       footer:'Demo me të dhëna shembull, llogaritur nga bërthama reale (logjika në frymën e EU Omnibus). Referenca e zbritjes është çmimi më i ulët i 30 ditëve të mëparshme, jo „çmimi i vjetër" në etiketë.' },
+  bs:{ tagline:'Upoređuje cijenu sa historijom od 90 dana i kaže da li je akcija prava.',
+       now:'Sada', avg:'Prosječna cijena (90 dana)', low:'Najniža (90 dana)', high:'Najviša (90 dana)',
+       floor30:'Dno posljednjih 30 dana', price:'cijena', avgLeg:'prosjek (90d)',
+       footer:'Demo sa primjerima podataka, izračunato pravim jezgrom (logika u duhu EU Omnibus). Referenca za sniženje je najniža cijena u prethodnih 30 dana, a ne „stara cijena“ sa etikete.' },
+  hr:{ tagline:'Uspoređuje cijenu s poviješću od 90 dana i kaže je li akcija prava.',
+       now:'Sada', avg:'Prosječna cijena (90 dana)', low:'Najniža (90 dana)', high:'Najviša (90 dana)',
+       floor30:'Dno zadnjih 30 dana', price:'cijena', avgLeg:'prosjek (90d)',
+       footer:'Demo s primjerima podataka, izračunato pravom jezgrom (logika u duhu EU Omnibus). Referenca za sniženje je najniža cijena u prethodnih 30 dana, a ne „stara cijena“ s etikete.' },
+  sl:{ tagline:'Primerja ceno z zgodovino 90 dni in pove, ali je akcija resnična.',
+       now:'Zdaj', avg:'Povprečna cena (90 dni)', low:'Najnižja (90 dni)', high:'Najvišja (90 dni)',
+       floor30:'Dno zadnjih 30 dni', price:'cena', avgLeg:'povprečje (90d)',
+       footer:'Predstavitev z vzorčnimi podatki, izračunano z resničnim jedrom (logika v duhu EU Omnibus). Referenca za znižanje je najnižja cena v prejšnjih 30 dneh, ne „stara cena“ na etiketi.' },
+};
+
+const TAG = {  // short pill on cards
+  green:{bg:'Реална',sr:'Prava',mk:'Вистинска',ro:'Reală',el:'Αληθινή',tr:'Gerçek',sq:'E vërtetë',bs:'Prava',hr:'Prava',sl:'Resnična'},
+  yellow:{bg:'Обичайна',sr:'Uobičajena',mk:'Вообичаена',ro:'Obișnuită',el:'Συνηθισμένη',tr:'Olağan',sq:'E zakonshme',bs:'Uobičajena',hr:'Uobičajena',sl:'Običajna'},
+  red:{bg:'Фалшива',sr:'Lažna',mk:'Лажна',ro:'Falsă',el:'Ψεύτικη',tr:'Sahte',sq:'E rreme',bs:'Lažna',hr:'Lažna',sl:'Lažna'},
+  gray:{bg:'Няма данни',sr:'Nema podataka',mk:'Нема податоци',ro:'Fără date',el:'Χωρίς δεδ.',tr:'Veri yok',sq:'Pa të dhëna',bs:'Nema podataka',hr:'Nema podataka',sl:'Ni podatkov'},
+};
+const BADGE = {  // big label in detail
+  green:{bg:'РЕАЛНА ПРОМОЦИЯ',sr:'PRAVA AKCIJA',mk:'ВИСТИНСКА ПРОМОЦИЈА',ro:'REDUCERE REALĂ',el:'ΑΛΗΘΙΝΗ ΠΡΟΣΦΟΡΑ',tr:'GERÇEK İNDİRİM',sq:'OFERTË E VËRTETË',bs:'PRAVA AKCIJA',hr:'PRAVA AKCIJA',sl:'RESNIČNA AKCIJA'},
+  yellow:{bg:'ОБИЧАЙНА ЦЕНА',sr:'UOBIČAJENA CENA',mk:'ВООБИЧАЕНА ЦЕНА',ro:'PREȚ OBIȘNUIT',el:'ΣΥΝΗΘΙΣΜΕΝΗ ΤΙΜΗ',tr:'OLAĞAN FİYAT',sq:'ÇMIM I ZAKONSHËM',bs:'UOBIČAJENA CIJENA',hr:'UOBIČAJENA CIJENA',sl:'OBIČAJNA CENA'},
+  red:{bg:'ФАЛШИВА ПРОМОЦИЯ',sr:'LAŽNA AKCIJA',mk:'ЛАЖНА ПРОМОЦИЈА',ro:'REDUCERE FALSĂ',el:'ΨΕΥΤΙΚΗ ΠΡΟΣΦΟΡΑ',tr:'SAHTE İNDİRİM',sq:'OFERTË E RREME',bs:'LAŽNA AKCIJA',hr:'LAŽNA AKCIJA',sl:'LAŽNA AKCIJA'},
+  gray:{bg:'НЯМА ДОСТАТЪЧНО ДАННИ',sr:'NEMA DOVOLJNO PODATAKA',mk:'НЕДОВОЛНО ПОДАТОЦИ',ro:'DATE INSUFICIENTE',el:'ΑΝΕΠΑΡΚΗ ΔΕΔΟΜΕΝΑ',tr:'YETERSİZ VERİ',sq:'TË DHËNA TË PAMJAFTUESHME',bs:'NEMA DOVOLJNO PODATAKA',hr:'NEDOVOLJNO PODATAKA',sl:'PREMALO PODATKOV'},
+};
+const REASONS = {
+  real:{ bg:p=>`Реално намаление: ${p}% под обичайната цена, близо до 90-дневното дъно.`,
+         sr:p=>`Pravo sniženje: ${p}% ispod uobičajene cene, blizu dna za 90 dana.`,
+         mk:p=>`Вистинско намалување: ${p}% под вообичаената цена, близу до дното за 90 дена.`,
+         ro:p=>`Reducere reală: ${p}% sub prețul obișnuit, aproape de minimul pe 90 de zile.`,
+         el:p=>`Αληθινή έκπτωση: ${p}% κάτω από τη συνήθη τιμή, κοντά στο ελάχιστο 90 ημερών.`,
+         tr:p=>`Gerçek indirim: olağan fiyatın %${p} altında, 90 günlük dibe yakın.`,
+         sq:p=>`Zbritje reale: ${p}% nën çmimin e zakonshëm, afër minimumit 90-ditor.`,
+         bs:p=>`Pravo sniženje: ${p}% ispod uobičajene cijene, blizu dna za 90 dana.`,
+         hr:p=>`Pravo sniženje: ${p}% ispod uobičajene cijene, blizu dna za 90 dana.`,
+         sl:p=>`Resnično znižanje: ${p}% pod običajno ceno, blizu dna za 90 dni.` },
+  cosmetic:{ bg:p=>`Малка реална отстъпка: ${p}% под обичайната цена.`,
+         sr:p=>`Malo pravo sniženje: ${p}% ispod uobičajene cene.`,
+         mk:p=>`Мал вистински попуст: ${p}% под вообичаената цена.`,
+         ro:p=>`Mică reducere reală: ${p}% sub prețul obișnuit.`,
+         el:p=>`Μικρή πραγματική έκπτωση: ${p}% κάτω από τη συνήθη τιμή.`,
+         tr:p=>`Küçük gerçek indirim: olağan fiyatın %${p} altında.`,
+         sq:p=>`Zbritje e vogël reale: ${p}% nën çmimin e zakonshëm.`,
+         bs:p=>`Malo pravo sniženje: ${p}% ispod uobičajene cijene.`,
+         hr:p=>`Malo pravo sniženje: ${p}% ispod uobičajene cijene.`,
+         sl:p=>`Majhno resnično znižanje: ${p}% pod običajno ceno.` },
+  fake_not_below:{ bg:()=>`Фалшива промоция: не е по-евтино от обичайното за последните 30 дни.`,
+         sr:()=>`Lažna akcija: nije jeftinije nego uobičajeno u poslednjih 30 dana.`,
+         mk:()=>`Лажна промоција: не е поевтино од вообичаеното во последните 30 дена.`,
+         ro:()=>`Reducere falsă: nu e mai ieftin decât în mod obișnuit în ultimele 30 de zile.`,
+         el:()=>`Ψεύτικη προσφορά: δεν είναι φθηνότερο από το σύνηθες των τελευταίων 30 ημερών.`,
+         tr:()=>`Sahte indirim: son 30 günün olağanından daha ucuz değil.`,
+         sq:()=>`Ofertë e rreme: nuk është më lirë se zakonisht në 30 ditët e fundit.`,
+         bs:()=>`Lažna akcija: nije jeftinije nego uobičajeno u posljednjih 30 dana.`,
+         hr:()=>`Lažna akcija: nije jeftinije nego uobičajeno u zadnjih 30 dana.`,
+         sl:()=>`Lažna akcija: ni ceneje kot običajno v zadnjih 30 dneh.` },
+  fake_equal:{ bg:()=>`Фалшива промоция: цената е на нивото на обичайната.`,
+         sr:()=>`Lažna akcija: cena je na nivou uobičajene.`,
+         mk:()=>`Лажна промоција: цената е на ниво на вообичаената.`,
+         ro:()=>`Reducere falsă: prețul e la nivelul obișnuit.`,
+         el:()=>`Ψεύτικη προσφορά: η τιμή είναι στο συνηθισμένο επίπεδο.`,
+         tr:()=>`Sahte indirim: fiyat olağan seviyede.`,
+         sq:()=>`Ofertë e rreme: çmimi është në nivelin e zakonshëm.`,
+         bs:()=>`Lažna akcija: cijena je na nivou uobičajene.`,
+         hr:()=>`Lažna akcija: cijena je na razini uobičajene.`,
+         sl:()=>`Lažna akcija: cena je na ravni običajne.` },
+  unknown:{ bg:()=>`Няма достатъчно история на цената, за да преценим.`,
+         sr:()=>`Nema dovoljno istorije cene za procenu.`,
+         mk:()=>`Нема доволно историја на цената за да процениме.`,
+         ro:()=>`Nu există suficient istoric de preț pentru evaluare.`,
+         el:()=>`Δεν υπάρχει αρκετό ιστορικό τιμής για αξιολόγηση.`,
+         tr:()=>`Değerlendirmek için yeterli fiyat geçmişi yok.`,
+         sq:()=>`Nuk ka mjaftueshëm historik çmimi për të vlerësuar.`,
+         bs:()=>`Nema dovoljno historije cijene za procjenu.`,
+         hr:()=>`Nema dovoljno povijesti cijene za procjenu.`,
+         sl:()=>`Ni dovolj zgodovine cen za oceno.` },
+};
+const UNIT = {
+  l:{bg:'л',sr:'l',mk:'л',ro:'l',el:'λ',tr:'L',sq:'l',bs:'l',hr:'l',sl:'l'},
+  kg:{bg:'кг',sr:'kg',mk:'кг',ro:'kg',el:'κιλό',tr:'kg',sq:'kg',bs:'kg',hr:'kg',sl:'kg'},
+  pcs:{bg:'бр',sr:'kom',mk:'бр',ro:'buc',el:'τεμ',tr:'adet',sq:'copë',bs:'kom',hr:'kom',sl:'kos'},
+  pack:{bg:'оп.',sr:'pak',mk:'оп.',ro:'pachet',el:'συσκ.',tr:'paket',sq:'pako',bs:'pak',hr:'pak',sl:'pak'},
+};
+const PRODUCTS = {
+  milk:  { name:{bg:'Прясно мляко',sr:'Sveže mleko',mk:'Свежо млеко',ro:'Lapte proaspăt',el:'Φρέσκο γάλα',tr:'Taze süt',sq:'Qumësht i freskët',bs:'Svježe mlijeko',hr:'Svježe mlijeko',sl:'Sveže mleko'},
+           pack:{bg:'1 л',sr:'1 l',mk:'1 л',ro:'1 l',el:'1 λ',tr:'1 L',sq:'1 l',bs:'1 l',hr:'1 l',sl:'1 l'} },
+  oil:   { name:{bg:'Олио',sr:'Ulje',mk:'Олио',ro:'Ulei',el:'Ηλιέλαιο',tr:'Ayçiçek yağı',sq:'Vaj luledielli',bs:'Suncokretovo ulje',hr:'Suncokretovo ulje',sl:'Sončnično olje'},
+           pack:{bg:'1 л',sr:'1 l',mk:'1 л',ro:'1 l',el:'1 λ',tr:'1 L',sq:'1 l',bs:'1 l',hr:'1 l',sl:'1 l'} },
+  cheese:{ name:{bg:'Кашкавал',sr:'Kačkavalj',mk:'Кашкавал',ro:'Cașcaval',el:'Κασέρι',tr:'Kaşar peyniri',sq:'Kaçkavall',bs:'Kačkavalj',hr:'Kačkavalj',sl:'Kačkavalj'},
+           pack:{bg:'400 г',sr:'400 g',mk:'400 г',ro:'400 g',el:'400 γρ',tr:'400 g',sq:'400 g',bs:'400 g',hr:'400 g',sl:'400 g'} },
+  coffee:{ name:{bg:'Кафе',sr:'Kafa',mk:'Кафе',ro:'Cafea',el:'Καφές',tr:'Kahve',sq:'Kafe',bs:'Kafa',hr:'Kava',sl:'Kava'},
+           pack:{bg:'250 г',sr:'250 g',mk:'250 г',ro:'250 g',el:'250 γρ',tr:'250 g',sq:'250 g',bs:'250 g',hr:'250 g',sl:'250 g'} },
+  flour: { name:{bg:'Брашно',sr:'Brašno',mk:'Брашно',ro:'Făină',el:'Αλεύρι',tr:'Un',sq:'Miell',bs:'Brašno',hr:'Brašno',sl:'Moka'},
+           pack:{bg:'1 кг',sr:'1 kg',mk:'1 кг',ro:'1 kg',el:'1 κιλό',tr:'1 kg',sq:'1 kg',bs:'1 kg',hr:'1 kg',sl:'1 kg'} },
+  sugar: { name:{bg:'Захар',sr:'Šećer',mk:'Шеќер',ro:'Zahăr',el:'Ζάχαρη',tr:'Şeker',sq:'Sheqer',bs:'Šećer',hr:'Šećer',sl:'Sladkor'},
+           pack:{bg:'1 кг',sr:'1 kg',mk:'1 кг',ro:'1 kg',el:'1 κιλό',tr:'1 kg',sq:'1 kg',bs:'1 kg',hr:'1 kg',sl:'1 kg'} },
+  bread: { name:{bg:'Хляб',sr:'Hleb',mk:'Леб',ro:'Pâine',el:'Ψωμί',tr:'Ekmek',sq:'Bukë',bs:'Hljeb',hr:'Kruh',sl:'Kruh'},
+           pack:{bg:'700 г',sr:'700 g',mk:'700 г',ro:'700 g',el:'700 γρ',tr:'700 g',sq:'700 g',bs:'700 g',hr:'700 g',sl:'700 g'} },
+  rice:  { name:{bg:'Ориз',sr:'Pirinač',mk:'Ориз',ro:'Orez',el:'Ρύζι',tr:'Pirinç',sq:'Oriz',bs:'Riža',hr:'Riža',sl:'Riž'},
+           pack:{bg:'1 кг',sr:'1 kg',mk:'1 кг',ro:'1 kg',el:'1 κιλό',tr:'1 kg',sq:'1 kg',bs:'1 kg',hr:'1 kg',sl:'1 kg'} },
+  tomatoes:{ name:{bg:'Домати',sr:'Paradajz',mk:'Домати',ro:'Roșii',el:'Ντομάτες',tr:'Domates',sq:'Domate',bs:'Paradajz',hr:'Rajčica',sl:'Paradižnik'},
+           pack:{bg:'1 кг',sr:'1 kg',mk:'1 кг',ro:'1 kg',el:'1 κιλό',tr:'1 kg',sq:'1 kg',bs:'1 kg',hr:'1 kg',sl:'1 kg'} },
+  // Extra fridge items (стълб 2) — names only.
+  eggs:  { name:{bg:'Яйца',sr:'Jaja',mk:'Јајца',ro:'Ouă',el:'Αυγά',tr:'Yumurta',sq:'Vezë',bs:'Jaja',hr:'Jaja',sl:'Jajca'} },
+  butter:{ name:{bg:'Масло',sr:'Maslac',mk:'Путер',ro:'Unt',el:'Βούτυρο',tr:'Tereyağı',sq:'Gjalpë',bs:'Maslac',hr:'Maslac',sl:'Maslo'} },
+  yogurt:{ name:{bg:'Кисело мляко',sr:'Jogurt',mk:'Кисело млеко',ro:'Iaurt',el:'Γιαούρτι',tr:'Yoğurt',sq:'Kos',bs:'Jogurt',hr:'Jogurt',sl:'Jogurt'} },
+};
+
+// Extra UI strings for tabs / chains / basket, keyed by language.
+const BX = {
+  bg:{ tabProducts:'Продукти', tabBasket:'Кошница', tabFridge:'Хладилник', chains:'Цени по вериги', cheapest:'най-евтина',
+       basketTitle:'Цена на кошницата по верига', cheapestBasket:'Най-евтина кошница', save:'спестяваш', perItem:'Най-евтино по продукт',
+       recognized:'Разпознато в хладилника', shopping:'Списък за пазаруване', missing:'липсва', low:'свършва' },
+  sr:{ tabProducts:'Proizvodi', tabBasket:'Korpa', tabFridge:'Frižider', chains:'Cene po lancima', cheapest:'najjeftinije',
+       basketTitle:'Cena korpe po lancu', cheapestBasket:'Najjeftinija korpa', save:'uštedite', perItem:'Najjeftinije po proizvodu',
+       recognized:'Prepoznato u frižideru', shopping:'Lista za kupovinu', missing:'nedostaje', low:'pri kraju' },
+  mk:{ tabProducts:'Производи', tabBasket:'Кошница', tabFridge:'Фрижидер', chains:'Цени по синџири', cheapest:'најевтино',
+       basketTitle:'Цена на кошницата по синџир', cheapestBasket:'Најевтина кошница', save:'заштедуваш', perItem:'Најевтино по производ',
+       recognized:'Препознато во фрижидерот', shopping:'Список за пазарување', missing:'недостасува', low:'снемнува' },
+  ro:{ tabProducts:'Produse', tabBasket:'Coș', tabFridge:'Frigider', chains:'Prețuri pe lanțuri', cheapest:'cel mai ieftin',
+       basketTitle:'Costul coșului pe lanț', cheapestBasket:'Cel mai ieftin coș', save:'economisești', perItem:'Cel mai ieftin pe produs',
+       recognized:'Recunoscut în frigider', shopping:'Listă de cumpărături', missing:'lipsește', low:'se termină' },
+  el:{ tabProducts:'Προϊόντα', tabBasket:'Καλάθι', tabFridge:'Ψυγείο', chains:'Τιμές ανά αλυσίδα', cheapest:'φθηνότερο',
+       basketTitle:'Κόστος καλαθιού ανά αλυσίδα', cheapestBasket:'Φθηνότερο καλάθι', save:'εξοικονομείς', perItem:'Φθηνότερο ανά προϊόν',
+       recognized:'Αναγνωρίστηκαν στο ψυγείο', shopping:'Λίστα αγορών', missing:'λείπει', low:'τελειώνει' },
+  tr:{ tabProducts:'Ürünler', tabBasket:'Sepet', tabFridge:'Buzdolabı', chains:'Zincirlere göre fiyatlar', cheapest:'en ucuz',
+       basketTitle:'Zincire göre sepet tutarı', cheapestBasket:'En ucuz sepet', save:'tasarruf', perItem:'Ürün başına en ucuz',
+       recognized:'Buzdolabında tanındı', shopping:'Alışveriş listesi', missing:'eksik', low:'azalıyor' },
+  sq:{ tabProducts:'Produktet', tabBasket:'Shporta', tabFridge:'Frigorifer', chains:'Çmimet sipas zinxhirëve', cheapest:'më i liri',
+       basketTitle:'Kostoja e shportës sipas zinxhirit', cheapestBasket:'Shporta më e lirë', save:'kurseni', perItem:'Më i liri për produkt',
+       recognized:'Të njohura në frigorifer', shopping:'Lista e blerjeve', missing:'mungon', low:'po mbaron' },
+  bs:{ tabProducts:'Proizvodi', tabBasket:'Korpa', tabFridge:'Frižider', chains:'Cijene po lancima', cheapest:'najjeftinije',
+       basketTitle:'Cijena korpe po lancu', cheapestBasket:'Najjeftinija korpa', save:'uštedite', perItem:'Najjeftinije po proizvodu',
+       recognized:'Prepoznato u frižideru', shopping:'Lista za kupovinu', missing:'nedostaje', low:'pri kraju' },
+  hr:{ tabProducts:'Proizvodi', tabBasket:'Košarica', tabFridge:'Hladnjak', chains:'Cijene po lancima', cheapest:'najjeftinije',
+       basketTitle:'Cijena košarice po lancu', cheapestBasket:'Najjeftinija košarica', save:'uštedite', perItem:'Najjeftinije po proizvodu',
+       recognized:'Prepoznato u hladnjaku', shopping:'Popis za kupnju', missing:'nedostaje', low:'pri kraju' },
+  sl:{ tabProducts:'Izdelki', tabBasket:'Košarica', tabFridge:'Hladilnik', chains:'Cene po trgovinah', cheapest:'najceneje',
+       basketTitle:'Cena košarice po trgovini', cheapestBasket:'Najcenejša košarica', save:'prihranite', perItem:'Najceneje po izdelku',
+       recognized:'Prepoznano v hladilniku', shopping:'Nakupovalni seznam', missing:'manjka', low:'zmanjkuje' },
+};
+
+const DEMO = (window.SAVECHECK_DEMO || {products:[]});
+const products = DEMO.products;
+let active = 0, country = COUNTRIES[0], view = 'products';
+
+// Store chains per market — a mix of domestic and foreign (international)
+// chains. Illustrative: real footprints vary.
+const CHAINS_BY_COUNTRY = {
+  BG:['Lidl','Kaufland','Billa','Fantastico'],
+  RS:['Lidl','Maxi','Idea','Univerexport'],
+  MK:['Vero','Tinex','Stokomak','Ramstore'],
+  BA:['Bingo','Konzum','Mercator','Amko'],
+  ME:['Voli','Idea','Aroma','Franca'],
+  XK:['Viva Fresh','Meridian','ETC','Albi'],
+  AL:['Spar','Big Market','Conad','Ecomarket'],
+  HR:['Konzum','Lidl','Kaufland','Plodine'],
+  SI:['Mercator','Spar','Lidl','Hofer'],
+  RO:['Lidl','Kaufland','Carrefour','Mega Image'],
+  GR:['Sklavenitis','AB Vasilopoulos','Lidl','Masoutis'],
+  TR:['BİM','A101','Migros','Carrefour'],
+};
+// Deterministic per-(chain,product) spread in [0,12%]; the cheapest chain in a
+// market is normalised to the product's current (promo) price.
+function chainDelta(chain, pid) {
+  let h = 0; const s = chain + '|' + pid;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  return (h % 13) / 100;
+}
+function offersFor(p) {
+  const chains = CHAINS_BY_COUNTRY[country.code] || [];
+  const raw = chains.map(c => ({ chain: c, d: chainDelta(c, p.id) }));
+  const minD = Math.min(...raw.map(r => r.d));
+  return raw.map(r => ({ chain: r.chain, price: p.current_price * (1 + r.d - minD) }))
+            .sort((a, b) => a.price - b.price);
+}
+
+const ddmm = iso => { if(!iso) return ''; const [ , m, d] = iso.split('-'); return d + '.' + m; };
+const disp = x => x.toFixed(country.dec).replace('.', ',');        // a converted number
+const money = vBgn => vBgn == null ? '—' : disp(vBgn * country.fx) + ' ' + country.sym;
+const unitLabel = kind => country.sym + '/' + UNIT[kind][country.lang];
+const unitWord = kind => (UNIT[kind] ? UNIT[kind][country.lang] : '');
+const fmtQty = v => Number.isInteger(v) ? String(v) : String(Math.round(v * 100) / 100);
+const t = () => UI[country.lang];
+
+function renderFlags() {
+  document.getElementById('flags').innerHTML = COUNTRIES.map((c, i) => `
+    <button class="${c.code===country.code?'active':''}" onclick="setCountry(${i})" title="${c.code}">
+      ${c.flag}<span class="cc">${c.code}</span>
+    </button>`).join('');
+}
+
+function renderChrome() {
+  document.getElementById('tagline').textContent = t().tagline;
+  document.getElementById('footer').textContent = t().footer;
+}
+
+function renderCards() {
+  document.getElementById('cards').innerHTML = products.map((p, i) => {
+    const meta = PRODUCTS[p.id];
+    return `
+    <button class="card ${i===active?'active':''}" onclick="select(${i})">
+      <div class="tag" style="background:${C[p.verdict]}">${TAG[p.verdict][country.lang]}</div>
+      <div class="nm">${meta.name[country.lang]}</div>
+      <div class="pk">${meta.pack[country.lang]}</div>
+      <div class="pr">${money(p.current_price)}</div>
+      <div class="unit">${p.current_unit_price==null?'':disp(p.current_unit_price*country.fx)+' '+unitLabel(p.unit_kind)}</div>
+    </button>`;
+  }).join('');
+}
+
+function row(pillColor, label, value, dateIso) {
+  const pill = pillColor ? `<span class="pill" style="background:${pillColor}"></span>` : '';
+  const date = dateIso ? ` <span class="date">· ${ddmm(dateIso)}</span>` : '';
+  return `<tr><td>${pill}${label}</td><td>${value}${date}</td></tr>`;
+}
+
+function renderPanel() {
+  const p = products[active], meta = PRODUCTS[p.id], col = C[p.verdict], L = t();
+  const reason = REASONS[p.reason_code][country.lang](p.discount_pct);
+  const discTxt = p.discount_pct != null && p.discount_pct > 0
+      ? ` · <b style="color:${C.green}">−${p.discount_pct}%</b>` : '';
+  const unitTxt = p.current_unit_price==null ? '' : ' · ' + disp(p.current_unit_price*country.fx)+' '+unitLabel(p.unit_kind);
+  document.getElementById('panel').innerHTML = `
+    <span class="badge" style="background:${col}"><span class="ico">${ICON[p.verdict]}</span>${BADGE[p.verdict][country.lang]}</span>
+    <div class="ptitle">${meta.name[country.lang]} <span>${meta.pack[country.lang]}${unitTxt}</span></div>
+    <div class="reason">${reason}</div>
+    <div class="chart-box"><canvas id="chart"></canvas></div>
+    <table class="sum">
+      ${row(col, L.now, money(p.current_price) + discTxt)}
+      ${row('#94a3b8', L.avg, money(p.median_90))}
+      ${row(C.green, L.low, money(p.min_90), p.lowest_day)}
+      ${row(C.red, L.high, money(p.max_90), p.highest_day)}
+      ${row(null, L.floor30, money(p.min_30_prior))}
+    </table>
+    <div class="offers">
+      <div class="otitle">${BX[country.lang].chains}</div>
+      ${offersFor(p).map((o, i) => `<div class="orow ${i===0?'best':''}">
+        <span>${i===0?'✓ ':''}${o.chain}</span><span>${money(o.price)}</span></div>`).join('')}
+    </div>`;
+  drawChart(p, col);
+}
+
+function renderTabs() {
+  const X = BX[country.lang];
+  document.getElementById('tabs').innerHTML =
+    `<button class="${view==='products'?'on':''}" onclick="setView('products')">${X.tabProducts}</button>
+     <button class="${view==='basket'?'on':''}" onclick="setView('basket')">${X.tabBasket}</button>
+     <button class="${view==='fridge'?'on':''}" onclick="setView('fridge')">${X.tabFridge}</button>`;
+}
+
+function renderFridge() {
+  const X = BX[country.lang], F = DEMO.fridge || { recognized: [], shopping: [] };
+  const nameOf = id => (PRODUCTS[id] ? PRODUCTS[id].name[country.lang] : id);
+  const recognized = F.recognized.map(r => `
+    <div class="irow"><span>${nameOf(r.id)}</span>
+      <span>${fmtQty(r.quantity)} ${unitWord(r.unit)} · ${Math.round(r.confidence*100)}%</span></div>`).join('');
+  const shopping = F.shopping.map(s => {
+    const prod = products.find(p => p.id === s.id);  // links to стълб 1 verdict
+    const pill = prod ? `<span class="tag" style="background:${C[prod.verdict]};margin-left:7px">${TAG[prod.verdict][country.lang]}</span>` : '';
+    const reason = s.reason_code === 'missing' ? X.missing : X.low;
+    return `<div class="brow"><span>${nameOf(s.id)}${pill}</span>
+      <span>${fmtQty(s.needed_quantity)} ${unitWord(s.unit)} <span class="date">· ${reason}</span></span></div>`;
+  }).join('');
+  document.getElementById('basket').innerHTML = `
+    <div class="panel">
+      <div class="otitle">${X.recognized}</div>${recognized}
+      <div class="otitle" style="margin-top:14px">${X.shopping}</div>${shopping}
+    </div>`;
+}
+
+function renderBasket() {
+  const X = BX[country.lang], chains = CHAINS_BY_COUNTRY[country.code] || [];
+  const totals = chains.map(c => {
+    let t = 0; products.forEach(p => { const o = offersFor(p).find(o => o.chain === c); if (o) t += o.price; });
+    return { chain: c, total: t };
+  }).sort((a, b) => a.total - b.total);
+  const max = Math.max(...totals.map(t => t.total)), best = totals[0];
+  const rows = totals.map((t, i) => {
+    const badge = i===0 ? `<span class="bbadge">${X.cheapestBasket}</span>` : '';
+    const save = i===0 ? `<span class="save">${X.save} ${money(max - best.total)}</span>` : '';
+    return `<div class="brow ${i===0?'best':''}"><span>${t.chain}${badge}</span><span>${money(t.total)}${save}</span></div>`;
+  }).join('');
+  const items = products.map(p => {
+    const o = offersFor(p)[0], meta = PRODUCTS[p.id];
+    return `<div class="irow"><span>${meta.name[country.lang]}</span><span>${o.chain} · ${money(o.price)}</span></div>`;
+  }).join('');
+  document.getElementById('basket').innerHTML = `
+    <div class="panel">
+      <div class="otitle">${X.basketTitle}</div>${rows}
+      <div class="otitle" style="margin-top:14px">${X.perItem}</div>${items}
+    </div>`;
+}
+
+function lastIndexNear(arr, target) {
+  if (target == null) return -1;
+  let idx = -1; arr.forEach((v, i) => { if (Math.abs(v - target) < 1e-9) idx = i; }); return idx;
+}
+
+let chart = null;
+const zonePlugin = {
+  id: 'zones',
+  beforeDatasetsDraw(c, _a, opts) {
+    if (opts.median == null) return;
+    const { ctx, chartArea:{left,right,top,bottom}, scales:{y} } = c;
+    let ym = y.getPixelForValue(opts.median); ym = Math.max(top, Math.min(bottom, ym));
+    ctx.save();
+    ctx.fillStyle='rgba(22,163,74,0.06)'; ctx.fillRect(left, ym, right-left, bottom-ym);
+    ctx.fillStyle='rgba(220,38,38,0.06)'; ctx.fillRect(left, top, right-left, ym-top);
+    ctx.restore();
+  },
+};
+
+function drawChart(p, col) {
+  const fx = country.fx, L = t();
+  const labels = p.series.map(s => ddmm(s.day));
+  const base = p.series.map(s => s.price);
+  const prices = base.map(v => v * fx);
+  const lastIdx = base.length - 1;
+  const lowIdx = lastIndexNear(base, p.min_90);
+  const highIdx = lastIndexNear(base, p.max_90);
+  const radius = base.map((_, i) => i===lastIdx?5:(i===lowIdx||i===highIdx?4:0));
+  const pColor = base.map((_, i) => i===lastIdx?col:(i===lowIdx?C.green:(i===highIdx?C.red:'transparent')));
+
+  const datasets = [{
+    label:L.price, data:prices, borderColor:col, backgroundColor:col+'14',
+    borderWidth:2, fill:true, stepped:true,
+    pointRadius:radius, pointBackgroundColor:pColor, pointBorderColor:'#fff', pointBorderWidth:1.5,
+  }];
+  const medianDisp = p.median_90==null ? null : p.median_90*fx;
+  if (medianDisp!=null) datasets.push({
+    label:L.avgLeg, data:base.map(()=>medianDisp), borderColor:'#94a3b8', borderWidth:1.3,
+    borderDash:[6,6], pointRadius:0, fill:false,
+  });
+
+  if (chart) chart.destroy();
+  chart = new Chart(document.getElementById('chart'), {
+    type:'line', data:{ labels, datasets },
+    options:{
+      responsive:true, maintainAspectRatio:false, interaction:{ intersect:false, mode:'index' },
+      plugins:{
+        zones:{ median:medianDisp },
+        legend:{ display:true, labels:{ boxWidth:12, font:{size:11} } },
+        tooltip:{ callbacks:{ label:c => c.dataset.label + ': ' + disp(c.parsed.y) + ' ' + country.sym } },
+      },
+      scales:{
+        x:{ ticks:{ maxTicksLimit:7, font:{size:10}, color:'#94a3b8' }, grid:{ display:false } },
+        y:{ ticks:{ callback:v => v.toFixed(country.dec), font:{size:10}, color:'#94a3b8' }, grid:{ color:'#eef2f6' } },
+      },
+    },
+    plugins:[zonePlugin],
+  });
+}
+
+function render() {
+  renderFlags(); renderChrome(); renderTabs();
+  const prod = view === 'products';
+  document.getElementById('cards').style.display = prod ? '' : 'none';
+  document.getElementById('panel').style.display = prod ? '' : 'none';
+  document.getElementById('basket').style.display = prod ? 'none' : '';
+  if (prod) { renderCards(); renderPanel(); }
+  else if (view === 'basket') { renderBasket(); }
+  else { renderFridge(); }
+}
+function select(i){ active = i; renderCards(); renderPanel(); }
+function setCountry(i){ country = COUNTRIES[i]; document.documentElement.lang = country.lang; render(); }
+function setView(v){ view = v; render(); }
+
+render();
+</script>
+</body>
+</html>

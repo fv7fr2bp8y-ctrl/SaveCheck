@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install test dependencies
+        # The pricing core is pure stdlib, so only pytest is needed to run the
+        # suite. The db/api/ingest extras are intentionally not installed here.
+        run: python -m pip install --upgrade pip pytest
+
+      - name: Byte-compile all sources
+        # Catches syntax errors in modules the tests don't import (db, api).
+        run: python -m py_compile $(find src tests -name '*.py')
+
+      - name: Run tests
+        run: pytest -v

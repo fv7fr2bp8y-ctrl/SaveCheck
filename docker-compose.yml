@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: savecheck
+      POSTGRES_PASSWORD: savecheck
+      POSTGRES_DB: savecheck
+    ports:
+      - "5432:5432"
+    volumes:
+      - savecheck_pg:/var/lib/postgresql/data
+      - ./src/savecheck/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+
+volumes:
+  savecheck_pg:
