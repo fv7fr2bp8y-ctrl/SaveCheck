@@ -17,10 +17,20 @@
     background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased;
   }
   .wrap { max-width:760px; margin:0 auto; padding:20px 16px 60px; }
+  .top { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; }
   header h1 { font-size:22px; margin:0 0 2px; letter-spacing:-.02em; }
   header h1 b { color:var(--green); }
-  header p { margin:0 0 18px; color:var(--muted); font-size:13.5px; }
-  .cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(155px,1fr)); gap:10px; }
+  header p { margin:0 0 4px; color:var(--muted); font-size:13.5px; max-width:460px; }
+  .flags { display:flex; gap:6px; }
+  .flags button {
+    border:1px solid var(--line); background:var(--card); border-radius:10px; cursor:pointer;
+    padding:5px 8px; font-size:16px; line-height:1; display:flex; align-items:center; gap:5px;
+    transition:border-color .12s, box-shadow .12s;
+  }
+  .flags button .cc { font-size:11px; font-weight:700; color:var(--muted); }
+  .flags button.active { border-color:var(--ink); box-shadow:0 2px 8px rgba(15,23,42,.10); }
+  .flags button.active .cc { color:var(--ink); }
+  .cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(155px,1fr)); gap:10px; margin-top:16px; }
   .card {
     background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 13px;
     cursor:pointer; transition:transform .08s, box-shadow .12s, border-color .12s; text-align:left;
@@ -45,7 +55,6 @@
   .ptitle span { color:var(--muted); font-weight:500; font-size:13px; }
   .reason { margin:6px 0 4px; font-size:14.5px; line-height:1.45; }
   .chart-box { position:relative; height:230px; margin:10px 0 2px; }
-  /* Camel-style summary table */
   .sum { width:100%; border-collapse:collapse; margin-top:8px; font-size:13.5px; }
   .sum td { padding:7px 4px; border-top:1px solid var(--line); }
   .sum td:first-child { color:var(--muted); }
@@ -57,55 +66,128 @@
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <h1>Save<b>Check</b></h1>
-    <p>Сравнява цената с историята за 90 дни и казва дали промоцията е реална.</p>
-  </header>
+  <div class="top">
+    <header>
+      <h1>Save<b>Check</b></h1>
+      <p id="tagline"></p>
+    </header>
+    <div class="flags" id="flags"></div>
+  </div>
   <div class="cards" id="cards"></div>
   <div class="panel" id="panel"></div>
-  <footer>
-    Демо с примерни данни, изчислени от реалното ядро на приложението
-    (логика по духа на EU&nbsp;Omnibus). Референция за намалението е най-ниската
-    цена през предходните 30 дни, не „старата цена“ от етикета.
-  </footer>
+  <footer id="footer"></footer>
 </div>
 
 <script>
 const C = { red:'#dc2626', green:'#16a34a', yellow:'#f59e0b', gray:'#6b7280' };
 const ICON = { red:'✕', green:'✓', yellow:'≈', gray:'?' };
-const TAG = { red:'Фалшива', green:'Реална', yellow:'Обичайна', gray:'Няма данни' };
-const data = (window.SAVECHECK_DEMO || {products:[]}).products;
-let chart = null, active = 0;
 
-const bgn = v => v == null ? '—' : v.toFixed(2).replace('.', ',') + ' лв';
-const unit = (v, l) => v == null ? '' : v.toFixed(2).replace('.', ',') + ' ' + l;
-const ddmm = iso => { if(!iso) return ''; const [ , m, d] = iso.split('-'); return d + '.' + m; };
+// code -> language. fx multiplies the BGN base price; dec = currency decimals.
+const COUNTRIES = [
+  { code:'BG', flag:'🇧🇬', lang:'bg', fx:1,    sym:'лв',  dec:2 },
+  { code:'RS', flag:'🇷🇸', lang:'sr', fx:60,   sym:'дин', dec:0 },
+  { code:'RO', flag:'🇷🇴', lang:'ro', fx:2.5,  sym:'lei', dec:2 },
+  { code:'GR', flag:'🇬🇷', lang:'el', fx:0.51, sym:'€',   dec:2 },
+];
 
-// Faint "good price / bad price" zones split at the 90-day median — a SaveCheck
-// twist on the classic price-history chart.
-const zonePlugin = {
-  id: 'zones',
-  beforeDatasetsDraw(c, _a, opts) {
-    if (opts.median == null) return;
-    const { ctx, chartArea: { left, right, top, bottom }, scales: { y } } = c;
-    let ym = y.getPixelForValue(opts.median);
-    ym = Math.max(top, Math.min(bottom, ym));
-    ctx.save();
-    ctx.fillStyle = 'rgba(22,163,74,0.06)';  ctx.fillRect(left, ym, right - left, bottom - ym);
-    ctx.fillStyle = 'rgba(220,38,38,0.06)';  ctx.fillRect(left, top, right - left, ym - top);
-    ctx.restore();
-  },
+const UI = {
+  bg:{ tagline:'Сравнява цената с историята за 90 дни и казва дали промоцията е реална.',
+       now:'Сега', avg:'Средна цена (90 дни)', low:'Най-ниска (90 дни)', high:'Най-висока (90 дни)',
+       floor30:'Дъно за последните 30 дни', price:'цена', avgLeg:'средна (90д)',
+       footer:'Демо с примерни данни, изчислени от реалното ядро (логика по духа на EU Omnibus). Референция за намалението е най-ниската цена през предходните 30 дни, не „старата цена“ от етикета.' },
+  sr:{ tagline:'Upoređuje cenu sa istorijom od 90 dana i kaže da li je akcija prava.',
+       now:'Sada', avg:'Prosečna cena (90 dana)', low:'Najniža (90 dana)', high:'Najviša (90 dana)',
+       floor30:'Dno poslednjih 30 dana', price:'cena', avgLeg:'prosek (90d)',
+       footer:'Demo sa primerima podataka, izračunato pravim jezgrom (logika u duhu EU Omnibus). Referenca za sniženje je najniža cena u prethodnih 30 dana, a ne „stara cena“ sa etikete.' },
+  ro:{ tagline:'Compară prețul cu istoricul de 90 de zile și spune dacă reducerea e reală.',
+       now:'Acum', avg:'Preț mediu (90 zile)', low:'Cel mai mic (90 zile)', high:'Cel mai mare (90 zile)',
+       floor30:'Minim ultimele 30 zile', price:'preț', avgLeg:'medie (90z)',
+       footer:'Demo cu date exemplificative, calculate de nucleul real (logică în spiritul EU Omnibus). Referința reducerii este cel mai mic preț din ultimele 30 de zile, nu „prețul vechi” de pe etichetă.' },
+  el:{ tagline:'Συγκρίνει την τιμή με το ιστορικό 90 ημερών και λέει αν η προσφορά είναι αληθινή.',
+       now:'Τώρα', avg:'Μέση τιμή (90 ημ.)', low:'Χαμηλότερη (90 ημ.)', high:'Υψηλότερη (90 ημ.)',
+       floor30:'Ελάχιστο τελευτ. 30 ημ.', price:'τιμή', avgLeg:'μέσος (90η)',
+       footer:'Επίδειξη με ενδεικτικά δεδομένα, υπολογισμένα από τον πραγματικό πυρήνα (λογική στο πνεύμα της EU Omnibus). Η αναφορά της έκπτωσης είναι η χαμηλότερη τιμή των προηγούμενων 30 ημερών, όχι η «παλιά τιμή» της ετικέτας.' },
 };
 
-function renderCards() {
-  document.getElementById('cards').innerHTML = data.map((p, i) => `
-    <button class="card ${i===active?'active':''}" onclick="select(${i})">
-      <div class="tag" style="background:${C[p.verdict]}">${TAG[p.verdict]}</div>
-      <div class="nm">${p.name}</div>
-      <div class="pk">${p.package}</div>
-      <div class="pr">${bgn(p.current_price)}</div>
-      <div class="unit">${unit(p.current_unit_price, p.unit_label)}</div>
+const TAG = {  // short pill on cards
+  green:{bg:'Реална',sr:'Prava',ro:'Reală',el:'Αληθινή'},
+  yellow:{bg:'Обичайна',sr:'Uobičajena',ro:'Obișnuită',el:'Συνηθισμένη'},
+  red:{bg:'Фалшива',sr:'Lažna',ro:'Falsă',el:'Ψεύτικη'},
+  gray:{bg:'Няма данни',sr:'Nema podataka',ro:'Fără date',el:'Χωρίς δεδ.'},
+};
+const BADGE = {  // big label in detail
+  green:{bg:'РЕАЛНА ПРОМОЦИЯ',sr:'PRAVA AKCIJA',ro:'REDUCERE REALĂ',el:'ΑΛΗΘΙΝΗ ΠΡΟΣΦΟΡΑ'},
+  yellow:{bg:'ОБИЧАЙНА ЦЕНА',sr:'UOBIČAJENA CENA',ro:'PREȚ OBIȘNUIT',el:'ΣΥΝΗΘΙΣΜΕΝΗ ΤΙΜΗ'},
+  red:{bg:'ФАЛШИВА ПРОМОЦИЯ',sr:'LAŽNA AKCIJA',ro:'REDUCERE FALSĂ',el:'ΨΕΥΤΙΚΗ ΠΡΟΣΦΟΡΑ'},
+  gray:{bg:'НЯМА ДОСТАТЪЧНО ДАННИ',sr:'NEMA DOVOLJNO PODATAKA',ro:'DATE INSUFICIENTE',el:'ΑΝΕΠΑΡΚΗ ΔΕΔΟΜΕΝΑ'},
+};
+const REASONS = {
+  real:{ bg:p=>`Реално намаление: ${p}% под обичайната цена, близо до 90-дневното дъно.`,
+         sr:p=>`Pravo sniženje: ${p}% ispod uobičajene cene, blizu dna za 90 dana.`,
+         ro:p=>`Reducere reală: ${p}% sub prețul obișnuit, aproape de minimul pe 90 de zile.`,
+         el:p=>`Αληθινή έκπτωση: ${p}% κάτω από τη συνήθη τιμή, κοντά στο ελάχιστο 90 ημερών.` },
+  cosmetic:{ bg:p=>`Малка реална отстъпка: ${p}% под обичайната цена.`,
+         sr:p=>`Malo pravo sniženje: ${p}% ispod uobičajene cene.`,
+         ro:p=>`Mică reducere reală: ${p}% sub prețul obișnuit.`,
+         el:p=>`Μικρή πραγματική έκπτωση: ${p}% κάτω από τη συνήθη τιμή.` },
+  fake_not_below:{ bg:()=>`Фалшива промоция: не е по-евтино от обичайното за последните 30 дни.`,
+         sr:()=>`Lažna akcija: nije jeftinije nego uobičajeno u poslednjih 30 dana.`,
+         ro:()=>`Reducere falsă: nu e mai ieftin decât în mod obișnuit în ultimele 30 de zile.`,
+         el:()=>`Ψεύτικη προσφορά: δεν είναι φθηνότερο από το σύνηθες των τελευταίων 30 ημερών.` },
+  fake_equal:{ bg:()=>`Фалшива промоция: цената е на нивото на обичайната.`,
+         sr:()=>`Lažna akcija: cena je na nivou uobičajene.`,
+         ro:()=>`Reducere falsă: prețul e la nivelul obișnuit.`,
+         el:()=>`Ψεύτικη προσφορά: η τιμή είναι στο συνηθισμένο επίπεδο.` },
+  unknown:{ bg:()=>`Няма достатъчно история на цената, за да преценим.`,
+         sr:()=>`Nema dovoljno istorije cene za procenu.`,
+         ro:()=>`Nu există suficient istoric de preț pentru evaluare.`,
+         el:()=>`Δεν υπάρχει αρκετό ιστορικό τιμής για αξιολόγηση.` },
+};
+const UNIT = { l:{bg:'л',sr:'l',ro:'l',el:'λ'}, kg:{bg:'кг',sr:'kg',ro:'kg',el:'κιλό'} };
+const PRODUCTS = {
+  milk:  { name:{bg:'Прясно мляко',sr:'Sveže mleko',ro:'Lapte proaspăt',el:'Φρέσκο γάλα'},
+           pack:{bg:'1 л',sr:'1 l',ro:'1 l',el:'1 λ'} },
+  oil:   { name:{bg:'Олио',sr:'Ulje',ro:'Ulei',el:'Ηλιέλαιο'},
+           pack:{bg:'1 л',sr:'1 l',ro:'1 l',el:'1 λ'} },
+  cheese:{ name:{bg:'Кашкавал',sr:'Kačkavalj',ro:'Cașcaval',el:'Κασέρι'},
+           pack:{bg:'400 г',sr:'400 g',ro:'400 g',el:'400 γρ'} },
+  coffee:{ name:{bg:'Кафе',sr:'Kafa',ro:'Cafea',el:'Καφές'},
+           pack:{bg:'250 г',sr:'250 g',ro:'250 g',el:'250 γρ'} },
+};
+
+const products = (window.SAVECHECK_DEMO || {products:[]}).products;
+let active = 0, country = COUNTRIES[0];
+
+const ddmm = iso => { if(!iso) return ''; const [ , m, d] = iso.split('-'); return d + '.' + m; };
+const disp = x => x.toFixed(country.dec).replace('.', ',');        // a converted number
+const money = vBgn => vBgn == null ? '—' : disp(vBgn * country.fx) + ' ' + country.sym;
+const unitLabel = kind => country.sym + '/' + UNIT[kind][country.lang];
+const t = () => UI[country.lang];
+
+function renderFlags() {
+  document.getElementById('flags').innerHTML = COUNTRIES.map((c, i) => `
+    <button class="${c.code===country.code?'active':''}" onclick="setCountry(${i})" title="${c.code}">
+      ${c.flag}<span class="cc">${c.code}</span>
     </button>`).join('');
+}
+
+function renderChrome() {
+  document.getElementById('tagline').textContent = t().tagline;
+  document.getElementById('footer').textContent = t().footer;
+}
+
+function renderCards() {
+  document.getElementById('cards').innerHTML = products.map((p, i) => {
+    const meta = PRODUCTS[p.id];
+    return `
+    <button class="card ${i===active?'active':''}" onclick="select(${i})">
+      <div class="tag" style="background:${C[p.verdict]}">${TAG[p.verdict][country.lang]}</div>
+      <div class="nm">${meta.name[country.lang]}</div>
+      <div class="pk">${meta.pack[country.lang]}</div>
+      <div class="pr">${money(p.current_price)}</div>
+      <div class="unit">${p.current_unit_price==null?'':disp(p.current_unit_price*country.fx)+' '+unitLabel(p.unit_kind)}</div>
+    </button>`;
+  }).join('');
 }
 
 function row(pillColor, label, value, dateIso) {
@@ -115,79 +197,90 @@ function row(pillColor, label, value, dateIso) {
 }
 
 function renderPanel() {
-  const p = data[active];
-  const col = C[p.verdict];
+  const p = products[active], meta = PRODUCTS[p.id], col = C[p.verdict], L = t();
+  const reason = REASONS[p.reason_code][country.lang](p.discount_pct);
   const discTxt = p.discount_pct != null && p.discount_pct > 0
       ? ` · <b style="color:${C.green}">−${p.discount_pct}%</b>` : '';
+  const unitTxt = p.current_unit_price==null ? '' : ' · ' + disp(p.current_unit_price*country.fx)+' '+unitLabel(p.unit_kind);
   document.getElementById('panel').innerHTML = `
-    <span class="badge" style="background:${col}"><span class="ico">${ICON[p.verdict]}</span>${p.verdict_label}</span>
-    <div class="ptitle">${p.name} <span>${p.package} · ${unit(p.current_unit_price, p.unit_label)}</span></div>
-    <div class="reason">${p.reason}</div>
+    <span class="badge" style="background:${col}"><span class="ico">${ICON[p.verdict]}</span>${BADGE[p.verdict][country.lang]}</span>
+    <div class="ptitle">${meta.name[country.lang]} <span>${meta.pack[country.lang]}${unitTxt}</span></div>
+    <div class="reason">${reason}</div>
     <div class="chart-box"><canvas id="chart"></canvas></div>
     <table class="sum">
-      ${row(col, 'Сега', bgn(p.current_price) + discTxt)}
-      ${row('#94a3b8', 'Средна цена (90 дни)', bgn(p.median_90))}
-      ${row(C.green, 'Най-ниска (90 дни)', bgn(p.min_90), p.lowest_day)}
-      ${row(C.red, 'Най-висока (90 дни)', bgn(p.max_90), p.highest_day)}
-      ${row(null, 'Дъно за последните 30 дни', bgn(p.min_30_prior))}
+      ${row(col, L.now, money(p.current_price) + discTxt)}
+      ${row('#94a3b8', L.avg, money(p.median_90))}
+      ${row(C.green, L.low, money(p.min_90), p.lowest_day)}
+      ${row(C.red, L.high, money(p.max_90), p.highest_day)}
+      ${row(null, L.floor30, money(p.min_30_prior))}
     </table>`;
   drawChart(p, col);
 }
 
 function lastIndexNear(arr, target) {
   if (target == null) return -1;
-  let idx = -1;
-  arr.forEach((v, i) => { if (Math.abs(v - target) < 1e-9) idx = i; });
-  return idx;
+  let idx = -1; arr.forEach((v, i) => { if (Math.abs(v - target) < 1e-9) idx = i; }); return idx;
 }
 
-function drawChart(p, col) {
-  const labels = p.series.map(s => ddmm(s.day));
-  const prices = p.series.map(s => s.price);
-  const median = p.median_90 == null ? null : p.series.map(() => p.median_90);
-  const lastIdx = prices.length - 1;
-  const lowIdx = lastIndexNear(prices, p.min_90);
-  const highIdx = lastIndexNear(prices, p.max_90);
+let chart = null;
+const zonePlugin = {
+  id: 'zones',
+  beforeDatasetsDraw(c, _a, opts) {
+    if (opts.median == null) return;
+    const { ctx, chartArea:{left,right,top,bottom}, scales:{y} } = c;
+    let ym = y.getPixelForValue(opts.median); ym = Math.max(top, Math.min(bottom, ym));
+    ctx.save();
+    ctx.fillStyle='rgba(22,163,74,0.06)'; ctx.fillRect(left, ym, right-left, bottom-ym);
+    ctx.fillStyle='rgba(220,38,38,0.06)'; ctx.fillRect(left, top, right-left, ym-top);
+    ctx.restore();
+  },
+};
 
-  const radius = prices.map((_, i) =>
-      i === lastIdx ? 5 : (i === lowIdx || i === highIdx ? 4 : 0));
-  const pColor = prices.map((_, i) =>
-      i === lastIdx ? col : (i === lowIdx ? C.green : (i === highIdx ? C.red : 'transparent')));
+function drawChart(p, col) {
+  const fx = country.fx, L = t();
+  const labels = p.series.map(s => ddmm(s.day));
+  const base = p.series.map(s => s.price);
+  const prices = base.map(v => v * fx);
+  const lastIdx = base.length - 1;
+  const lowIdx = lastIndexNear(base, p.min_90);
+  const highIdx = lastIndexNear(base, p.max_90);
+  const radius = base.map((_, i) => i===lastIdx?5:(i===lowIdx||i===highIdx?4:0));
+  const pColor = base.map((_, i) => i===lastIdx?col:(i===lowIdx?C.green:(i===highIdx?C.red:'transparent')));
 
   const datasets = [{
-    label: 'цена', data: prices, borderColor: col, backgroundColor: col + '14',
-    borderWidth: 2, fill: true, stepped: true,
-    pointRadius: radius, pointBackgroundColor: pColor, pointBorderColor: '#fff', pointBorderWidth: 1.5,
+    label:L.price, data:prices, borderColor:col, backgroundColor:col+'14',
+    borderWidth:2, fill:true, stepped:true,
+    pointRadius:radius, pointBackgroundColor:pColor, pointBorderColor:'#fff', pointBorderWidth:1.5,
   }];
-  if (median) datasets.push({
-    label: 'средна (90д)', data: median, borderColor: '#94a3b8', borderWidth: 1.3,
-    borderDash: [6, 6], pointRadius: 0, fill: false, stepped: false,
+  const medianDisp = p.median_90==null ? null : p.median_90*fx;
+  if (medianDisp!=null) datasets.push({
+    label:L.avgLeg, data:base.map(()=>medianDisp), borderColor:'#94a3b8', borderWidth:1.3,
+    borderDash:[6,6], pointRadius:0, fill:false,
   });
 
   if (chart) chart.destroy();
   chart = new Chart(document.getElementById('chart'), {
-    type: 'line',
-    data: { labels, datasets },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      interaction: { intersect: false, mode: 'index' },
-      plugins: {
-        zones: { median: p.median_90 },
-        legend: { display: true, labels: { boxWidth: 12, font: { size: 11 } } },
-        tooltip: { callbacks: { label: c => c.dataset.label + ': ' + bgn(c.parsed.y) } },
+    type:'line', data:{ labels, datasets },
+    options:{
+      responsive:true, maintainAspectRatio:false, interaction:{ intersect:false, mode:'index' },
+      plugins:{
+        zones:{ median:medianDisp },
+        legend:{ display:true, labels:{ boxWidth:12, font:{size:11} } },
+        tooltip:{ callbacks:{ label:c => c.dataset.label + ': ' + disp(c.parsed.y) + ' ' + country.sym } },
       },
-      scales: {
-        x: { ticks: { maxTicksLimit: 7, font: { size: 10 }, color: '#94a3b8' }, grid: { display: false } },
-        y: { ticks: { callback: v => v.toFixed(2), font: { size: 10 }, color: '#94a3b8' },
-             grid: { color: '#eef2f6' } },
+      scales:{
+        x:{ ticks:{ maxTicksLimit:7, font:{size:10}, color:'#94a3b8' }, grid:{ display:false } },
+        y:{ ticks:{ callback:v => v.toFixed(country.dec), font:{size:10}, color:'#94a3b8' }, grid:{ color:'#eef2f6' } },
       },
     },
-    plugins: [zonePlugin],
+    plugins:[zonePlugin],
   });
 }
 
-function select(i) { active = i; renderCards(); renderPanel(); }
-renderCards(); renderPanel();
+function select(i){ active = i; renderCards(); renderPanel(); }
+function setCountry(i){ country = COUNTRIES[i]; document.documentElement.lang = country.lang; renderFlags(); renderChrome(); renderCards(); renderPanel(); }
+
+renderFlags(); renderChrome(); renderCards(); renderPanel();
 </script>
 </body>
 </html>
