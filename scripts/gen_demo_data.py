@@ -37,30 +37,45 @@ def flat(price: str, day_from: int, day_to: int, promo: bool = False) -> list[Pr
     ]
 
 
-def fake_milk() -> tuple[str, str, list[PricePoint]]:
-    # 2.49 for months, quietly bumped to 2.99, then "promo" 2.59 today.
+# Each scenario: (name, package label, unit label, base size in that unit, points)
+def fake_milk():
     pts = flat("2.49", 90, 15) + flat("2.99", 14, 1) + [PricePoint.of(REF, "2.59", is_promo=True)]
-    return "Прясно мляко", "1 л", pts
+    return "Прясно мляко", "1 л", "лв/л", Decimal("1"), pts
 
 
-def real_oil() -> tuple[str, str, list[PricePoint]]:
+def real_oil():
     pts = flat("3.49", 90, 1) + [PricePoint.of(REF, "2.79", is_promo=True)]
-    return "Олио", "1 л", pts
+    return "Олио", "1 л", "лв/л", Decimal("1"), pts
 
 
-def cosmetic_cheese() -> tuple[str, str, list[PricePoint]]:
-    # Typical ~8.50; "promo" today is a trivial 8.30 (~2% off).
+def cosmetic_cheese():
     pts = flat("8.50", 90, 1) + [PricePoint.of(REF, "8.30", is_promo=True)]
-    return "Кашкавал", "400 г", pts
+    return "Кашкавал", "400 г", "лв/кг", Decimal("0.4"), pts
 
 
-def unknown_coffee() -> tuple[str, str, list[PricePoint]]:
-    # Only a few days of history -> not enough to judge.
+def unknown_coffee():
     pts = flat("7.99", 4, 1) + [PricePoint.of(REF, "6.99", is_promo=True)]
-    return "Кафе", "250 г", pts
+    return "Кафе", "250 г", "лв/кг", Decimal("0.25"), pts
 
 
-def build_entry(name: str, pack: str, pts: list[PricePoint]) -> dict:
+def _recent_day_at(series, value) -> str | None:
+    """ISO of the most recent chart day whose price equals `value`."""
+    if value is None:
+        return None
+    found = None
+    for p in series:
+        if p.price == value:
+            found = p.day
+    return found.isoformat() if found else None
+
+
+def _unit(price, size_base) -> float | None:
+    if price is None:
+        return None
+    return round(float(price) / float(size_base), 2)
+
+
+def build_entry(name, pack, unit_label, size_base, pts) -> dict:
     chart = build_chart(pts, REF)
     result = evaluate_series(pts, REF, is_promo=True)
     s = chart.stats
@@ -69,6 +84,9 @@ def build_entry(name: str, pack: str, pts: list[PricePoint]) -> dict:
     return {
         "name": name,
         "package": pack,
+        "unit_label": unit_label,
+        "current_unit_price": _unit(s.current_price, size_base),
+        "median_unit_price": _unit(s.median_90, size_base),
         "verdict": color,
         "verdict_label": label,
         "reason": result.reason,
@@ -76,8 +94,10 @@ def build_entry(name: str, pack: str, pts: list[PricePoint]) -> dict:
         "current_price": float(s.current_price) if s.current_price is not None else None,
         "median_90": float(s.median_90) if s.median_90 is not None else None,
         "min_90": float(s.min_90) if s.min_90 is not None else None,
+        "max_90": float(s.max_90) if s.max_90 is not None else None,
         "min_30_prior": float(s.min_30_prior) if s.min_30_prior is not None else None,
-        "floor_day": chart.floor_day.isoformat() if chart.floor_day else None,
+        "lowest_day": _recent_day_at(chart.series, s.min_90),
+        "highest_day": _recent_day_at(chart.series, s.max_90),
         "series": [
             {"day": p.day.isoformat(), "price": float(p.price), "is_promo": p.is_promo}
             for p in chart.series
