@@ -8,94 +8,118 @@
 <script src="./data.js"></script>
 <style>
   :root {
-    --green:#16a34a; --yellow:#f59e0b; --red:#dc2626; --gray:#6b7280;
-    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f1f5f9; --card:#ffffff;
+    --green:#16a34a; --green-d:#15803d; --yellow:#f59e0b; --red:#dc2626; --gray:#6b7280;
+    --ink:#1c1917; --muted:#78716c; --line:#ece7df; --card:#ffffff; --cream:#f6f3ec;
   }
   * { box-sizing:border-box; }
   body {
     margin:0; font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-    background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased;
+    color:var(--ink); -webkit-font-smoothing:antialiased; min-height:100vh; padding:24px 12px 36px;
+    background:radial-gradient(1100px 560px at 50% -8%, #e9f5ed, #e6e0d5);
   }
-  .wrap { max-width:760px; margin:0 auto; padding:20px 16px 60px; }
-  .top { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; }
-  header h1 { font-size:22px; margin:0 0 2px; letter-spacing:-.02em; }
-  header h1 b { color:var(--green); }
-  header p { margin:0 0 4px; color:var(--muted); font-size:13.5px; max-width:460px; }
-  .flags { display:flex; gap:6px; }
+  .phone {
+    max-width:430px; margin:0 auto; background:var(--cream); border:1px solid #e6e0d6;
+    border-radius:34px; overflow:hidden; box-shadow:0 30px 70px rgba(28,25,23,.20);
+  }
+  .appbar { background:var(--card); padding:16px 18px 12px; border-bottom:1px solid var(--line); }
+  .brand { display:flex; align-items:center; gap:10px; }
+  .brand .logo { width:32px; height:32px; flex:none; }
+  .brand h1 { font-size:20px; margin:0; letter-spacing:-.02em; }
+  .brand h1 b { color:var(--green); }
+  .brand .sub { color:var(--muted); font-size:11.5px; margin-top:2px; line-height:1.3; }
+  .flags { display:flex; gap:6px; margin-top:12px; overflow-x:auto; padding-bottom:2px; }
+  .flags::-webkit-scrollbar { display:none; }
   .flags button {
-    border:1px solid var(--line); background:var(--card); border-radius:10px; cursor:pointer;
-    padding:5px 8px; font-size:16px; line-height:1; display:flex; align-items:center; gap:5px;
-    transition:border-color .12s, box-shadow .12s;
+    flex:none; border:1px solid var(--line); background:var(--cream); border-radius:9px; cursor:pointer;
+    padding:4px 7px; font-size:15px; line-height:1; display:flex; align-items:center; gap:4px;
   }
-  .flags button .cc { font-size:11px; font-weight:700; color:var(--muted); }
-  .flags button.active { border-color:var(--ink); box-shadow:0 2px 8px rgba(15,23,42,.10); }
-  .flags button.active .cc { color:var(--ink); }
-  .cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(155px,1fr)); gap:10px; margin-top:16px; }
+  .flags button .cc { font-size:10px; font-weight:700; color:var(--muted); }
+  .flags button.active { border-color:var(--green); background:#eaf5ee; }
+  .flags button.active .cc { color:var(--green-d); }
+  .hero {
+    margin:14px 14px 0; color:#fff; border-radius:18px; padding:15px 17px;
+    background:linear-gradient(135deg,#16a34a,#15803d); box-shadow:0 12px 26px rgba(22,163,74,.28);
+  }
+  .hero .lbl { font-size:12px; opacity:.92; font-weight:600; }
+  .hero .amt { font-size:30px; font-weight:800; letter-spacing:-.02em; margin-top:2px; }
+  .hero .meta { font-size:12px; opacity:.95; margin-top:3px; }
+  .scroll { padding:14px; }
+  .cards { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .card {
-    background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 13px;
+    background:var(--card); border:1px solid var(--line); border-radius:16px; padding:12px 13px;
     cursor:pointer; transition:transform .08s, box-shadow .12s, border-color .12s; text-align:left;
   }
-  .card:hover { transform:translateY(-1px); box-shadow:0 6px 18px rgba(15,23,42,.07); }
-  .card.active { border-color:var(--ink); box-shadow:0 6px 18px rgba(15,23,42,.10); }
+  .card:active { transform:scale(.98); }
+  .card.active { border-color:var(--green); box-shadow:0 6px 18px rgba(22,163,74,.14); }
   .card .tag {
-    display:inline-block; font-size:10.5px; font-weight:750; color:#fff;
-    padding:2px 9px; border-radius:999px; margin-bottom:9px; letter-spacing:.02em;
+    display:inline-block; font-size:10px; font-weight:750; color:#fff;
+    padding:2px 9px; border-radius:999px; margin-bottom:8px; letter-spacing:.02em;
   }
-  .card .nm { font-weight:650; font-size:14px; }
-  .card .pk { color:var(--muted); font-size:12px; margin-bottom:8px; }
-  .card .pr { font-size:18px; font-weight:750; }
-  .card .unit { color:var(--muted); font-size:11.5px; font-weight:600; margin-top:1px; }
-  .panel { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:18px; margin-top:16px; }
+  .card .nm { font-weight:700; font-size:14px; }
+  .card .pk { color:var(--muted); font-size:11.5px; margin-bottom:7px; }
+  .card .pr { font-size:18px; font-weight:800; letter-spacing:-.01em; }
+  .card .unit { color:var(--muted); font-size:11px; font-weight:600; margin-top:1px; }
+  .panel { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px; margin-top:12px; }
   .badge {
-    display:inline-flex; align-items:center; gap:8px; color:#fff; font-weight:750; font-size:14px;
+    display:inline-flex; align-items:center; gap:8px; color:#fff; font-weight:750; font-size:13.5px;
     padding:7px 13px; border-radius:999px;
   }
   .badge .ico { font-size:15px; }
-  .ptitle { font-weight:750; font-size:16px; margin:12px 0 0; }
-  .ptitle span { color:var(--muted); font-weight:500; font-size:13px; }
-  .reason { margin:6px 0 4px; font-size:14.5px; line-height:1.45; }
-  .chart-box { position:relative; height:230px; margin:10px 0 2px; }
-  .sum { width:100%; border-collapse:collapse; margin-top:8px; font-size:13.5px; }
-  .sum td { padding:7px 4px; border-top:1px solid var(--line); }
+  .ptitle { font-weight:800; font-size:16px; margin:12px 0 0; }
+  .ptitle span { color:var(--muted); font-weight:500; font-size:12.5px; }
+  .reason { margin:6px 0 4px; font-size:14px; line-height:1.45; }
+  .chart-box { position:relative; height:210px; margin:10px 0 2px; }
+  .sum { width:100%; border-collapse:collapse; margin-top:8px; font-size:13px; }
+  .sum td { padding:7px 2px; border-top:1px solid var(--line); }
   .sum td:first-child { color:var(--muted); }
   .sum td:last-child { text-align:right; font-weight:700; font-variant-numeric:tabular-nums; }
-  .sum .date { color:var(--muted); font-weight:500; font-size:12px; }
+  .sum .date { color:var(--muted); font-weight:500; font-size:11.5px; }
   .pill { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:7px; vertical-align:middle; }
-  .tabs { display:flex; gap:8px; margin-top:18px; }
-  .tabs button {
-    border:1px solid var(--line); background:var(--card); border-radius:10px; padding:7px 15px;
-    font-size:13px; font-weight:650; cursor:pointer; color:var(--muted);
-  }
-  .tabs button.on { border-color:var(--ink); color:var(--ink); box-shadow:0 2px 8px rgba(15,23,42,.08); }
-  .offers { margin-top:16px; }
-  .otitle { font-size:11.5px; font-weight:750; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; margin-bottom:4px; }
+  .offers { margin-top:14px; }
+  .otitle { font-size:11px; font-weight:750; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px; }
   .orow, .brow, .irow {
     display:flex; justify-content:space-between; align-items:center; gap:10px;
-    padding:9px 4px; border-top:1px solid var(--line); font-size:13.5px;
+    padding:9px 2px; border-top:1px solid var(--line); font-size:13px;
   }
   .orow.best span:first-child, .brow.best span:first-child { color:var(--green); font-weight:700; }
   .orow span:last-child, .brow span:last-child, .irow span:last-child { font-variant-numeric:tabular-nums; font-weight:700; }
-  .bbadge { background:var(--green); color:#fff; font-size:10px; font-weight:750; padding:2px 7px; border-radius:999px; margin-left:7px; }
-  .save { color:var(--green); font-size:12px; font-weight:700; margin-left:8px; }
+  .bbadge { background:var(--green); color:#fff; font-size:9.5px; font-weight:750; padding:2px 7px; border-radius:999px; margin-left:7px; }
+  .save { color:var(--green); font-size:11.5px; font-weight:700; margin-left:8px; }
   .irow span:last-child { color:var(--muted); font-weight:600; }
-  footer { color:var(--muted); font-size:12px; margin-top:22px; line-height:1.5; }
+  .bottomnav { display:flex; background:var(--card); border-top:1px solid var(--line); }
+  .bottomnav button {
+    flex:1; border:0; background:none; cursor:pointer; padding:9px 4px 12px; color:var(--muted);
+    font-size:11px; font-weight:600; display:flex; flex-direction:column; align-items:center; gap:3px;
+  }
+  .bottomnav button .ic { font-size:18px; line-height:1; }
+  .bottomnav button.on { color:var(--green-d); }
+  footer { color:var(--muted); font-size:11px; line-height:1.5; max-width:430px; margin:14px auto 0; text-align:center; padding:0 16px; }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="top">
-    <header>
-      <h1>Save<b>Check</b></h1>
-      <p id="tagline"></p>
-    </header>
+<div class="phone">
+  <div class="appbar">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <rect x="3" y="3" width="26" height="26" rx="8" fill="#16a34a"/>
+        <path d="M9.5 16.5l4.2 4.2L23 11" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div>
+        <h1>Save<b>Check</b></h1>
+        <div class="sub" id="tagline"></div>
+      </div>
+    </div>
     <div class="flags" id="flags"></div>
   </div>
-  <div class="tabs" id="tabs"></div>
-  <div class="cards" id="cards"></div>
-  <div class="panel" id="panel"></div>
-  <div id="basket"></div>
-  <footer id="footer"></footer>
+  <div class="hero" id="hero"></div>
+  <div class="scroll">
+    <div class="cards" id="cards"></div>
+    <div class="panel" id="panel"></div>
+    <div id="basket"></div>
+  </div>
+  <nav class="bottomnav" id="tabs"></nav>
 </div>
+<footer id="footer"></footer>
 
 <script>
 const C = { red:'#dc2626', green:'#16a34a', yellow:'#f59e0b', gray:'#6b7280' };
@@ -291,6 +315,20 @@ const BX = {
        recognized:'Prepoznano v hladilniku', shopping:'Nakupovalni seznam', missing:'manjka', low:'zmanjkuje' },
 };
 
+// Hero strings (savings dashboard).
+const HX = {
+  bg:{ saved:'Спестяваш с реалните промоции', promos:'реални промоции' },
+  sr:{ saved:'Štedite uz prave akcije', promos:'pravih akcija' },
+  mk:{ saved:'Заштедуваш со вистинските промоции', promos:'вистински промоции' },
+  ro:{ saved:'Economisești cu reducerile reale', promos:'reduceri reale' },
+  el:{ saved:'Εξοικονομείς με τις αληθινές προσφορές', promos:'αληθινές προσφορές' },
+  tr:{ saved:'Gerçek indirimlerle tasarruf', promos:'gerçek indirim' },
+  sq:{ saved:'Kurseni me ofertat e vërteta', promos:'oferta të vërteta' },
+  bs:{ saved:'Štedite uz prave akcije', promos:'pravih akcija' },
+  hr:{ saved:'Štedite uz prave akcije', promos:'pravih akcija' },
+  sl:{ saved:'Prihranite s pravimi akcijami', promos:'pravih akcij' },
+};
+
 const DEMO = (window.SAVECHECK_DEMO || {products:[]});
 const products = DEMO.products;
 let active = 0, country = COUNTRIES[0], view = 'products';
@@ -392,12 +430,28 @@ function renderPanel() {
   drawChart(p, col);
 }
 
+function renderHero() {
+  const H = HX[country.lang];
+  let saved = 0, real = 0;
+  products.forEach(p => {
+    if (p.median_90 == null || p.current_price == null) return;
+    const d = p.median_90 - p.current_price;
+    if (d > 0 && (p.verdict === 'green' || p.verdict === 'yellow')) {
+      saved += d;
+      if (p.verdict === 'green') real++;
+    }
+  });
+  document.getElementById('hero').innerHTML = `
+    <div class="lbl">${H.saved}</div>
+    <div class="amt">${disp(saved * country.fx)} ${country.sym}</div>
+    <div class="meta">🟢 ${real} ${H.promos}</div>`;
+}
+
 function renderTabs() {
   const X = BX[country.lang];
-  document.getElementById('tabs').innerHTML =
-    `<button class="${view==='products'?'on':''}" onclick="setView('products')">${X.tabProducts}</button>
-     <button class="${view==='basket'?'on':''}" onclick="setView('basket')">${X.tabBasket}</button>
-     <button class="${view==='fridge'?'on':''}" onclick="setView('fridge')">${X.tabFridge}</button>`;
+  const items = [['products', '🏷️', X.tabProducts], ['basket', '🛒', X.tabBasket], ['fridge', '🧊', X.tabFridge]];
+  document.getElementById('tabs').innerHTML = items.map(([v, ic, lbl]) =>
+    `<button class="${view===v?'on':''}" onclick="setView('${v}')"><span class="ic">${ic}</span>${lbl}</button>`).join('');
 }
 
 function renderFridge() {
@@ -504,7 +558,7 @@ function drawChart(p, col) {
 }
 
 function render() {
-  renderFlags(); renderChrome(); renderTabs();
+  renderFlags(); renderChrome(); renderHero(); renderTabs();
   const prod = view === 'products';
   document.getElementById('cards').style.display = prod ? '' : 'none';
   document.getElementById('panel').style.display = prod ? '' : 'none';
