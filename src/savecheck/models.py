@@ -113,3 +113,22 @@ class PriceObservation(Base):
             name="uq_obs_unique_day",
         ),
     )
+
+
+class Watch(Base):
+    """A user's price alert for one chain-product (the watchlist)."""
+
+    __tablename__ = "watch"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[str] = mapped_column(String(120))
+    chain_product_id: Mapped[int] = mapped_column(
+        ForeignKey("chain_product.id", ondelete="CASCADE")
+    )
+    target_price: Mapped[Numeric | None] = mapped_column(Numeric(10, 2))
+    notify_on_real_promo: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "chain_product_id", name="uq_watch_user_product"),
+    )

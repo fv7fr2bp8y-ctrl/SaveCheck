@@ -45,6 +45,17 @@ CREATE TABLE IF NOT EXISTS price_observation (
     UNIQUE (chain_product_id, store_id, observed_on, source)
 );
 
+CREATE TABLE IF NOT EXISTS watch (
+    id                   SERIAL PRIMARY KEY,
+    user_id              VARCHAR(120) NOT NULL,
+    chain_product_id     INTEGER NOT NULL REFERENCES chain_product(id) ON DELETE CASCADE,
+    target_price         NUMERIC(10, 2),
+    notify_on_real_promo BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at           TIMESTAMP NOT NULL DEFAULT now(),
+    UNIQUE (user_id, chain_product_id)
+);
+
 -- The pricing core queries observations by product and day window, so index for it.
 CREATE INDEX IF NOT EXISTS ix_obs_cp_day ON price_observation (chain_product_id, observed_on);
 CREATE INDEX IF NOT EXISTS ix_obs_day ON price_observation (observed_on);
+CREATE INDEX IF NOT EXISTS ix_watch_product ON watch (chain_product_id);
