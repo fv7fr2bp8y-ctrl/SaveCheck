@@ -10,11 +10,13 @@ from datetime import date
 from decimal import Decimal
 
 from fastapi import Depends, FastAPI, HTTPException, Query
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from ..db import SessionLocal, load_points, resolve_chain_product
 from ..pricing.history import build_chart
 from ..pricing.verdict import evaluate_series
+from ..shopping import InventoryItem, Staple, build_shopping_list
 
 app = FastAPI(title="SaveCheck API", version="0.1.0")
 
@@ -87,6 +89,48 @@ def history(
             {"day": p.day.isoformat(), "price": float(p.price), "is_promo": p.is_promo}
             for p in chart.series
         ],
+    }
+
+
+class _InventoryIn(BaseModel):
+    name: str
+    quantity: float = 1
+    unit: str | None = None
+    category: str | None = None
+    confidence: float = 1.0
+
+
+class _StapleIn(BaseModel):
+    name: str
+    desired_quantity: float
+    unit: str | None = None
+    category: str | None = None
+
+
+class _ShoppingListRequest(BaseModel):
+    inventory: list[_InventoryIn] = []
+    staples: list[_StapleIn]
+    min_confidence: float = 0.0
+
+
+@app.post("/shopping-list")
+def shopping_list(req: _ShoppingListRequest) -> dict:
+    """Стълб 2: given a recognised fridge inventory + desired staples, what to buy.
+
+    Pure logic — no model call. Pair with ``savecheck.vision.recognize_fridge``
+    to produce the inventory from a photo.
+    """
+    inventory = [
+        InventoryItem(i.name, i.category, i.quantity, i.unit, i.confidence)
+        for i in req.inventory
+    ]
+    staples = [Staple(s.name, s.desired_quantity, s.unit, s.category) for s in req.staples]
+    items = build_shopping_list(inventory, staples, min_confidence=req.min_confidence)
+    return {
+        "items": [
+            {"name": it.name, "needed_quantity": it.needed_quantity, "unit": it.unit, "reason": it.reason}
+            for it in items
+        ]
     }
 
 

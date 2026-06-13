@@ -20,12 +20,37 @@ src/savecheck/
     kolkostruva.py  # сваляне + parse на официалните отворени данни на КЗП
   models.py         # SQLAlchemy схема (Chain, Store, Product, PriceObservation)
   schema.sql        # същата схема като raw DDL за бърз bootstrap
+  shopping/         # СТЪЛБ 2 — чисто ядро (само stdlib)
+    inventory.py    #   нормализация + дедупликация на разпознатото
+    staples.py      #   желан запас на домакинството
+    shopping_list.py#   какво да купиш (липсва / свършва)
+  vision/
+    recognize.py    #   Claude vision (claude-opus-4-8) → инвентар от снимка
   db.py             # session + repository, който храни pricing ядрото
-  api/main.py       # FastAPI: GET /verdict, GET /history
+  api/main.py       # FastAPI: GET /verdict, GET /history, POST /shopping-list
 public/             # статично уеб демо (Vercel) — index.html + data.js
 scripts/
   gen_demo_data.py  # генерира public/data.js от РЕАЛНОТО ядро (BGN-неутрални числа)
 tests/              # покриват pricing ядрото и parse-а, вървят без БД и мрежа
+```
+
+## Стълб 2 — Shopping list от снимка на хладилника
+
+Снимаш хладилника → Claude vision (`claude-opus-4-8`, чрез официалния `anthropic`
+SDK със структуриран изход) разпознава продуктите → сравняваме с „желания запас“
+на домакинството → получаваш списък какво да купиш.
+
+- `vision/recognize.py` прави единствено разпознаването (изисква `anthropic`);
+- `shopping/` е **чисто, детерминистично ядро** (дедупликация, съпоставяне с
+  желания запас, изчисляване на липсите) и се тества без модел и без мрежа.
+
+```python
+from savecheck.vision import recognize_fridge
+from savecheck.shopping import Staple, build_shopping_list
+
+inventory = recognize_fridge(open("fridge.jpg", "rb").read())          # извиква Claude
+staples = [Staple("Прясно мляко", 3, "л"), Staple("Яйца", 10, "бр")]
+to_buy = build_shopping_list(inventory, staples)                        # чиста логика
 ```
 
 ## Уеб демо

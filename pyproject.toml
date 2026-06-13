@@ -20,6 +20,10 @@ api = [
 ingest = [
     "httpx>=0.27",
 ]
+vision = [
+    "anthropic>=0.49",
+    "pydantic>=2.0",
+]
 dev = [
     "pytest>=8.0",
 ]
