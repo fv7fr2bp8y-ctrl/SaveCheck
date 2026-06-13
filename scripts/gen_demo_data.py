@@ -84,6 +84,36 @@ def real_tomatoes():
     return "tomatoes", "kg", Decimal("1"), pts
 
 
+def real_oliveoil():
+    pts = flat("12.99", 90, 1) + [PricePoint.of(REF, "9.99", is_promo=True)]
+    return "oliveoil", "l", Decimal("1"), pts
+
+
+def cosmetic_pasta():
+    pts = flat("1.79", 90, 1) + [PricePoint.of(REF, "1.75", is_promo=True)]
+    return "pasta", "kg", Decimal("0.5"), pts
+
+
+def fake_feta():
+    pts = flat("6.99", 90, 15) + flat("7.99", 14, 1) + [PricePoint.of(REF, "7.29", is_promo=True)]
+    return "feta", "kg", Decimal("0.4"), pts
+
+
+def real_bananas():
+    pts = flat("2.49", 90, 1) + [PricePoint.of(REF, "1.99", is_promo=True)]
+    return "bananas", "kg", Decimal("1"), pts
+
+
+def fake_chicken():
+    pts = flat("8.49", 90, 15) + flat("9.49", 14, 1) + [PricePoint.of(REF, "8.99", is_promo=True)]
+    return "chicken", "kg", Decimal("1"), pts
+
+
+def cosmetic_water():
+    pts = flat("0.89", 90, 1) + [PricePoint.of(REF, "0.87", is_promo=True)]
+    return "water", "l", Decimal("1.5"), pts
+
+
 def _recent_day_at(series, value) -> str | None:
     if value is None:
         return None
@@ -175,6 +205,7 @@ def main() -> None:
     scenarios = (
         fake_milk, real_oil, cosmetic_cheese, unknown_coffee,
         real_flour, fake_sugar, cosmetic_bread, cosmetic_rice, real_tomatoes,
+        real_oliveoil, cosmetic_pasta, fake_feta, real_bananas, fake_chicken, cosmetic_water,
     )
     products = [build_entry(*sc()) for sc in scenarios]
     payload = {"generated_for": REF.isoformat(), "base_currency": "BGN",

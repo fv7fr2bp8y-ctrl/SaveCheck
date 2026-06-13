@@ -44,21 +44,22 @@
   .hero .amt { font-size:30px; font-weight:800; letter-spacing:-.02em; margin-top:2px; }
   .hero .meta { font-size:12px; opacity:.95; margin-top:3px; }
   .scroll { padding:14px; }
-  .cards { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-  .card {
-    background:var(--card); border:1px solid var(--line); border-radius:16px; padding:12px 13px;
-    cursor:pointer; transition:transform .08s, box-shadow .12s, border-color .12s; text-align:left;
+  .cards { background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; }
+  .prow {
+    display:flex; align-items:center; gap:11px; width:100%; border:0; background:none; cursor:pointer;
+    padding:11px 13px; text-align:left; border-top:1px solid var(--line);
   }
-  .card:active { transform:scale(.98); }
-  .card.active { border-color:var(--green); box-shadow:0 6px 18px rgba(22,163,74,.14); }
-  .card .tag {
-    display:inline-block; font-size:10px; font-weight:750; color:#fff;
-    padding:2px 9px; border-radius:999px; margin-bottom:8px; letter-spacing:.02em;
-  }
-  .card .nm { font-weight:700; font-size:14px; }
-  .card .pk { color:var(--muted); font-size:11.5px; margin-bottom:7px; }
-  .card .pr { font-size:18px; font-weight:800; letter-spacing:-.01em; }
-  .card .unit { color:var(--muted); font-size:11px; font-weight:600; margin-top:1px; }
+  .cards .prow:first-child { border-top:0; }
+  .prow.on { background:#f7faf7; }
+  .prow .dot { width:11px; height:11px; border-radius:50%; flex:none; }
+  .prow .ill { width:36px; height:36px; border-radius:11px; background:#f1ede3; display:flex; align-items:center; justify-content:center; font-size:20px; flex:none; }
+  .vtag { display:inline-block; font-size:9.5px; font-weight:750; color:#fff; padding:1px 7px; border-radius:999px; margin-left:4px; vertical-align:middle; letter-spacing:.02em; }
+  .prow .pnm { flex:1; font-weight:700; font-size:14px; line-height:1.25; }
+  .prow .pnm small { display:block; color:var(--muted); font-weight:500; font-size:11px; }
+  .prow .ppr { font-weight:800; font-size:15px; font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap; }
+  .prow .ppr em { display:block; font-style:normal; font-size:11px; font-weight:700; margin-top:1px; }
+  .detail { padding:2px 13px 14px; background:#fcfcfb; border-top:1px solid var(--line); }
+  .detail .badge { margin-top:10px; }
   .panel { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px; margin-top:12px; }
   .badge {
     display:inline-flex; align-items:center; gap:8px; color:#fff; font-weight:750; font-size:13.5px;
@@ -127,20 +128,9 @@ const ICON = { red:'✕', green:'✓', yellow:'≈', gray:'?' };
 
 // code -> language. fx multiplies the BGN base price; dec = currency decimals.
 const COUNTRIES = [
-  // fx multiplies the BGN(lev) base price. Bulgaria adopted the euro, fixed at
-  // 1 € = 1.95583 лв; Bosnia's mark (KM) shares the same peg, so fx = 1.
-  { code:'BG', flag:'🇧🇬', lang:'bg', fx:0.5113, sym:'€',   dec:2 },
-  { code:'RS', flag:'🇷🇸', lang:'sr', fx:60,     sym:'дин', dec:0 },
-  { code:'MK', flag:'🇲🇰', lang:'mk', fx:31.5,   sym:'ден', dec:0 },
-  { code:'BA', flag:'🇧🇦', lang:'bs', fx:1,      sym:'KM',  dec:2 },
-  { code:'ME', flag:'🇲🇪', lang:'sr', fx:0.5113, sym:'€',   dec:2 },
-  { code:'XK', flag:'🇽🇰', lang:'sq', fx:0.5113, sym:'€',   dec:2 },
-  { code:'AL', flag:'🇦🇱', lang:'sq', fx:50,     sym:'lek', dec:0 },
-  { code:'HR', flag:'🇭🇷', lang:'hr', fx:0.5113, sym:'€',   dec:2 },
-  { code:'SI', flag:'🇸🇮', lang:'sl', fx:0.5113, sym:'€',   dec:2 },
-  { code:'RO', flag:'🇷🇴', lang:'ro', fx:2.5,    sym:'lei', dec:2 },
-  { code:'GR', flag:'🇬🇷', lang:'el', fx:0.5113, sym:'€',   dec:2 },
-  { code:'TR', flag:'🇹🇷', lang:'tr', fx:22,     sym:'₺',   dec:2 },
+  // Only Bulgaria and Greece for now — both on the euro.
+  { code:'BG', flag:'🇧🇬', lang:'bg', fx:0.5113, sym:'€', dec:2 },
+  { code:'GR', flag:'🇬🇷', lang:'el', fx:0.5113, sym:'€', dec:2 },
 ];
 
 const UI = {
@@ -275,6 +265,12 @@ const PRODUCTS = {
            pack:{bg:'1 кг',sr:'1 kg',mk:'1 кг',ro:'1 kg',el:'1 κιλό',tr:'1 kg',sq:'1 kg',bs:'1 kg',hr:'1 kg',sl:'1 kg'} },
   tomatoes:{ name:{bg:'Домати',sr:'Paradajz',mk:'Домати',ro:'Roșii',el:'Ντομάτες',tr:'Domates',sq:'Domate',bs:'Paradajz',hr:'Rajčica',sl:'Paradižnik'},
            pack:{bg:'1 кг',sr:'1 kg',mk:'1 кг',ro:'1 kg',el:'1 κιλό',tr:'1 kg',sq:'1 kg',bs:'1 kg',hr:'1 kg',sl:'1 kg'} },
+  oliveoil:{ name:{bg:'Зехтин',el:'Ελαιόλαδο'}, pack:{bg:'1 л',el:'1 λ'} },
+  pasta: { name:{bg:'Макарони',el:'Μακαρόνια'}, pack:{bg:'500 г',el:'500 γρ'} },
+  feta:  { name:{bg:'Сирене',el:'Φέτα'}, pack:{bg:'400 г',el:'400 γρ'} },
+  bananas:{ name:{bg:'Банани',el:'Μπανάνες'}, pack:{bg:'1 кг',el:'1 κιλό'} },
+  chicken:{ name:{bg:'Пилешко',el:'Κοτόπουλο'}, pack:{bg:'1 кг',el:'1 κιλό'} },
+  water: { name:{bg:'Минерална вода',el:'Νερό'}, pack:{bg:'1.5 л',el:'1,5 λ'} },
   // Extra fridge items (стълб 2) — names only.
   eggs:  { name:{bg:'Яйца',sr:'Jaja',mk:'Јајца',ro:'Ouă',el:'Αυγά',tr:'Yumurta',sq:'Vezë',bs:'Jaja',hr:'Jaja',sl:'Jajca'} },
   butter:{ name:{bg:'Масло',sr:'Maslac',mk:'Путер',ro:'Unt',el:'Βούτυρο',tr:'Tereyağı',sq:'Gjalpë',bs:'Maslac',hr:'Maslac',sl:'Maslo'} },
@@ -329,9 +325,16 @@ const HX = {
   sl:{ saved:'Prihranite s pravimi akcijami', promos:'pravih akcij' },
 };
 
+const EMOJI = {
+  milk:'🥛', oil:'🌻', cheese:'🧀', coffee:'☕', flour:'🌾', sugar:'🍬',
+  bread:'🍞', rice:'🍚', tomatoes:'🍅', oliveoil:'🫒', pasta:'🍝', feta:'🧆',
+  bananas:'🍌', chicken:'🍗', water:'💧', eggs:'🥚', butter:'🧈', yogurt:'🥛',
+};
+const emojiOf = id => EMOJI[id] || '🛒';
+
 const DEMO = (window.SAVECHECK_DEMO || {products:[]});
 const products = DEMO.products;
-let active = 0, country = COUNTRIES[0], view = 'products';
+let active = -1, country = COUNTRIES[0], view = 'products';
 
 // Store chains per market — a mix of domestic and foreign (international)
 // chains. Illustrative: real footprints vary.
@@ -384,35 +387,36 @@ function renderChrome() {
   document.getElementById('footer').textContent = t().footer;
 }
 
-function renderCards() {
+// Single-screen accordion: one compact row per product; tap to expand its
+// chart + summary inline, without leaving the screen.
+function renderProducts() {
   document.getElementById('cards').innerHTML = products.map((p, i) => {
     const meta = PRODUCTS[p.id];
-    return `
-    <button class="card ${i===active?'active':''}" onclick="select(${i})">
-      <div class="tag" style="background:${C[p.verdict]}">${TAG[p.verdict][country.lang]}</div>
-      <div class="nm">${meta.name[country.lang]}</div>
-      <div class="pk">${meta.pack[country.lang]}</div>
-      <div class="pr">${money(p.current_price)}</div>
-      <div class="unit">${p.current_unit_price==null?'':disp(p.current_unit_price*country.fx)+' '+unitLabel(p.unit_kind)}</div>
-    </button>`;
+    const on = i === active;
+    const disc = p.discount_pct != null && p.discount_pct > 0
+        ? `<em style="color:${C.green}">−${p.discount_pct}%</em>` : '';
+    const unit = p.current_unit_price == null ? ''
+        : ` <small>· ${disp(p.current_unit_price*country.fx)} ${unitLabel(p.unit_kind)}</small>`;
+    const rowHtml = `
+      <button class="prow ${on?'on':''}" onclick="select(${i})">
+        <span class="ill">${emojiOf(p.id)}</span>
+        <span class="pnm">${meta.name[country.lang]} <span class="vtag" style="background:${C[p.verdict]}">${TAG[p.verdict][country.lang]}</span><small>${meta.pack[country.lang]}${unit}</small></span>
+        <span class="ppr">${money(p.current_price)}${disc}</span>
+      </button>`;
+    return rowHtml + (on ? detailHTML(p) : '');
   }).join('');
+  if (active >= 0 && active < products.length) {
+    drawChart(products[active], C[products[active].verdict]);
+  }
 }
 
-function row(pillColor, label, value, dateIso) {
-  const pill = pillColor ? `<span class="pill" style="background:${pillColor}"></span>` : '';
-  const date = dateIso ? ` <span class="date">· ${ddmm(dateIso)}</span>` : '';
-  return `<tr><td>${pill}${label}</td><td>${value}${date}</td></tr>`;
-}
-
-function renderPanel() {
-  const p = products[active], meta = PRODUCTS[p.id], col = C[p.verdict], L = t();
+function detailHTML(p) {
+  const col = C[p.verdict], L = t();
   const reason = REASONS[p.reason_code][country.lang](p.discount_pct);
   const discTxt = p.discount_pct != null && p.discount_pct > 0
       ? ` · <b style="color:${C.green}">−${p.discount_pct}%</b>` : '';
-  const unitTxt = p.current_unit_price==null ? '' : ' · ' + disp(p.current_unit_price*country.fx)+' '+unitLabel(p.unit_kind);
-  document.getElementById('panel').innerHTML = `
+  return `<div class="detail">
     <span class="badge" style="background:${col}"><span class="ico">${ICON[p.verdict]}</span>${BADGE[p.verdict][country.lang]}</span>
-    <div class="ptitle">${meta.name[country.lang]} <span>${meta.pack[country.lang]}${unitTxt}</span></div>
     <div class="reason">${reason}</div>
     <div class="chart-box"><canvas id="chart"></canvas></div>
     <table class="sum">
@@ -424,11 +428,17 @@ function renderPanel() {
     </table>
     <div class="offers">
       <div class="otitle">${BX[country.lang].chains}</div>
-      ${offersFor(p).map((o, i) => `<div class="orow ${i===0?'best':''}">
-        <span>${i===0?'✓ ':''}${o.chain}</span><span>${money(o.price)}</span></div>`).join('')}
-    </div>`;
-  drawChart(p, col);
+      ${offersFor(p).map((o, i) => `<div class="orow ${i===0?'best':''}"><span>${i===0?'✓ ':''}${o.chain}</span><span>${money(o.price)}</span></div>`).join('')}
+    </div>
+  </div>`;
 }
+
+function row(pillColor, label, value, dateIso) {
+  const pill = pillColor ? `<span class="pill" style="background:${pillColor}"></span>` : '';
+  const date = dateIso ? ` <span class="date">· ${ddmm(dateIso)}</span>` : '';
+  return `<tr><td>${pill}${label}</td><td>${value}${date}</td></tr>`;
+}
+
 
 function renderHero() {
   const H = HX[country.lang];
@@ -458,13 +468,13 @@ function renderFridge() {
   const X = BX[country.lang], F = DEMO.fridge || { recognized: [], shopping: [] };
   const nameOf = id => (PRODUCTS[id] ? PRODUCTS[id].name[country.lang] : id);
   const recognized = F.recognized.map(r => `
-    <div class="irow"><span>${nameOf(r.id)}</span>
+    <div class="irow"><span>${emojiOf(r.id)} ${nameOf(r.id)}</span>
       <span>${fmtQty(r.quantity)} ${unitWord(r.unit)} · ${Math.round(r.confidence*100)}%</span></div>`).join('');
   const shopping = F.shopping.map(s => {
     const prod = products.find(p => p.id === s.id);  // links to стълб 1 verdict
     const pill = prod ? `<span class="tag" style="background:${C[prod.verdict]};margin-left:7px">${TAG[prod.verdict][country.lang]}</span>` : '';
     const reason = s.reason_code === 'missing' ? X.missing : X.low;
-    return `<div class="brow"><span>${nameOf(s.id)}${pill}</span>
+    return `<div class="brow"><span>${emojiOf(s.id)} ${nameOf(s.id)}${pill}</span>
       <span>${fmtQty(s.needed_quantity)} ${unitWord(s.unit)} <span class="date">· ${reason}</span></span></div>`;
   }).join('');
   document.getElementById('basket').innerHTML = `
@@ -561,13 +571,13 @@ function render() {
   renderFlags(); renderChrome(); renderHero(); renderTabs();
   const prod = view === 'products';
   document.getElementById('cards').style.display = prod ? '' : 'none';
-  document.getElementById('panel').style.display = prod ? '' : 'none';
+  document.getElementById('panel').style.display = 'none';
   document.getElementById('basket').style.display = prod ? 'none' : '';
-  if (prod) { renderCards(); renderPanel(); }
+  if (prod) { renderProducts(); }
   else if (view === 'basket') { renderBasket(); }
   else { renderFridge(); }
 }
-function select(i){ active = i; renderCards(); renderPanel(); }
+function select(i){ active = (active === i ? -1 : i); renderProducts(); }
 function setCountry(i){ country = COUNTRIES[i]; document.documentElement.lang = country.lang; render(); }
 function setView(v){ view = v; render(); }
 
