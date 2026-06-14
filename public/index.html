@@ -162,6 +162,27 @@
   .sub-tabs { display:flex; gap:4px; background:var(--cream); border-radius:13px; padding:3px; border:1px solid var(--line); }
   .sub-tabs button { flex:1; border:0; background:none; cursor:pointer; padding:7px 6px; border-radius:10px; font-size:var(--t-sm); font-weight:700; color:var(--muted); font-family:inherit; line-height:1.2; white-space:nowrap; transition:all .15s; }
   .sub-tabs button.active { background:var(--card); color:var(--ink); box-shadow:0 1px 4px rgba(0,0,0,.10); }
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(10px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  @keyframes cardIn {
+    from { opacity:0; transform:translateY(8px) scale(.95); }
+    to   { opacity:1; transform:translateY(0) scale(1); }
+  }
+  .anim-in { animation: fadeUp .2s ease-out; }
+  .detail { animation: fadeUp .16s ease-out; }
+  .deal-card:nth-child(1) { animation: cardIn .22s ease-out both; }
+  .deal-card:nth-child(2) { animation: cardIn .22s .06s ease-out both; }
+  .deal-card:nth-child(3) { animation: cardIn .22s .12s ease-out both; }
+  .deal-card:nth-child(4) { animation: cardIn .22s .18s ease-out both; }
+  .deal-card:nth-child(5) { animation: cardIn .22s .24s ease-out both; }
+  .deal-card:nth-child(6) { animation: cardIn .22s .30s ease-out both; }
+  .deal-card:nth-child(7) { animation: cardIn .22s .36s ease-out both; }
+  .prow { transition: background .12s; }
+  .bottomnav button { transition: color .15s, transform .1s; }
+  .bottomnav button:active { transform: scale(.86); }
   /* ── Search ── */
   .search-wrap { padding:10px 14px 0; }
   .search-wrap input {
@@ -1230,14 +1251,14 @@ function render() {
     const n = cartSize();
     const cb = n ? `<span style="background:var(--green);color:#fff;font-size:9px;border-radius:999px;padding:0 5px;font-weight:800;margin-left:3px;line-height:1.6">${n}</span>` : '';
     stw.innerHTML = `<div class="sub-tabs">
-      <button class="${shopTab==='products'?'active':''}" onclick="shopTab='products';render()">${X.tabProducts}</button>
-      <button class="${shopTab==='basket'?'active':''}" onclick="shopTab='basket';render()">${X.tabBasket}${cb}</button>
-      <button class="${shopTab==='fridge'?'active':''}" onclick="shopTab='fridge';render()">${X.tabFridge}</button>
+      <button class="${shopTab==='products'?'active':''}" onclick="setShopTab('products')">${X.tabProducts}</button>
+      <button class="${shopTab==='basket'?'active':''}" onclick="setShopTab('basket')">${X.tabBasket}${cb}</button>
+      <button class="${shopTab==='fridge'?'active':''}" onclick="setShopTab('fridge')">${X.tabFridge}</button>
     </div>`;
   } else if (view === 'promos') {
     stw.innerHTML = `<div class="sub-tabs">
-      <button class="${promosTab==='brochures'?'active':''}" onclick="promosTab='brochures';render()">${X.tabBrochures}</button>
-      <button class="${promosTab==='titans'?'active':''}" onclick="promosTab='titans';render()">${X.tabTitans}</button>
+      <button class="${promosTab==='brochures'?'active':''}" onclick="setPromosTab('brochures')">${X.tabBrochures}</button>
+      <button class="${promosTab==='titans'?'active':''}" onclick="setPromosTab('titans')">${X.tabTitans}</button>
     </div>`;
   } else {
     stw.innerHTML = '';
@@ -1255,9 +1276,24 @@ function render() {
   }
   else if (view === 'scan') { renderScan(); }
 }
+function animIn(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('anim-in');
+  void el.offsetWidth;
+  el.classList.add('anim-in');
+}
+function setShopTab(t) { shopTab = t; render(); animIn(t === 'products' ? 'cards' : 'basket'); }
+function setPromosTab(t) { promosTab = t; render(); animIn('basket'); }
 function select(i){ active = (active === i ? -1 : i); renderProducts(); }
 function setCountry(i){ country = COUNTRIES[i]; document.documentElement.lang = country.lang; render(); }
-function setView(v){ if (v !== 'scan') stopScanner(); view = v; if (v !== 'shop' || shopTab !== 'products') query = ''; render(); }
+function setView(v){
+  if (v !== 'scan') stopScanner();
+  view = v;
+  if (v !== 'shop' || shopTab !== 'products') query = '';
+  render();
+  animIn(v === 'shop' && shopTab === 'products' ? 'cards' : 'basket');
+}
 
 render();
 </script>
