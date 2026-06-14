@@ -23,6 +23,18 @@
     --shadow-card:0 1px 2px rgba(0,0,0,.06),0 2px 8px rgba(0,0,0,.08);
     --shadow-raised:0 4px 16px rgba(0,0,0,.12);
   }
+  [data-theme="dark"] {
+    --green:#22c55e; --green-d:#16a34a; --green-bg:#14532d;
+    --yellow:#fbbf24; --red:#f87171; --gray:#9ca3af;
+    --ink:#e8eaf0; --muted:#8b9ab0; --line:#2c2c2e; --card:#1c1c1e; --cream:#111113;
+    --shadow-card:0 1px 2px rgba(0,0,0,.5),0 2px 8px rgba(0,0,0,.5);
+    --shadow-raised:0 4px 16px rgba(0,0,0,.7);
+  }
+  [data-theme="dark"] body { background:radial-gradient(1100px 560px at 50% -8%,#0a2418,#0f0f11); }
+  [data-theme="dark"] .phone { border-color:#2c2c2e; box-shadow:0 30px 70px rgba(0,0,0,.7); }
+  [data-theme="dark"] .titan-bar-wrap { background:#2c2c2e; }
+  [data-theme="dark"] .flags button.active { background:color-mix(in srgb,var(--green) 18%,var(--cream)); }
+  [data-theme="dark"] .advice-box { background:color-mix(in srgb,var(--green) 12%,var(--card)); }
   * { box-sizing:border-box; }
   body {
     margin:0; font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
@@ -30,7 +42,7 @@
     background:radial-gradient(1100px 560px at 50% -8%, #e9f5ed, #e6e0d5);
   }
   .phone {
-    max-width:430px; margin:0 auto; background:var(--cream); border:1px solid #e6e0d6;
+    max-width:430px; margin:0 auto; background:var(--cream); border:1px solid var(--line);
     border-radius:34px; overflow:hidden; box-shadow:0 30px 70px rgba(28,25,23,.20);
   }
   .appbar { background:var(--card); padding:16px 18px 12px; border-bottom:1px solid var(--line); }
@@ -46,7 +58,9 @@
     padding:4px 7px; font-size:15px; line-height:1; display:flex; align-items:center; gap:4px;
   }
   .flags button .cc { font-size:10px; font-weight:700; color:var(--muted); }
-  .flags button.active { border-color:var(--green); background:#eaf5ee; }
+  .flags button.active { border-color:var(--green); background:var(--green-bg); }
+  .theme-btn { border:0; background:none; cursor:pointer; color:var(--muted); padding:4px; margin-left:auto; line-height:1; border-radius:8px; transition:color .15s; flex:none; }
+  .theme-btn:hover { color:var(--ink); }
   .flags button.active .cc { color:var(--green-d); }
   .hero {
     margin:14px 14px 0; color:#fff; border-radius:18px; padding:15px 17px;
@@ -232,6 +246,9 @@
         <h1>Save<b>Check</b></h1>
         <div class="sub" id="tagline"></div>
       </div>
+      <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" aria-label="Смени тема">
+        <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
+      </button>
     </div>
     <div class="flags" id="flags"></div>
   </div>
@@ -1305,6 +1322,26 @@ function setView(v){
 }
 
 render();
+
+// ── Theme (dark / light) ──────────────────────────────────────────────────
+const MOON = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+const SUN  = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>';
+
+function applyTheme(t) {
+  document.documentElement.dataset.theme = t;
+  const icon = document.getElementById('theme-icon');
+  if (icon) icon.innerHTML = t === 'dark' ? SUN : MOON;
+}
+function toggleTheme() {
+  const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('sc-theme', next);
+  applyTheme(next);
+}
+(function initTheme() {
+  const saved = localStorage.getItem('sc-theme');
+  const sys   = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  applyTheme(saved || sys);
+})();
 </script>
 </body>
 </html>
