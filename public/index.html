@@ -87,6 +87,13 @@
   .bbadge { background:var(--green); color:#fff; font-size:9.5px; font-weight:750; padding:2px 7px; border-radius:999px; margin-left:7px; }
   .save { color:var(--green); font-size:11.5px; font-weight:700; margin-left:8px; }
   .irow span:last-child { color:var(--muted); font-weight:600; }
+  .ctable { width:100%; border-collapse:collapse; font-size:11.5px; }
+  .ctable th { background:var(--card); color:var(--muted); font-size:10.5px; font-weight:700; padding:8px 5px 7px; text-align:center; border-bottom:2px solid var(--line); position:sticky; top:0; z-index:1; }
+  .ctable th:first-child { text-align:left; min-width:80px; }
+  .ctable td { padding:7px 5px; border-top:1px solid var(--line); text-align:center; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .ctable td:first-child { text-align:left; font-weight:600; padding-left:8px; }
+  .ctable td.tmin { color:var(--green); font-weight:800; }
+  .ctable .tpack { color:var(--muted); font-size:10px; font-weight:500; }
   .bottomnav { display:flex; background:var(--card); border-top:1px solid var(--line); }
   .bottomnav button {
     flex:1; border:0; background:none; cursor:pointer; padding:9px 4px 12px; color:var(--muted);
@@ -281,34 +288,34 @@ const PRODUCTS = {
 
 // Extra UI strings for tabs / chains / basket, keyed by language.
 const BX = {
-  bg:{ tabProducts:'Продукти', tabBasket:'Кошница', tabFridge:'Хладилник', chains:'Цени по вериги', cheapest:'най-евтина',
+  bg:{ tabProducts:'Продукти', tabBasket:'Кошница', tabFridge:'Хладилник', tabTable:'Таблица', chains:'Цени по вериги', cheapest:'най-евтина',
        basketTitle:'Цена на кошницата по верига', cheapestBasket:'Най-евтина кошница', save:'спестяваш', perItem:'Най-евтино по продукт',
        recognized:'Разпознато в хладилника', shopping:'Списък за пазаруване', missing:'липсва', low:'свършва' },
-  sr:{ tabProducts:'Proizvodi', tabBasket:'Korpa', tabFridge:'Frižider', chains:'Cene po lancima', cheapest:'najjeftinije',
+  sr:{ tabProducts:'Proizvodi', tabBasket:'Korpa', tabFridge:'Frižider', tabTable:'Tabela', chains:'Cene po lancima', cheapest:'najjeftinije',
        basketTitle:'Cena korpe po lancu', cheapestBasket:'Najjeftinija korpa', save:'uštedite', perItem:'Najjeftinije po proizvodu',
        recognized:'Prepoznato u frižideru', shopping:'Lista za kupovinu', missing:'nedostaje', low:'pri kraju' },
-  mk:{ tabProducts:'Производи', tabBasket:'Кошница', tabFridge:'Фрижидер', chains:'Цени по синџири', cheapest:'најевтино',
+  mk:{ tabProducts:'Производи', tabBasket:'Кошница', tabFridge:'Фрижидер', tabTable:'Табела', chains:'Цени по синџири', cheapest:'најевтино',
        basketTitle:'Цена на кошницата по синџир', cheapestBasket:'Најевтина кошница', save:'заштедуваш', perItem:'Најевтино по производ',
        recognized:'Препознато во фрижидерот', shopping:'Список за пазарување', missing:'недостасува', low:'снемнува' },
-  ro:{ tabProducts:'Produse', tabBasket:'Coș', tabFridge:'Frigider', chains:'Prețuri pe lanțuri', cheapest:'cel mai ieftin',
+  ro:{ tabProducts:'Produse', tabBasket:'Coș', tabFridge:'Frigider', tabTable:'Tabel', chains:'Prețuri pe lanțuri', cheapest:'cel mai ieftin',
        basketTitle:'Costul coșului pe lanț', cheapestBasket:'Cel mai ieftin coș', save:'economisești', perItem:'Cel mai ieftin pe produs',
        recognized:'Recunoscut în frigider', shopping:'Listă de cumpărături', missing:'lipsește', low:'se termină' },
-  el:{ tabProducts:'Προϊόντα', tabBasket:'Καλάθι', tabFridge:'Ψυγείο', chains:'Τιμές ανά αλυσίδα', cheapest:'φθηνότερο',
+  el:{ tabProducts:'Προϊόντα', tabBasket:'Καλάθι', tabFridge:'Ψυγείο', tabTable:'Πίνακας', chains:'Τιμές ανά αλυσίδα', cheapest:'φθηνότερο',
        basketTitle:'Κόστος καλαθιού ανά αλυσίδα', cheapestBasket:'Φθηνότερο καλάθι', save:'εξοικονομείς', perItem:'Φθηνότερο ανά προϊόν',
        recognized:'Αναγνωρίστηκαν στο ψυγείο', shopping:'Λίστα αγορών', missing:'λείπει', low:'τελειώνει' },
-  tr:{ tabProducts:'Ürünler', tabBasket:'Sepet', tabFridge:'Buzdolabı', chains:'Zincirlere göre fiyatlar', cheapest:'en ucuz',
+  tr:{ tabProducts:'Ürünler', tabBasket:'Sepet', tabFridge:'Buzdolabı', tabTable:'Tablo', chains:'Zincirlere göre fiyatlar', cheapest:'en ucuz',
        basketTitle:'Zincire göre sepet tutarı', cheapestBasket:'En ucuz sepet', save:'tasarruf', perItem:'Ürün başına en ucuz',
        recognized:'Buzdolabında tanındı', shopping:'Alışveriş listesi', missing:'eksik', low:'azalıyor' },
-  sq:{ tabProducts:'Produktet', tabBasket:'Shporta', tabFridge:'Frigorifer', chains:'Çmimet sipas zinxhirëve', cheapest:'më i liri',
+  sq:{ tabProducts:'Produktet', tabBasket:'Shporta', tabFridge:'Frigorifer', tabTable:'Tabelë', chains:'Çmimet sipas zinxhirëve', cheapest:'më i liri',
        basketTitle:'Kostoja e shportës sipas zinxhirit', cheapestBasket:'Shporta më e lirë', save:'kurseni', perItem:'Më i liri për produkt',
        recognized:'Të njohura në frigorifer', shopping:'Lista e blerjeve', missing:'mungon', low:'po mbaron' },
-  bs:{ tabProducts:'Proizvodi', tabBasket:'Korpa', tabFridge:'Frižider', chains:'Cijene po lancima', cheapest:'najjeftinije',
+  bs:{ tabProducts:'Proizvodi', tabBasket:'Korpa', tabFridge:'Frižider', tabTable:'Tabela', chains:'Cijene po lancima', cheapest:'najjeftinije',
        basketTitle:'Cijena korpe po lancu', cheapestBasket:'Najjeftinija korpa', save:'uštedite', perItem:'Najjeftinije po proizvodu',
        recognized:'Prepoznato u frižideru', shopping:'Lista za kupovinu', missing:'nedostaje', low:'pri kraju' },
-  hr:{ tabProducts:'Proizvodi', tabBasket:'Košarica', tabFridge:'Hladnjak', chains:'Cijene po lancima', cheapest:'najjeftinije',
+  hr:{ tabProducts:'Proizvodi', tabBasket:'Košarica', tabFridge:'Hladnjak', tabTable:'Tablica', chains:'Cijene po lancima', cheapest:'najjeftinije',
        basketTitle:'Cijena košarice po lancu', cheapestBasket:'Najjeftinija košarica', save:'uštedite', perItem:'Najjeftinije po proizvodu',
        recognized:'Prepoznato u hladnjaku', shopping:'Popis za kupnju', missing:'nedostaje', low:'pri kraju' },
-  sl:{ tabProducts:'Izdelki', tabBasket:'Košarica', tabFridge:'Hladilnik', chains:'Cene po trgovinah', cheapest:'najceneje',
+  sl:{ tabProducts:'Izdelki', tabBasket:'Košarica', tabFridge:'Hladilnik', tabTable:'Tabela', chains:'Cene po trgovinah', cheapest:'najceneje',
        basketTitle:'Cena košarice po trgovini', cheapestBasket:'Najcenejša košarica', save:'prihranite', perItem:'Najceneje po izdelku',
        recognized:'Prepoznano v hladilniku', shopping:'Nakupovalni seznam', missing:'manjka', low:'zmanjkuje' },
 };
@@ -463,7 +470,7 @@ function renderHero() {
 
 function renderTabs() {
   const X = BX[country.lang];
-  const items = [['products', '🏷️', X.tabProducts], ['basket', '🛒', X.tabBasket], ['fridge', '🧊', X.tabFridge]];
+  const items = [['products', '🏷️', X.tabProducts], ['basket', '🛒', X.tabBasket], ['table', '📊', X.tabTable], ['fridge', '🧊', X.tabFridge]];
   document.getElementById('tabs').innerHTML = items.map(([v, ic, lbl]) =>
     `<button class="${view===v?'on':''}" onclick="setView('${v}')"><span class="ic">${ic}</span>${lbl}</button>`).join('');
 }
@@ -508,6 +515,33 @@ function renderBasket() {
     <div class="panel">
       <div class="otitle">${X.basketTitle}</div>${rows}
       <div class="otitle" style="margin-top:14px">${X.perItem}</div>${items}
+    </div>`;
+}
+
+function renderTable() {
+  const chainSet = new Set();
+  products.forEach(p => offersFor(p).forEach(o => chainSet.add(o.chain)));
+  const chains = Array.from(chainSet);
+  const rows = products.map(p => {
+    const meta = PRODUCTS[p.id];
+    const name = (meta.name[country.lang] || meta.name.bg);
+    const pack = meta.pack ? (meta.pack[country.lang] || meta.pack.bg) : '';
+    const offers = offersFor(p);
+    const minPrice = Math.min(...offers.map(o => o.price));
+    const cells = chains.map(c => {
+      const o = offers.find(o => o.chain === c);
+      if (!o) return '<td>—</td>';
+      const isBest = Math.abs(o.price - minPrice) < 0.005;
+      return `<td class="${isBest ? 'tmin' : ''}">${money(o.price)}</td>`;
+    }).join('');
+    return `<tr><td>${emojiOf(p.id)} ${name}<br><span class="tpack">${pack}</span></td>${cells}</tr>`;
+  }).join('');
+  document.getElementById('basket').innerHTML = `
+    <div class="panel" style="padding:0;overflow-x:auto;border-radius:16px">
+      <table class="ctable">
+        <thead><tr><th></th>${chains.map(c => `<th>${c}</th>`).join('')}</tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
     </div>`;
 }
 
@@ -579,6 +613,7 @@ function render() {
   document.getElementById('basket').style.display = prod ? 'none' : '';
   if (prod) { renderProducts(); }
   else if (view === 'basket') { renderBasket(); }
+  else if (view === 'table') { renderTable(); }
   else { renderFridge(); }
 }
 function select(i){ active = (active === i ? -1 : i); renderProducts(); }
