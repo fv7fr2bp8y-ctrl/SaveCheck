@@ -121,6 +121,14 @@
   .broch-hero { background:linear-gradient(135deg,#1d4ed8,#1e40af); color:#fff; border-radius:18px; padding:14px 16px; margin-bottom:12px; }
   .broch-hero .bh-title { font-size:17px; font-weight:900; margin-bottom:3px; }
   .broch-hero .bh-sub { font-size:12px; opacity:.9; }
+  .scan-wrap { position:relative; border-radius:18px; overflow:hidden; background:#000; aspect-ratio:4/3; margin-bottom:12px; }
+  .scan-wrap video { width:100%; height:100%; object-fit:cover; display:block; }
+  .scan-frame { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; }
+  .scan-frame::before { content:''; display:block; width:70%; aspect-ratio:3/1; border:2.5px solid rgba(255,255,255,.85); border-radius:10px; box-shadow:0 0 0 2000px rgba(0,0,0,.35); }
+  .scan-hint { position:absolute; bottom:14px; left:0; right:0; text-align:center; color:#fff; font-size:12px; font-weight:600; opacity:.9; }
+  .scan-btn { width:100%; background:var(--green); color:#fff; border:0; border-radius:14px; padding:13px; font-size:15px; font-weight:800; cursor:pointer; margin-bottom:12px; }
+  .scan-result-card { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px; }
+  .scan-ean { font-size:10.5px; color:var(--muted); margin-top:8px; }
   .search-wrap { padding:10px 14px 0; }
   .search-wrap input {
     width:100%; border:1.5px solid var(--line); border-radius:12px;
@@ -358,7 +366,12 @@ const BX = {
        titansReal:'реални', titansFake:'фалшиви', titansNoPromos:'без промоции', titansTracked:'проследени продукта',
        tabBrochures:'Брошури', brochTitle:'Тази седмица', brochSub:'Верифицирани промо оферти по верига',
        brochFake:'Фалшива!', brochReal:'Реална', brochClaimed:'обявена', brochNoData:'Без брошура',
-       brochPromos:'промоции', brochExpand:'Виж всички', brochCollapse:'Скрий' },
+       brochPromos:'промоции', brochExpand:'Виж всички', brochCollapse:'Скрий',
+       tabScan:'Скенер', scanBtn:'Сканирай баркод', scanHint:'Насочи камерата към баркода',
+       scanLookup:'Търся продукт…', scanNotTracked:'Продуктът не е в следения ни списък',
+       scanUnknown:'Продуктът не е разпознат', scanAgain:'Сканирай пак',
+       scanNoBD:'Скенерът работи в Chrome. Пробвай с файл:', scanFile:'Избери снимка',
+       scanMatched:'Разпознат като' },
   sr:{ tabProducts:'Proizvodi', tabBasket:'Korpa', tabFridge:'Frižider', tabTable:'Tabela', tabTitans:'Titani', chains:'Cene po lancima', cheapest:'najjeftinije',
        basketTitle:'Cena korpe po lancu', cheapestBasket:'Najjeftinija korpa', save:'uštedite', perItem:'Najjeftinije po proizvodu',
        recognized:'Prepoznato u frižideru', shopping:'Lista za kupovinu', missing:'nedostaje', low:'pri kraju',
@@ -369,7 +382,12 @@ const BX = {
        titansReal:'prave', titansFake:'lažne', titansNoPromos:'bez akcija', titansTracked:'praćena proizvoda',
        tabBrochures:'Brošure', brochTitle:'Ova nedelja', brochSub:'Verifikovane promo ponude po lancu',
        brochFake:'Lažna!', brochReal:'Prava', brochClaimed:'objavljena', brochNoData:'Nema brošure',
-       brochPromos:'akcija', brochExpand:'Vidi sve', brochCollapse:'Sakrij' },
+       brochPromos:'akcija', brochExpand:'Vidi sve', brochCollapse:'Sakrij',
+       tabScan:'Skener', scanBtn:'Skeniraj barkod', scanHint:'Usmeri kameru ka barkodu',
+       scanLookup:'Tražim proizvod…', scanNotTracked:'Proizvod nije u našoj listi',
+       scanUnknown:'Proizvod nije prepoznat', scanAgain:'Skeniraj ponovo',
+       scanNoBD:'Skener radi u Chrome-u. Pokušaj sa fajlom:', scanFile:'Izaberi sliku',
+       scanMatched:'Prepoznat kao' },
   mk:{ tabProducts:'Производи', tabBasket:'Кошница', tabFridge:'Фрижидер', tabTable:'Табела', tabTitans:'Титани', chains:'Цени по синџири', cheapest:'најевтино',
        basketTitle:'Цена на кошницата по синџир', cheapestBasket:'Најевтина кошница', save:'заштедуваш', perItem:'Најевтино по производ',
        recognized:'Препознато во фрижидерот', shopping:'Список за пазарување', missing:'недостасува', low:'снемнува',
@@ -380,7 +398,12 @@ const BX = {
        titansReal:'вистински', titansFake:'лажни', titansNoPromos:'без промоции', titansTracked:'следени производи',
        tabBrochures:'Брошури', brochTitle:'Оваа седмица', brochSub:'Верифицирани промо понуди по синџир',
        brochFake:'Лажна!', brochReal:'Вистинска', brochClaimed:'објавена', brochNoData:'Нема брошура',
-       brochPromos:'промоции', brochExpand:'Види ги сите', brochCollapse:'Сокриј' },
+       brochPromos:'промоции', brochExpand:'Види ги сите', brochCollapse:'Сокриј',
+       tabScan:'Скенер', scanBtn:'Скенирај баркод', scanHint:'Насочи ја камерата кон баркодот',
+       scanLookup:'Барам производ…', scanNotTracked:'Производот не е во нашата листа',
+       scanUnknown:'Производот не е препознаен', scanAgain:'Скенирај пак',
+       scanNoBD:'Скенерот работи во Chrome. Обиди се со датотека:', scanFile:'Избери слика',
+       scanMatched:'Препознаен како' },
   ro:{ tabProducts:'Produse', tabBasket:'Coș', tabFridge:'Frigider', tabTable:'Tabel', tabTitans:'Titani', chains:'Prețuri pe lanțuri', cheapest:'cel mai ieftin',
        basketTitle:'Costul coșului pe lanț', cheapestBasket:'Cel mai ieftin coș', save:'economisești', perItem:'Cel mai ieftin pe produs',
        recognized:'Recunoscut în frigider', shopping:'Listă de cumpărături', missing:'lipsește', low:'se termină',
@@ -391,7 +414,12 @@ const BX = {
        titansReal:'reale', titansFake:'false', titansNoPromos:'fără promoții', titansTracked:'produse monitorizate',
        tabBrochures:'Broșuri', brochTitle:'Săptămâna asta', brochSub:'Oferte promo verificate pe lanț',
        brochFake:'Falsă!', brochReal:'Reală', brochClaimed:'declarată', brochNoData:'Fără broșură',
-       brochPromos:'promoții', brochExpand:'Vezi toate', brochCollapse:'Ascunde' },
+       brochPromos:'promoții', brochExpand:'Vezi toate', brochCollapse:'Ascunde',
+       tabScan:'Scanner', scanBtn:'Scanează cod de bare', scanHint:'Îndreptați camera spre cod',
+       scanLookup:'Caut produsul…', scanNotTracked:'Produsul nu este în lista noastră',
+       scanUnknown:'Produs nerecunoscut', scanAgain:'Scanează din nou',
+       scanNoBD:'Scannerul funcționează în Chrome. Încearcă cu fișier:', scanFile:'Alege imagine',
+       scanMatched:'Recunoscut ca' },
   el:{ tabProducts:'Προϊόντα', tabBasket:'Καλάθι', tabFridge:'Ψυγείο', tabTable:'Πίνακας', tabTitans:'Τιτάνες', chains:'Τιμές ανά αλυσίδα', cheapest:'φθηνότερο',
        basketTitle:'Κόστος καλαθιού ανά αλυσίδα', cheapestBasket:'Φθηνότερο καλάθι', save:'εξοικονομείς', perItem:'Φθηνότερο ανά προϊόν',
        recognized:'Αναγνωρίστηκαν στο ψυγείο', shopping:'Λίστα αγορών', missing:'λείπει', low:'τελειώνει',
@@ -402,7 +430,12 @@ const BX = {
        titansReal:'αληθινές', titansFake:'ψεύτικες', titansNoPromos:'χωρίς προσφορές', titansTracked:'προϊόντα παρακολούθησης',
        tabBrochures:'Φυλλάδια', brochTitle:'Αυτή την εβδομάδα', brochSub:'Επαληθευμένες προσφορές ανά αλυσίδα',
        brochFake:'Ψεύτικη!', brochReal:'Αληθινή', brochClaimed:'δηλωθείσα', brochNoData:'Χωρίς φυλλάδιο',
-       brochPromos:'προσφορές', brochExpand:'Δες όλες', brochCollapse:'Απόκρυψη' },
+       brochPromos:'προσφορές', brochExpand:'Δες όλες', brochCollapse:'Απόκρυψη',
+       tabScan:'Σκάνερ', scanBtn:'Σάρωσε barcode', scanHint:'Στρέψε κάμερα στο barcode',
+       scanLookup:'Ψάχνω προϊόν…', scanNotTracked:'Το προϊόν δεν βρίσκεται στη λίστα μας',
+       scanUnknown:'Το προϊόν δεν αναγνωρίστηκε', scanAgain:'Σάρωσε ξανά',
+       scanNoBD:'Το σκάνερ λειτουργεί στο Chrome. Δοκιμάστε με αρχείο:', scanFile:'Επιλέξτε εικόνα',
+       scanMatched:'Αναγνωρίστηκε ως' },
   tr:{ tabProducts:'Ürünler', tabBasket:'Sepet', tabFridge:'Buzdolabı', tabTable:'Tablo', tabTitans:'Titanlar', chains:'Zincirlere göre fiyatlar', cheapest:'en ucuz',
        basketTitle:'Zincire göre sepet tutarı', cheapestBasket:'En ucuz sepet', save:'tasarruf', perItem:'Ürün başına en ucuz',
        recognized:'Buzdolabında tanındı', shopping:'Alışveriş listesi', missing:'eksik', low:'azalıyor',
@@ -413,7 +446,12 @@ const BX = {
        titansReal:'gerçek', titansFake:'sahte', titansNoPromos:'kampanya yok', titansTracked:'takip edilen ürün',
        tabBrochures:'Broşürler', brochTitle:'Bu hafta', brochSub:'Zincire göre doğrulanmış kampanyalar',
        brochFake:'Sahte!', brochReal:'Gerçek', brochClaimed:'ilan edilen', brochNoData:'Broşür yok',
-       brochPromos:'kampanya', brochExpand:'Tümünü gör', brochCollapse:'Gizle' },
+       brochPromos:'kampanya', brochExpand:'Tümünü gör', brochCollapse:'Gizle',
+       tabScan:'Tarayıcı', scanBtn:'Barkod Tara', scanHint:'Kamerayı barkoda doğrult',
+       scanLookup:'Ürün aranıyor…', scanNotTracked:'Ürün takip listemizde yok',
+       scanUnknown:'Ürün tanınmadı', scanAgain:'Tekrar tara',
+       scanNoBD:"Tarayıcı Chrome'da çalışır. Dosyayla deneyin:", scanFile:'Resim seç',
+       scanMatched:'Tanındı:' },
   sq:{ tabProducts:'Produktet', tabBasket:'Shporta', tabFridge:'Frigorifer', tabTable:'Tabelë', tabTitans:'Titanët', chains:'Çmimet sipas zinxhirëve', cheapest:'më i liri',
        basketTitle:'Kostoja e shportës sipas zinxhirit', cheapestBasket:'Shporta më e lirë', save:'kurseni', perItem:'Më i liri për produkt',
        recognized:'Të njohura në frigorifer', shopping:'Lista e blerjeve', missing:'mungon', low:'po mbaron',
@@ -424,7 +462,12 @@ const BX = {
        titansReal:'reale', titansFake:'të rreme', titansNoPromos:'pa oferta', titansTracked:'produkte të ndjekura',
        tabBrochures:'Fletushka', brochTitle:'Kjo javë', brochSub:'Oferta promo të verifikuara sipas zinxhirit',
        brochFake:'E rreme!', brochReal:'E vërtetë', brochClaimed:'e deklaruar', brochNoData:'Pa fletushkë',
-       brochPromos:'oferta', brochExpand:'Shiko të gjitha', brochCollapse:'Fshih' },
+       brochPromos:'oferta', brochExpand:'Shiko të gjitha', brochCollapse:'Fshih',
+       tabScan:'Skaner', scanBtn:'Skano barkod', scanHint:'Drejtoje kamerën te barkodi',
+       scanLookup:'Po kërkoj produktin…', scanNotTracked:'Produkti nuk është në listën tonë',
+       scanUnknown:'Produkti nuk u njoh', scanAgain:'Skano përsëri',
+       scanNoBD:'Skaneri funksionon në Chrome. Provoni me skedar:', scanFile:'Zgjidh imazh',
+       scanMatched:'U njoh si' },
   bs:{ tabProducts:'Proizvodi', tabBasket:'Korpa', tabFridge:'Frižider', tabTable:'Tabela', tabTitans:'Titani', chains:'Cijene po lancima', cheapest:'najjeftinije',
        basketTitle:'Cijena korpe po lancu', cheapestBasket:'Najjeftinija korpa', save:'uštedite', perItem:'Najjeftinije po proizvodu',
        recognized:'Prepoznato u frižideru', shopping:'Lista za kupovinu', missing:'nedostaje', low:'pri kraju',
@@ -435,7 +478,12 @@ const BX = {
        titansReal:'prave', titansFake:'lažne', titansNoPromos:'bez akcija', titansTracked:'praćena proizvoda',
        tabBrochures:'Brošure', brochTitle:'Ovaj tjedan', brochSub:'Verificirane promo ponude po lancu',
        brochFake:'Lažna!', brochReal:'Prava', brochClaimed:'objavljena', brochNoData:'Nema brošure',
-       brochPromos:'akcija', brochExpand:'Vidi sve', brochCollapse:'Sakrij' },
+       brochPromos:'akcija', brochExpand:'Vidi sve', brochCollapse:'Sakrij',
+       tabScan:'Skener', scanBtn:'Skeniraj barkod', scanHint:'Usmjeri kameru prema barkodu',
+       scanLookup:'Tražim proizvod…', scanNotTracked:'Proizvod nije na našoj listi',
+       scanUnknown:'Proizvod nije prepoznat', scanAgain:'Skeniraj ponovo',
+       scanNoBD:'Skener radi u Chrome-u. Pokušajte s datotekom:', scanFile:'Odaberi sliku',
+       scanMatched:'Prepoznat kao' },
   hr:{ tabProducts:'Proizvodi', tabBasket:'Košarica', tabFridge:'Hladnjak', tabTable:'Tablica', tabTitans:'Titani', chains:'Cijene po lancima', cheapest:'najjeftinije',
        basketTitle:'Cijena košarice po lancu', cheapestBasket:'Najjeftinija košarica', save:'uštedite', perItem:'Najjeftinije po proizvodu',
        recognized:'Prepoznato u hladnjaku', shopping:'Popis za kupnju', missing:'nedostaje', low:'pri kraju',
@@ -446,7 +494,12 @@ const BX = {
        titansReal:'prave', titansFake:'lažne', titansNoPromos:'bez akcija', titansTracked:'praćena proizvoda',
        tabBrochures:'Letci', brochTitle:'Ovaj tjedan', brochSub:'Verificirane promo ponude po lancu',
        brochFake:'Lažna!', brochReal:'Prava', brochClaimed:'objavljena', brochNoData:'Nema letka',
-       brochPromos:'akcija', brochExpand:'Vidi sve', brochCollapse:'Sakrij' },
+       brochPromos:'akcija', brochExpand:'Vidi sve', brochCollapse:'Sakrij',
+       tabScan:'Skener', scanBtn:'Skeniraj barkod', scanHint:'Usmjeri kameru prema barkodu',
+       scanLookup:'Tražim proizvod…', scanNotTracked:'Proizvod nije na našom popisu',
+       scanUnknown:'Proizvod nije prepoznat', scanAgain:'Skeniraj ponovo',
+       scanNoBD:'Skener radi u Chromeu. Pokušaj s datotekom:', scanFile:'Odaberi sliku',
+       scanMatched:'Prepoznat kao' },
   sl:{ tabProducts:'Izdelki', tabBasket:'Košarica', tabFridge:'Hladilnik', tabTable:'Tabela', tabTitans:'Titani', chains:'Cene po trgovinah', cheapest:'najceneje',
        basketTitle:'Cena košarice po trgovini', cheapestBasket:'Najcenejša košarica', save:'prihranite', perItem:'Najceneje po izdelku',
        recognized:'Prepoznano v hladilniku', shopping:'Nakupovalni seznam', missing:'manjka', low:'zmanjkuje',
@@ -457,7 +510,12 @@ const BX = {
        titansReal:'prave', titansFake:'lažne', titansNoPromos:'brez akcij', titansTracked:'sledenih izdelkov',
        tabBrochures:'Letaki', brochTitle:'Ta teden', brochSub:'Preverjene promo ponudbe po trgovini',
        brochFake:'Lažna!', brochReal:'Prava', brochClaimed:'navedena', brochNoData:'Ni letaka',
-       brochPromos:'akcij', brochExpand:'Prikaži vse', brochCollapse:'Skrij' },
+       brochPromos:'akcij', brochExpand:'Prikaži vse', brochCollapse:'Skrij',
+       tabScan:'Skener', scanBtn:'Skeniraj črtno kodo', scanHint:'Usmeri kamero na črtno kodo',
+       scanLookup:'Iščem izdelek…', scanNotTracked:'Izdelek ni na našem seznamu',
+       scanUnknown:'Izdelek ni prepoznan', scanAgain:'Skeniraj znova',
+       scanNoBD:'Skener deluje v Chromu. Poskusite z datoteko:', scanFile:'Izberi sliko',
+       scanMatched:'Prepoznan kot' },
 };
 
 // Hero strings (savings dashboard).
@@ -485,6 +543,7 @@ const emojiOf = id => EMOJI[id] || '🛒';
 const DEMO = (window.SAVECHECK_DEMO || {products:[]});
 const products = DEMO.products;
 let active = -1, country = COUNTRIES[0], view = 'products', query = '', cart = {};
+let scanStream = null;
 
 // Store chains per market — a mix of domestic and foreign (international)
 // chains. Illustrative: real footprints vary.
@@ -644,7 +703,7 @@ function renderTabs() {
   const X = BX[country.lang];
   const n = cartSize();
   const basketLbl = n ? `${X.tabBasket} <span style="background:var(--green);color:#fff;font-size:9px;border-radius:999px;padding:1px 5px;font-weight:800">${n}</span>` : X.tabBasket;
-  const items = [['products', '🏷️', X.tabProducts], ['basket', '🛒', basketLbl], ['brochures', '📋', X.tabBrochures], ['table', '📊', X.tabTable], ['titans', '⚔️', X.tabTitans], ['fridge', '🧊', X.tabFridge]];
+  const items = [['products', '🏷️', X.tabProducts], ['basket', '🛒', basketLbl], ['brochures', '📋', X.tabBrochures], ['table', '📊', X.tabTable], ['titans', '⚔️', X.tabTitans], ['scan', '📱', X.tabScan], ['fridge', '🧊', X.tabFridge]];
   document.getElementById('tabs').innerHTML = items.map(([v, ic, lbl]) =>
     `<button class="${view===v?'on':''}" onclick="setView('${v}')"><span class="ic">${ic}</span>${lbl}</button>`).join('');
 }
@@ -905,6 +964,129 @@ function renderTitans() {
     ${cards || '<div style="color:var(--muted);font-size:14px;text-align:center;padding:20px">—</div>'}`;
 }
 
+function renderScan() {
+  const X = BX[country.lang];
+  document.getElementById('basket').innerHTML = `
+    <button class="scan-btn" onclick="startScanner()">${X.scanBtn}</button>
+    <div id="scan-output"></div>`;
+}
+
+async function startScanner() {
+  const X = BX[country.lang];
+  const output = document.getElementById('scan-output');
+  if (!('BarcodeDetector' in window)) {
+    output.innerHTML = `<div class="scan-result-card" style="text-align:center">
+      <div style="color:var(--muted);margin-bottom:10px">${X.scanNoBD}</div>
+      <label style="display:inline-block;background:var(--green);color:#fff;padding:8px 16px;border-radius:10px;cursor:pointer;font-weight:700;font-size:14px">
+        ${X.scanFile}<input type="file" accept="image/*" capture="environment" style="display:none" onchange="scanFile(this)">
+      </label>
+    </div>`;
+    return;
+  }
+  output.innerHTML = `<div class="scan-wrap"><video id="scan-video" autoplay playsinline muted></video>
+    <div class="scan-frame"></div><div class="scan-hint">${X.scanHint}</div></div>`;
+  try {
+    scanStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+    const video = document.getElementById('scan-video');
+    video.srcObject = scanStream;
+    const detector = new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e']});
+    const detect = async () => {
+      if (!scanStream) return;
+      try {
+        const codes = await detector.detect(video);
+        if (codes.length) { stopScanner(); await handleBarcode(codes[0].rawValue); }
+        else requestAnimationFrame(detect);
+      } catch(e) { requestAnimationFrame(detect); }
+    };
+    await video.play(); detect();
+  } catch(e) {
+    output.innerHTML = `<div class="scan-result-card" style="text-align:center;color:var(--red)">Camera error: ${e.message}</div>`;
+  }
+}
+
+function stopScanner() {
+  if (scanStream) { scanStream.getTracks().forEach(t => t.stop()); scanStream = null; }
+}
+
+async function scanFile(input) {
+  const file = input.files[0]; if (!file) return;
+  const X = BX[country.lang];
+  document.getElementById('scan-output').innerHTML = `<div class="scan-result-card" style="text-align:center;color:var(--muted)">${X.scanLookup}</div>`;
+  const img = new Image();
+  const url = URL.createObjectURL(file);
+  img.src = url;
+  img.onload = async () => {
+    try {
+      const detector = new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e']});
+      const codes = await detector.detect(img);
+      if (codes.length) { await handleBarcode(codes[0].rawValue); }
+      else {
+        document.getElementById('scan-output').innerHTML =
+          `<div class="scan-result-card" style="text-align:center;color:var(--muted)">${X.scanUnknown}</div>
+           <button class="scan-btn" style="margin-top:12px" onclick="renderScan()">${X.scanAgain}</button>`;
+      }
+    } catch(e) { console.error(e); }
+    URL.revokeObjectURL(url);
+  };
+}
+
+async function handleBarcode(ean) {
+  const X = BX[country.lang];
+  document.getElementById('scan-output').innerHTML =
+    `<div class="scan-result-card" style="text-align:center;color:var(--muted)">${X.scanLookup} ${ean}…</div>`;
+  try {
+    const r = await fetch(`https://world.openfoodfacts.org/api/v2/product/${ean}?fields=product_name_bg,product_name`);
+    const d = await r.json();
+    const name = d.status === 1 ? (d.product.product_name_bg || d.product.product_name || '') : '';
+    showScanResult(ean, name, matchToBasket(name));
+  } catch(e) { showScanResult(ean, '', null); }
+}
+
+function matchToBasket(name) {
+  if (!name) return null;
+  const nl = name.toLowerCase();
+  for (const p of products) {
+    const meta = PRODUCTS[p.id]; if (!meta) continue;
+    const bg = (meta.name.bg || '').toLowerCase();
+    const kws = bg.split(/\s+/).filter(w => w.length > 3);
+    if (kws.some(kw => nl.includes(kw))) return p;
+  }
+  return null;
+}
+
+function showScanResult(ean, name, match) {
+  const X = BX[country.lang];
+  let html = '';
+  if (match) {
+    const col = C[match.verdict];
+    html = `<div class="scan-result-card">
+      <span class="badge" style="background:${col}"><span class="ico">${ICON[match.verdict]}</span>${BADGE[match.verdict][country.lang]}</span>
+      <div class="ptitle">${PRODUCTS[match.id].name[country.lang]}
+        <span style="font-size:12px;color:var(--muted);font-weight:500">${X.scanMatched} "${name}"</span>
+      </div>
+      <div class="reason">${REASONS[match.reason_code][country.lang](match.discount_pct)}</div>
+      <table class="sum">
+        ${row(col, t().now, money(match.current_price))}
+        ${row('#94a3b8', t().avg, money(match.median_90))}
+        ${row(C.green, t().low, money(match.min_90))}
+        ${row(null, t().floor30, money(match.min_30_prior))}
+      </table>
+      <div class="scan-ean">EAN ${ean}</div>
+    </div>`;
+  } else if (name) {
+    html = `<div class="scan-result-card" style="text-align:center">
+      <div style="font-size:28px;margin-bottom:8px">🔍</div>
+      <div style="font-weight:700;font-size:15px">${name}</div>
+      <div style="color:var(--muted);font-size:12px;margin-top:6px">${X.scanNotTracked}</div>
+      <div class="scan-ean">EAN ${ean}</div>
+    </div>`;
+  } else {
+    html = `<div class="scan-result-card" style="text-align:center;color:var(--muted)">${X.scanUnknown} · EAN ${ean}</div>`;
+  }
+  html += `<button class="scan-btn" style="margin-top:12px" onclick="renderScan()">${X.scanAgain}</button>`;
+  document.getElementById('scan-output').innerHTML = html;
+}
+
 function render() {
   renderFlags(); renderChrome(); renderHero(); renderTabs();
   const prod = view === 'products';
@@ -919,11 +1101,12 @@ function render() {
   else if (view === 'table') { renderTable(); }
   else if (view === 'brochures') { renderBrochures(); }
   else if (view === 'titans') { renderTitans(); }
+  else if (view === 'scan') { renderScan(); }
   else { renderFridge(); }
 }
 function select(i){ active = (active === i ? -1 : i); renderProducts(); }
 function setCountry(i){ country = COUNTRIES[i]; document.documentElement.lang = country.lang; render(); }
-function setView(v){ view = v; if(v !== 'products'){ query=''; } render(); }
+function setView(v){ if (v !== 'scan') stopScanner(); view = v; if(v !== 'products'){ query=''; } render(); }
 
 render();
 </script>
