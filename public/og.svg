@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#f5f1ea"/>
+    <stop offset="100%" stop-color="#e6e0d5"/>
+  </linearGradient>
+  <linearGradient id="hero" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#16a34a"/>
+    <stop offset="100%" stop-color="#14532d"/>
+  </linearGradient>
+  <linearGradient id="card-g" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#ffffff"/>
+    <stop offset="100%" stop-color="#f9f7f3"/>
+  </linearGradient>
+</defs>
+
+<!-- Background -->
+<rect width="1200" height="630" fill="url(#bg)"/>
+
+<!-- Left: hero panel -->
+<rect x="52" y="52" width="560" height="526" rx="28" fill="url(#hero)"/>
+
+<!-- Logo -->
+<rect x="92" y="92" width="52" height="52" rx="14" fill="rgba(255,255,255,.15)"/>
+<rect x="92" y="92" width="52" height="52" rx="14" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.5"/>
+<path d="M104 118l10 10 20-20" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+<!-- Brand name -->
+<text x="158" y="126" font-family="-apple-system,system-ui,sans-serif" font-size="32" font-weight="900" letter-spacing="-0.5" fill="white">Save<tspan fill="rgba(255,255,255,.7)">Check</tspan></text>
+
+<!-- Tagline -->
+<text x="92" y="183" font-family="-apple-system,system-ui,sans-serif" font-size="18" fill="rgba(255,255,255,.85)" font-weight="500">Реална ли е промоцията?</text>
+
+<!-- Divider -->
+<rect x="92" y="207" width="480" height="1.5" fill="rgba(255,255,255,.15)" rx="1"/>
+
+<!-- Stats block -->
+<text x="92" y="255" font-family="-apple-system,system-ui,sans-serif" font-size="64" font-weight="900" fill="white" letter-spacing="-2">90</text>
+<text x="177" y="241" font-family="-apple-system,system-ui,sans-serif" font-size="16" fill="rgba(255,255,255,.75)">дни история</text>
+<text x="177" y="263" font-family="-apple-system,system-ui,sans-serif" font-size="16" fill="rgba(255,255,255,.75)">на цената</text>
+
+<text x="260" y="255" font-family="-apple-system,system-ui,sans-serif" font-size="64" font-weight="900" fill="white" letter-spacing="-2">5</text>
+<text x="320" y="241" font-family="-apple-system,system-ui,sans-serif" font-size="16" fill="rgba(255,255,255,.75)">верижни</text>
+<text x="320" y="263" font-family="-apple-system,system-ui,sans-serif" font-size="16" fill="rgba(255,255,255,.75)">магазина</text>
+
+<text x="430" y="255" font-family="-apple-system,system-ui,sans-serif" font-size="64" font-weight="900" fill="white" letter-spacing="-2">24+</text>
+<text x="530" y="237" font-family="-apple-system,system-ui,sans-serif" font-size="14" fill="rgba(255,255,255,.75)">основни</text>
+<text x="530" y="256" font-family="-apple-system,system-ui,sans-serif" font-size="14" fill="rgba(255,255,255,.75)">продукта</text>
+
+<!-- Divider 2 -->
+<rect x="92" y="285" width="480" height="1.5" fill="rgba(255,255,255,.15)" rx="1"/>
+
+<!-- Features list -->
+<text x="92" y="325" font-family="-apple-system,system-ui,sans-serif" font-size="15" fill="rgba(255,255,255,.9)">✓  EU Omnibus директива (чл. 6а)</text>
+<text x="92" y="358" font-family="-apple-system,system-ui,sans-serif" font-size="15" fill="rgba(255,255,255,.9)">✓  Реално намаление vs. фалшива промоция</text>
+<text x="92" y="391" font-family="-apple-system,system-ui,sans-serif" font-size="15" fill="rgba(255,255,255,.9)">✓  Баркод скенер → директна проверка</text>
+<text x="92" y="424" font-family="-apple-system,system-ui,sans-serif" font-size="15" fill="rgba(255,255,255,.9)">✓  Седмични брошури с верификация</text>
+<text x="92" y="457" font-family="-apple-system,system-ui,sans-serif" font-size="15" fill="rgba(255,255,255,.9)">✓  Битката на Титаните — класация на вериги</text>
+
+<!-- URL -->
+<rect x="92" y="506" width="480" height="48" rx="12" fill="rgba(255,255,255,.12)"/>
+<text x="332" y="536" font-family="-apple-system,system-ui,sans-serif" font-size="16" font-weight="700" fill="white" text-anchor="middle">savecheck.vercel.app</text>
+
+<!-- Right: verdict cards -->
+<!-- Green -->
+<rect x="648" y="52" width="500" height="154" rx="20" fill="url(#card-g)" filter="drop-shadow(0 4px 16px rgba(0,0,0,.10))"/>
+<rect x="680" y="90" width="44" height="44" rx="12" fill="#dcfce7"/>
+<text x="702" y="118" font-family="-apple-system,system-ui,sans-serif" font-size="22" text-anchor="middle">🥛</text>
+<text x="740" y="104" font-family="-apple-system,system-ui,sans-serif" font-size="16" font-weight="700" fill="#111827">Прясно мляко · 1 л</text>
+<rect x="740" y="114" width="168" height="26" rx="13" fill="#16a34a"/>
+<text x="824" y="132" font-family="-apple-system,system-ui,sans-serif" font-size="12" font-weight="800" fill="white" text-anchor="middle" letter-spacing=".5">✓  РЕАЛНА ПРОМОЦИЯ</text>
+<text x="740" y="168" font-family="-apple-system,system-ui,sans-serif" font-size="13" fill="#6b7280">−18% под 90-дневното дъно</text>
+<text x="1100" y="130" font-family="-apple-system,system-ui,sans-serif" font-size="26" font-weight="900" fill="#16a34a" text-anchor="end">2,49 лв</text>
+<text x="1100" y="156" font-family="-apple-system,system-ui,sans-serif" font-size="13" fill="#6b7280" text-anchor="end">беше 3,09 лв</text>
+
+<!-- Red -->
+<rect x="648" y="238" width="500" height="154" rx="20" fill="url(#card-g)" filter="drop-shadow(0 4px 16px rgba(0,0,0,.10))"/>
+<rect x="680" y="276" width="44" height="44" rx="12" fill="#fee2e2"/>
+<text x="702" y="304" font-family="-apple-system,system-ui,sans-serif" font-size="22" text-anchor="middle">🍬</text>
+<text x="740" y="290" font-family="-apple-system,system-ui,sans-serif" font-size="16" font-weight="700" fill="#111827">Захар · 1 кг</text>
+<rect x="740" y="300" width="172" height="26" rx="13" fill="#dc2626"/>
+<text x="826" y="318" font-family="-apple-system,system-ui,sans-serif" font-size="12" font-weight="800" fill="white" text-anchor="middle" letter-spacing=".5">✕  ФАЛШИВА ПРОМОЦИЯ</text>
+<text x="740" y="354" font-family="-apple-system,system-ui,sans-serif" font-size="13" fill="#6b7280">Не е по-евтино от обичайното (30 дни)</text>
+<text x="1100" y="316" font-family="-apple-system,system-ui,sans-serif" font-size="26" font-weight="900" fill="#dc2626" text-anchor="end">2,19 лв</text>
+<text x="1100" y="342" font-family="-apple-system,system-ui,sans-serif" font-size="13" fill="#6b7280" text-anchor="end">„−15%" на етикета</text>
+
+<!-- Yellow -->
+<rect x="648" y="424" width="500" height="154" rx="20" fill="url(#card-g)" filter="drop-shadow(0 4px 16px rgba(0,0,0,.10))"/>
+<rect x="680" y="462" width="44" height="44" rx="12" fill="#fef3c7"/>
+<text x="702" y="490" font-family="-apple-system,system-ui,sans-serif" font-size="22" text-anchor="middle">☕</text>
+<text x="740" y="476" font-family="-apple-system,system-ui,sans-serif" font-size="16" font-weight="700" fill="#111827">Кафе · 250 г</text>
+<rect x="740" y="486" width="158" height="26" rx="13" fill="#d97706"/>
+<text x="819" y="504" font-family="-apple-system,system-ui,sans-serif" font-size="12" font-weight="800" fill="white" text-anchor="middle" letter-spacing=".5">≈  ОБИЧАЙНА ЦЕНА</text>
+<text x="740" y="540" font-family="-apple-system,system-ui,sans-serif" font-size="13" fill="#6b7280">Цената е в рамките на нормалното</text>
+<text x="1100" y="502" font-family="-apple-system,system-ui,sans-serif" font-size="26" font-weight="900" fill="#d97706" text-anchor="end">6,99 лв</text>
+<text x="1100" y="528" font-family="-apple-system,system-ui,sans-serif" font-size="13" fill="#6b7280" text-anchor="end">медиана 7,20 лв</text>
+
+<!-- Data source note -->
+<text x="600" y="612" font-family="-apple-system,system-ui,sans-serif" font-size="12" fill="#9ca3af" text-anchor="middle">Данни: КЗП kolkostruva.bg · Обновява се всеки ден · Отворен код</text>
+</svg>

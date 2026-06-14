@@ -1,136 +1,156 @@
-# SaveCheck
+# SaveCheck — Реална ли е промоцията?
 
-Приложение, което проверява дали една промоция в супермаркет е **реална или
-фалшива**, като сравнява текущата цена с историята на цените за последните 90
-дни. Стартира на българския пазар, с перспектива за региона (Сърбия, Румъния,
-Гърция).
+![SaveCheck OG image](public/og.svg)
 
-Това репо съдържа backend ядрото за **стълб 1 — проверка на промоции**.
+**SaveCheck** проверява дали промоцията е истинска или измамна, като сравнява текущата цена с 90-дневната история. Прилага логиката на **EU Omnibus директива (чл. 6а)** — референцата е не „старата цена" от етикета, а реалното дъно за последните 30 дни.
 
-## Какво има тук
+🔗 **Live demo:** `save-check-fps60-3541s-projects.vercel.app`
+
+---
+
+## Как работи
 
 ```
-src/savecheck/
-  pricing/          # ЧИСТА логика (само stdlib) — сърцето на продукта
-    aggregates.py   #   плъзгащи статистики: median_90, min_90, min_30_prior
-    verdict.py      #   светофар: ЗЕЛЕНО / ЖЪЛТО / ЧЕРВЕНО / СИВО
-    history.py      #   90-дневна графика с маркери за дъно/медиана
-    alerts.py       #   watchlist: аларма при целева цена или реална промоция
-  ingest/
-    kolkostruva.py  # сваляне + parse на официалните отворени данни на КЗП
-  models.py         # SQLAlchemy схема (Chain, Store, Product, PriceObservation)
-  schema.sql        # същата схема като raw DDL за бърз bootstrap
-  shopping/         # СТЪЛБ 2 — чисто ядро (само stdlib)
-    inventory.py    #   нормализация + дедупликация на разпознатото
-    staples.py      #   желан запас на домакинството
-    shopping_list.py#   какво да купиш (липсва / свършва)
-  vision/
-    recognize.py    #   Claude vision (claude-opus-4-8) → инвентар от снимка
-  db.py             # session + repository, който храни pricing ядрото
-  api/main.py       # FastAPI: GET /verdict, GET /history, POST /shopping-list
-public/             # статично уеб демо (Vercel) — index.html + data.js
-scripts/
-  gen_demo_data.py  # генерира public/data.js от РЕАЛНОТО ядро (BGN-неутрални числа)
-tests/              # покриват pricing ядрото и parse-а, вървят без БД и мрежа
+КЗП open data (kolkostruva.bg)
+        │  ZIP с CSV по вериги, всеки ден
+        ▼
+gen_demo_data.py  ──►  public/data.js
+gen_brochures.py  ──►  public/brochures.js
+        │
+        ▼  (GitHub Actions, всеки ден 08:00 EET)
+Vercel auto-deploy ──► Live сайт
 ```
 
-## Стълб 2 — Shopping list от снимка на хладилника
+За всеки продукт се изчислява **Omnibus verdict**:
 
-Снимаш хладилника → Claude vision (`claude-opus-4-8`, чрез официалния `anthropic`
-SDK със структуриран изход) разпознава продуктите → сравняваме с „желания запас“
-на домакинството → получаваш списък какво да купиш.
+| Verdict | Значение |
+|---------|----------|
+| 🟢 **РЕАЛНА** | Цената е по-ниска от дъното за последните 30 дни |
+| 🔴 **ФАЛШИВА** | Промоцията е налична, но цената не е по-ниска от обичайното |
+| 🟡 **ОБИЧАЙНА** | Малко под медианата, но без значително намаление |
+| ⚪ **НЯМА ДАННИ** | Недостатъчна история |
 
-- `vision/recognize.py` прави единствено разпознаването (изисква `anthropic`);
-- `shopping/` е **чисто, детерминистично ядро** (дедупликация, съпоставяне с
-  желания запас, изчисляване на липсите) и се тества без модел и без мрежа.
+---
 
-```python
-from savecheck.vision import recognize_fridge
-from savecheck.shopping import Staple, build_shopping_list
+## Функционалности
 
-inventory = recognize_fridge(open("fridge.jpg", "rb").read())          # извиква Claude
-staples = [Staple("Прясно мляко", 3, "л"), Staple("Яйца", 10, "бр")]
-to_buy = build_shopping_list(inventory, staples)                        # чиста логика
+- **🏠 Начало** — Hero с реалните спестявания + топ промоции (horizontal scroll) + Titans мини класация
+- **🛒 Пазарувай** — 24+ проследени продукта с 90-дневна графика, кошница с анализ по верига, хладилник
+- **🏷️ Промоции** — Всички промо оферти тази седмица по верига с Omnibus верификация + **Битката на Титаните** (класация коя верига лъже най-много)
+- **📷 Скенер** — Сканирай EAN баркод → Open Food Facts → Omnibus verdict
+- **10 езика** — BG, SR, MK, RO, EL, TR, SQ, BS, HR, SL
+
+---
+
+## Data pipeline
+
+```
+kolkostruva.bg/opendata_files/YYYY-MM-DD.zip
+    └── ЛидлБългария_131071587.csv
+    └── Kaufland_*.csv
+    └── BILLA_*.csv
+    └── ФАНТАСТИКО_*.csv
+    └── Т МАРКЕТ_*.csv
 ```
 
-## Уеб демо
+Всеки ZIP съдържа по един CSV на верига с колони:
+`Населено място, Търговски обект, Наименование, Код, Категория, Цена на дребно, Цена в промоция`
 
-`public/` е самостоятелен статичен сайт (Chart.js през CDN), деплойван на Vercel.
-Числата идват от реалното ядро: `scripts/gen_demo_data.py` пуска синтетични
-сценарии през `savecheck.pricing` и записва `public/data.js` — езиково и валутно
-**неутрални** (BGN база). Сайтът прилага език, валута и FX курс при рендиране.
+Когато `Цена в промоция` е попълнена → `is_promo = True` → се проверява дали е по-евтино от `min_30_prior`.
 
-Покрива **целия Балкански полуостров** — 12 държави / 10 езика:
+---
 
-| Държава | Език | Валута |
-|---|---|---|
-| 🇧🇬 България | български | € (евро) |
-| 🇷🇸 Сърбия | Srpski | дин |
-| 🇲🇰 Македония | македонски | ден |
-| 🇧🇦 Босна и Херцеговина | Bosanski | KM |
-| 🇲🇪 Черна гора | Crnogorski | € |
-| 🇽🇰 Косово | Shqip | € |
-| 🇦🇱 Албания | Shqip | lek |
-| 🇭🇷 Хърватия | Hrvatski | € |
-| 🇸🇮 Словения | Slovenščina | € |
-| 🇷🇴 Румъния | Română | lei |
-| 🇬🇷 Гърция | Ελληνικά | € |
-| 🇹🇷 Турция | Türkçe | ₺ |
+## Tech stack
 
-Функции в демото: светофар-присъда + 90-дневна графика (стил CamelCamelCamel —
-средна линия, маркери за дъно/връх, зони „добра/лоша цена“), цена за единица,
-**сравнение по вериги** (местни + чужди, специфични за всеки пазар), режим
-**Кошница**, който намира най-евтината верига за цялата кошница, и таб
-**Хладилник** (стълб 2) — симулирано разпознаване → списък за пазаруване, в който
-познатите продукти показват и присъдата от стълб 1 („сега ли е добра цена“).
+| Layer | Технология |
+|-------|------------|
+| Frontend | Single-file HTML/CSS/JS (vanilla, no framework) |
+| Charts | Chart.js 4.4 |
+| Data | `window.SAVECHECK_DEMO` + `window.SAVECHECK_BROCHURES` (JS globals) |
+| Backend | Python 3.11+ (`src/savecheck/`) |
+| Pricing engine | `savecheck.pricing` — `evaluate_series()`, `compute_stats()` |
+| Ingest | `savecheck.ingest.kolkostruva` — парсва КЗП CSV |
+| CI/CD | GitHub Actions (daily cron) + Vercel (auto-deploy on push) |
+| Barcode lookup | [Open Food Facts API](https://world.openfoodfacts.org/api/v2/) |
 
-> Курсовете и преводите са илюстративни — преди продукция искат преглед от
-> носители на езиците и реални FX/вериги по пазар.
+---
+
+## Локална разработка
 
 ```bash
-python3 scripts/gen_demo_data.py   # регенерира public/data.js
-# локален преглед:
-python3 -m http.server -d public 8000   # → http://localhost:8000
+# 1. Clone
+git clone https://github.com/fv7fr2bp8y-ctrl/SaveCheck.git
+cd SaveCheck
+
+# 2. Python env
+python -m venv .venv && source .venv/bin/activate
+pip install -e ".[ingest]"
+
+# 3. Изтегли данни (последните 91 дни)
+mkdir -p /tmp/kzp_zips
+for i in $(seq 0 90); do
+  D=$(date -d "$i days ago" +%Y-%m-%d)
+  curl -fsSL -A "Mozilla/5.0" \
+    "https://kolkostruva.bg/opendata_files/${D}.zip" \
+    -o "/tmp/kzp_zips/${D}.zip" 2>/dev/null || true
+done
+
+# 4. Генерирай data files
+python scripts/gen_demo_data.py --zip-dir /tmp/kzp_zips
+python scripts/gen_brochures.py --zip-dir /tmp/kzp_zips
+
+# 5. Отвори в браузър
+open public/index.html
+# или: python -m http.server 8000 -d public
 ```
 
-## Логиката на присъдата (накратко)
-
-За всеки продукт×верига поддържаме плъзгащи агрегати:
-
-- `median_90` — типичната цена (срещу нея сравняваме, не срещу етикета);
-- `min_90` — истинското 90-дневно дъно;
-- `min_30_prior` — най-ниската цена през **30-те дни преди** промоцията — това е
-  легалната референция по духа на **EU Omnibus** директивата.
-
-```
-ЗЕЛЕНО  реална:    значимо под median_90, близо до min_90 и под min_30_prior
-ЖЪЛТО   обичайна:  малка или никаква отстъпка
-ЧЕРВЕНО фалшива:   обявена като промоция, но НЕ е по-евтино от min_30_prior
-СИВО    неясно:    няма достатъчно история
-```
-
-## Източник на данните
-
-Ядрото се захранва от официалния портал на КЗП **kolkostruva.bg/opendata** —
-вериги с оборот над 10 млн. лв. са законово задължени да публикуват ежедневно
-цените на ~101 продуктови групи от потребителската кошница, с промо-маркер.
-Архивът позволява **зареждане на 90-дневната история ден първи** (без cold start).
-
-> Точният формат на файла (CSV/JSON) и имената на колоните в
-> `ingest/kolkostruva.py` са **временни** — финализират се щом хостът е достъпен
-> (виж бележките в кода). Цялата останала логика остава същата.
-
-## Бърз старт
+### Тестове
 
 ```bash
-# 1. Тестове на ядрото — без никакви зависимости
-for t in tests/test_*.py; do python3 "$t"; done
-# или, ако е инсталиран pytest:
-pytest
-
-# 2. Локална база + API (изисква зависимостите)
-docker compose up -d db
-pip install -e ".[db,api,ingest]"
-uvicorn savecheck.api.main:app --reload
-# GET http://localhost:8000/verdict?chain_product_id=1&is_promo=true
+pytest tests/ -v
 ```
+
+---
+
+## Автоматично обновяване
+
+`.github/workflows/daily-refresh.yml` — стартира всеки ден в 08:00 EET (05:00 UTC):
+
+1. Изтегля последните ZIP-ове от КЗП (кеширва ги за седмицата)
+2. Пуска `gen_demo_data.py` → `public/data.js`
+3. Пуска `gen_brochures.py` → `public/brochures.js`
+4. `git commit && git push` ако има промени
+5. Vercel автоматично деплойва новия commit
+
+---
+
+## Структура
+
+```
+SaveCheck/
+├── public/
+│   ├── index.html          # Цялото приложение (single-file)
+│   ├── data.js             # Генерирани данни (SAVECHECK_DEMO)
+│   ├── brochures.js        # Седмични промоции (SAVECHECK_BROCHURES)
+│   └── og.svg              # Open Graph image
+├── src/savecheck/
+│   ├── pricing/
+│   │   ├── verdict.py      # evaluate_series() — Omnibus логика
+│   │   └── aggregates.py   # compute_stats() — 30/90-дневни статистики
+│   └── ingest/
+│       └── kolkostruva.py  # Парсване на КЗП CSV
+├── scripts/
+│   ├── gen_demo_data.py    # Генерира data.js
+│   └── gen_brochures.py    # Генерира brochures.js
+├── tests/
+└── .github/workflows/
+    └── daily-refresh.yml
+```
+
+---
+
+## Данни и лиценз
+
+Ценовите данни са от [КЗП „Колко струва"](https://kolkostruva.bg/opendata) — публичен регистър на цените, поддържан от Комисията за защита на потребителите на Р. България.
+
+Кодът е с отворен лиценз — **MIT**.
