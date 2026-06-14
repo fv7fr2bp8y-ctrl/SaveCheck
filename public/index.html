@@ -6,6 +6,7 @@
 <title>SaveCheck — реална ли е промоцията?</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="./data.js"></script>
+<script src="./brochures.js"></script>
 <style>
   :root {
     --green:#16a34a; --green-d:#15803d; --yellow:#f59e0b; --red:#dc2626; --gray:#6b7280;
@@ -105,6 +106,21 @@
   .titan-hero { background:linear-gradient(135deg,#15803d,#166534); color:#fff; border-radius:18px; padding:14px 16px; margin-bottom:12px; }
   .titan-hero .th-title { font-size:17px; font-weight:900; letter-spacing:-.01em; margin-bottom:3px; }
   .titan-hero .th-sub { font-size:12px; opacity:.9; line-height:1.4; }
+  .broch-chain { background:var(--card); border:1px solid var(--line); border-radius:16px; margin-bottom:10px; overflow:hidden; }
+  .broch-head { display:flex; align-items:center; justify-content:space-between; padding:12px 14px; cursor:pointer; }
+  .broch-head .bh-name { font-weight:800; font-size:15px; }
+  .broch-head .bh-count { font-size:12px; color:var(--muted); }
+  .broch-head .bh-badge { display:flex; gap:6px; }
+  .broch-body { border-top:1px solid var(--line); }
+  .broch-item { display:flex; align-items:center; gap:9px; padding:9px 14px; border-top:1px solid var(--line); font-size:13px; }
+  .broch-item:first-child { border-top:0; }
+  .broch-item .bi-name { flex:1; font-size:12.5px; line-height:1.3; }
+  .broch-item .bi-price { font-weight:800; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .broch-item .bi-old { color:var(--muted); font-size:11px; text-decoration:line-through; }
+  .broch-item .bi-pct { font-size:11px; font-weight:700; color:var(--green); }
+  .broch-hero { background:linear-gradient(135deg,#1d4ed8,#1e40af); color:#fff; border-radius:18px; padding:14px 16px; margin-bottom:12px; }
+  .broch-hero .bh-title { font-size:17px; font-weight:900; margin-bottom:3px; }
+  .broch-hero .bh-sub { font-size:12px; opacity:.9; }
   .search-wrap { padding:10px 14px 0; }
   .search-wrap input {
     width:100%; border:1.5px solid var(--line); border-radius:12px;
@@ -339,7 +355,10 @@ const BX = {
        cartTitle:'Моят списък', cartEmpty:'Добави продукти с ✚', storeAdvice:'Откъде да пазарувам?',
        covers:'покрива', of:'от', artItems:'арт.', clearCart:'Изчисти', noData:'Не предлага',
        titansTitle:'Битката на Титаните', titansSub:'Реални срещу фалшиви промоции — последните 30 дни',
-       titansReal:'реални', titansFake:'фалшиви', titansNoPromos:'без промоции', titansTracked:'проследени продукта' },
+       titansReal:'реални', titansFake:'фалшиви', titansNoPromos:'без промоции', titansTracked:'проследени продукта',
+       tabBrochures:'Брошури', brochTitle:'Тази седмица', brochSub:'Верифицирани промо оферти по верига',
+       brochFake:'Фалшива!', brochReal:'Реална', brochClaimed:'обявена', brochNoData:'Без брошура',
+       brochPromos:'промоции', brochExpand:'Виж всички', brochCollapse:'Скрий' },
   sr:{ tabProducts:'Proizvodi', tabBasket:'Korpa', tabFridge:'Frižider', tabTable:'Tabela', tabTitans:'Titani', chains:'Cene po lancima', cheapest:'najjeftinije',
        basketTitle:'Cena korpe po lancu', cheapestBasket:'Najjeftinija korpa', save:'uštedite', perItem:'Najjeftinije po proizvodu',
        recognized:'Prepoznato u frižideru', shopping:'Lista za kupovinu', missing:'nedostaje', low:'pri kraju',
@@ -347,7 +366,10 @@ const BX = {
        cartTitle:'Moja lista', cartEmpty:'Dodaj proizvode sa ✚', storeAdvice:'Gde da kupujem?',
        covers:'pokriva', of:'od', artItems:'art.', clearCart:'Obriši', noData:'Nema',
        titansTitle:'Bitka Titana', titansSub:'Prave vs. lažne akcije — poslednjih 30 dana',
-       titansReal:'prave', titansFake:'lažne', titansNoPromos:'bez akcija', titansTracked:'praćena proizvoda' },
+       titansReal:'prave', titansFake:'lažne', titansNoPromos:'bez akcija', titansTracked:'praćena proizvoda',
+       tabBrochures:'Brošure', brochTitle:'Ova nedelja', brochSub:'Verifikovane promo ponude po lancu',
+       brochFake:'Lažna!', brochReal:'Prava', brochClaimed:'objavljena', brochNoData:'Nema brošure',
+       brochPromos:'akcija', brochExpand:'Vidi sve', brochCollapse:'Sakrij' },
   mk:{ tabProducts:'Производи', tabBasket:'Кошница', tabFridge:'Фрижидер', tabTable:'Табела', tabTitans:'Титани', chains:'Цени по синџири', cheapest:'најевтино',
        basketTitle:'Цена на кошницата по синџир', cheapestBasket:'Најевтина кошница', save:'заштедуваш', perItem:'Најевтино по производ',
        recognized:'Препознато во фрижидерот', shopping:'Список за пазарување', missing:'недостасува', low:'снемнува',
@@ -355,7 +377,10 @@ const BX = {
        cartTitle:'Мојата листа', cartEmpty:'Додај производи со ✚', storeAdvice:'Каде да пазарувам?',
        covers:'покрива', of:'од', artItems:'арт.', clearCart:'Исчисти', noData:'Нема',
        titansTitle:'Битката на Титаните', titansSub:'Вистински наспроти лажни промоции — последните 30 дена',
-       titansReal:'вистински', titansFake:'лажни', titansNoPromos:'без промоции', titansTracked:'следени производи' },
+       titansReal:'вистински', titansFake:'лажни', titansNoPromos:'без промоции', titansTracked:'следени производи',
+       tabBrochures:'Брошури', brochTitle:'Оваа седмица', brochSub:'Верифицирани промо понуди по синџир',
+       brochFake:'Лажна!', brochReal:'Вистинска', brochClaimed:'објавена', brochNoData:'Нема брошура',
+       brochPromos:'промоции', brochExpand:'Види ги сите', brochCollapse:'Сокриј' },
   ro:{ tabProducts:'Produse', tabBasket:'Coș', tabFridge:'Frigider', tabTable:'Tabel', tabTitans:'Titani', chains:'Prețuri pe lanțuri', cheapest:'cel mai ieftin',
        basketTitle:'Costul coșului pe lanț', cheapestBasket:'Cel mai ieftin coș', save:'economisești', perItem:'Cel mai ieftin pe produs',
        recognized:'Recunoscut în frigider', shopping:'Listă de cumpărături', missing:'lipsește', low:'se termină',
@@ -363,7 +388,10 @@ const BX = {
        cartTitle:'Lista mea', cartEmpty:'Adaugă produse cu ✚', storeAdvice:'De unde să cumpăr?',
        covers:'acoperă', of:'din', artItems:'art.', clearCart:'Șterge', noData:'Indisponibil',
        titansTitle:'Bătălia Titanilor', titansSub:'Reduceri reale vs. false — ultimele 30 de zile',
-       titansReal:'reale', titansFake:'false', titansNoPromos:'fără promoții', titansTracked:'produse monitorizate' },
+       titansReal:'reale', titansFake:'false', titansNoPromos:'fără promoții', titansTracked:'produse monitorizate',
+       tabBrochures:'Broșuri', brochTitle:'Săptămâna asta', brochSub:'Oferte promo verificate pe lanț',
+       brochFake:'Falsă!', brochReal:'Reală', brochClaimed:'declarată', brochNoData:'Fără broșură',
+       brochPromos:'promoții', brochExpand:'Vezi toate', brochCollapse:'Ascunde' },
   el:{ tabProducts:'Προϊόντα', tabBasket:'Καλάθι', tabFridge:'Ψυγείο', tabTable:'Πίνακας', tabTitans:'Τιτάνες', chains:'Τιμές ανά αλυσίδα', cheapest:'φθηνότερο',
        basketTitle:'Κόστος καλαθιού ανά αλυσίδα', cheapestBasket:'Φθηνότερο καλάθι', save:'εξοικονομείς', perItem:'Φθηνότερο ανά προϊόν',
        recognized:'Αναγνωρίστηκαν στο ψυγείο', shopping:'Λίστα αγορών', missing:'λείπει', low:'τελειώνει',
@@ -371,7 +399,10 @@ const BX = {
        cartTitle:'Η λίστα μου', cartEmpty:'Πρόσθεσε προϊόντα με ✚', storeAdvice:'Πού να ψωνίσω;',
        covers:'καλύπτει', of:'από', artItems:'αρ.', clearCart:'Καθαρισμός', noData:'Μη διαθ.',
        titansTitle:'Μάχη των Τιτάνων', titansSub:'Αληθινές vs. ψεύτικες προσφορές — τελευταίες 30 ημέρες',
-       titansReal:'αληθινές', titansFake:'ψεύτικες', titansNoPromos:'χωρίς προσφορές', titansTracked:'προϊόντα παρακολούθησης' },
+       titansReal:'αληθινές', titansFake:'ψεύτικες', titansNoPromos:'χωρίς προσφορές', titansTracked:'προϊόντα παρακολούθησης',
+       tabBrochures:'Φυλλάδια', brochTitle:'Αυτή την εβδομάδα', brochSub:'Επαληθευμένες προσφορές ανά αλυσίδα',
+       brochFake:'Ψεύτικη!', brochReal:'Αληθινή', brochClaimed:'δηλωθείσα', brochNoData:'Χωρίς φυλλάδιο',
+       brochPromos:'προσφορές', brochExpand:'Δες όλες', brochCollapse:'Απόκρυψη' },
   tr:{ tabProducts:'Ürünler', tabBasket:'Sepet', tabFridge:'Buzdolabı', tabTable:'Tablo', tabTitans:'Titanlar', chains:'Zincirlere göre fiyatlar', cheapest:'en ucuz',
        basketTitle:'Zincire göre sepet tutarı', cheapestBasket:'En ucuz sepet', save:'tasarruf', perItem:'Ürün başına en ucuz',
        recognized:'Buzdolabında tanındı', shopping:'Alışveriş listesi', missing:'eksik', low:'azalıyor',
@@ -379,7 +410,10 @@ const BX = {
        cartTitle:'Listem', cartEmpty:'✚ ile ürün ekle', storeAdvice:'Nerede alışveriş yapmalıyım?',
        covers:'karşılar', of:'/', artItems:'ürün', clearCart:'Temizle', noData:'Yok',
        titansTitle:'Titanların Savaşı', titansSub:'Gerçek vs. sahte indirimler — son 30 gün',
-       titansReal:'gerçek', titansFake:'sahte', titansNoPromos:'kampanya yok', titansTracked:'takip edilen ürün' },
+       titansReal:'gerçek', titansFake:'sahte', titansNoPromos:'kampanya yok', titansTracked:'takip edilen ürün',
+       tabBrochures:'Broşürler', brochTitle:'Bu hafta', brochSub:'Zincire göre doğrulanmış kampanyalar',
+       brochFake:'Sahte!', brochReal:'Gerçek', brochClaimed:'ilan edilen', brochNoData:'Broşür yok',
+       brochPromos:'kampanya', brochExpand:'Tümünü gör', brochCollapse:'Gizle' },
   sq:{ tabProducts:'Produktet', tabBasket:'Shporta', tabFridge:'Frigorifer', tabTable:'Tabelë', tabTitans:'Titanët', chains:'Çmimet sipas zinxhirëve', cheapest:'më i liri',
        basketTitle:'Kostoja e shportës sipas zinxhirit', cheapestBasket:'Shporta më e lirë', save:'kurseni', perItem:'Më i liri për produkt',
        recognized:'Të njohura në frigorifer', shopping:'Lista e blerjeve', missing:'mungon', low:'po mbaron',
@@ -387,7 +421,10 @@ const BX = {
        cartTitle:'Lista ime', cartEmpty:'Shto produkte me ✚', storeAdvice:'Ku të blej?',
        covers:'mbulon', of:'nga', artItems:'art.', clearCart:'Fshi', noData:'Pa disponueshëm',
        titansTitle:'Beteja e Titanëve', titansSub:'Zbritje reale vs. të rreme — 30 ditët e fundit',
-       titansReal:'reale', titansFake:'të rreme', titansNoPromos:'pa oferta', titansTracked:'produkte të ndjekura' },
+       titansReal:'reale', titansFake:'të rreme', titansNoPromos:'pa oferta', titansTracked:'produkte të ndjekura',
+       tabBrochures:'Fletushka', brochTitle:'Kjo javë', brochSub:'Oferta promo të verifikuara sipas zinxhirit',
+       brochFake:'E rreme!', brochReal:'E vërtetë', brochClaimed:'e deklaruar', brochNoData:'Pa fletushkë',
+       brochPromos:'oferta', brochExpand:'Shiko të gjitha', brochCollapse:'Fshih' },
   bs:{ tabProducts:'Proizvodi', tabBasket:'Korpa', tabFridge:'Frižider', tabTable:'Tabela', tabTitans:'Titani', chains:'Cijene po lancima', cheapest:'najjeftinije',
        basketTitle:'Cijena korpe po lancu', cheapestBasket:'Najjeftinija korpa', save:'uštedite', perItem:'Najjeftinije po proizvodu',
        recognized:'Prepoznato u frižideru', shopping:'Lista za kupovinu', missing:'nedostaje', low:'pri kraju',
@@ -395,7 +432,10 @@ const BX = {
        cartTitle:'Moja lista', cartEmpty:'Dodaj proizvode sa ✚', storeAdvice:'Gdje kupovati?',
        covers:'pokriva', of:'od', artItems:'art.', clearCart:'Obriši', noData:'Nema',
        titansTitle:'Bitka Titana', titansSub:'Prave vs. lažne akcije — posljednjih 30 dana',
-       titansReal:'prave', titansFake:'lažne', titansNoPromos:'bez akcija', titansTracked:'praćena proizvoda' },
+       titansReal:'prave', titansFake:'lažne', titansNoPromos:'bez akcija', titansTracked:'praćena proizvoda',
+       tabBrochures:'Brošure', brochTitle:'Ovaj tjedan', brochSub:'Verificirane promo ponude po lancu',
+       brochFake:'Lažna!', brochReal:'Prava', brochClaimed:'objavljena', brochNoData:'Nema brošure',
+       brochPromos:'akcija', brochExpand:'Vidi sve', brochCollapse:'Sakrij' },
   hr:{ tabProducts:'Proizvodi', tabBasket:'Košarica', tabFridge:'Hladnjak', tabTable:'Tablica', tabTitans:'Titani', chains:'Cijene po lancima', cheapest:'najjeftinije',
        basketTitle:'Cijena košarice po lancu', cheapestBasket:'Najjeftinija košarica', save:'uštedite', perItem:'Najjeftinije po proizvodu',
        recognized:'Prepoznato u hladnjaku', shopping:'Popis za kupnju', missing:'nedostaje', low:'pri kraju',
@@ -403,7 +443,10 @@ const BX = {
        cartTitle:'Moja lista', cartEmpty:'Dodaj proizvode s ✚', storeAdvice:'Gdje kupovati?',
        covers:'pokriva', of:'od', artItems:'art.', clearCart:'Obriši', noData:'Nema',
        titansTitle:'Bitka Titana', titansSub:'Prave vs. lažne akcije — zadnjih 30 dana',
-       titansReal:'prave', titansFake:'lažne', titansNoPromos:'bez akcija', titansTracked:'praćena proizvoda' },
+       titansReal:'prave', titansFake:'lažne', titansNoPromos:'bez akcija', titansTracked:'praćena proizvoda',
+       tabBrochures:'Letci', brochTitle:'Ovaj tjedan', brochSub:'Verificirane promo ponude po lancu',
+       brochFake:'Lažna!', brochReal:'Prava', brochClaimed:'objavljena', brochNoData:'Nema letka',
+       brochPromos:'akcija', brochExpand:'Vidi sve', brochCollapse:'Sakrij' },
   sl:{ tabProducts:'Izdelki', tabBasket:'Košarica', tabFridge:'Hladilnik', tabTable:'Tabela', tabTitans:'Titani', chains:'Cene po trgovinah', cheapest:'najceneje',
        basketTitle:'Cena košarice po trgovini', cheapestBasket:'Najcenejša košarica', save:'prihranite', perItem:'Najceneje po izdelku',
        recognized:'Prepoznano v hladilniku', shopping:'Nakupovalni seznam', missing:'manjka', low:'zmanjkuje',
@@ -411,7 +454,10 @@ const BX = {
        cartTitle:'Moj seznam', cartEmpty:'Dodaj izdelke z ✚', storeAdvice:'Kje kupovati?',
        covers:'pokriva', of:'od', artItems:'art.', clearCart:'Počisti', noData:'Ni na voljo',
        titansTitle:'Bitka Titanov', titansSub:'Prave vs. lažne akcije — zadnjih 30 dni',
-       titansReal:'prave', titansFake:'lažne', titansNoPromos:'brez akcij', titansTracked:'sledenih izdelkov' },
+       titansReal:'prave', titansFake:'lažne', titansNoPromos:'brez akcij', titansTracked:'sledenih izdelkov',
+       tabBrochures:'Letaki', brochTitle:'Ta teden', brochSub:'Preverjene promo ponudbe po trgovini',
+       brochFake:'Lažna!', brochReal:'Prava', brochClaimed:'navedena', brochNoData:'Ni letaka',
+       brochPromos:'akcij', brochExpand:'Prikaži vse', brochCollapse:'Skrij' },
 };
 
 // Hero strings (savings dashboard).
@@ -598,7 +644,7 @@ function renderTabs() {
   const X = BX[country.lang];
   const n = cartSize();
   const basketLbl = n ? `${X.tabBasket} <span style="background:var(--green);color:#fff;font-size:9px;border-radius:999px;padding:1px 5px;font-weight:800">${n}</span>` : X.tabBasket;
-  const items = [['products', '🏷️', X.tabProducts], ['basket', '🛒', basketLbl], ['table', '📊', X.tabTable], ['titans', '⚔️', X.tabTitans], ['fridge', '🧊', X.tabFridge]];
+  const items = [['products', '🏷️', X.tabProducts], ['basket', '🛒', basketLbl], ['brochures', '📋', X.tabBrochures], ['table', '📊', X.tabTable], ['titans', '⚔️', X.tabTitans], ['fridge', '🧊', X.tabFridge]];
   document.getElementById('tabs').innerHTML = items.map(([v, ic, lbl]) =>
     `<button class="${view===v?'on':''}" onclick="setView('${v}')"><span class="ic">${ic}</span>${lbl}</button>`).join('');
 }
@@ -763,6 +809,60 @@ function drawChart(p, col) {
   });
 }
 
+let brochOpen = {};  // chain → expanded bool
+
+function renderBrochures() {
+  const X = BX[country.lang];
+  const BD = window.SAVECHECK_BROCHURES;
+  if (!BD) {
+    document.getElementById('basket').innerHTML = `<div class="panel" style="text-align:center;padding:28px;color:var(--muted)">${X.brochNoData}</div>`;
+    return;
+  }
+  const verdictBadge = v => {
+    if (!v) return '';
+    const col = C[v], label = v === 'red' ? X.brochFake : v === 'green' ? X.brochReal : '';
+    if (!label) return '';
+    return `<span style="background:${col};color:#fff;font-size:9px;font-weight:750;padding:1px 6px;border-radius:999px;margin-left:5px">${label}</span>`;
+  };
+  const chains = BD.chains.map(ch => {
+    const isOpen = brochOpen[ch.chain] !== false;  // open by default
+    const items = ch.items;
+    const fakeN = items.filter(it => it.verdict === 'red').length;
+    const realN = items.filter(it => it.verdict === 'green').length;
+    const badges = [
+      realN ? `<span style="background:var(--green);color:#fff;font-size:9.5px;font-weight:750;padding:2px 7px;border-radius:999px">🟢 ${realN}</span>` : '',
+      fakeN ? `<span style="background:var(--red);color:#fff;font-size:9.5px;font-weight:750;padding:2px 7px;border-radius:999px">🔴 ${fakeN}</span>` : '',
+    ].filter(Boolean).join(' ');
+    const rows = items.slice(0, isOpen ? undefined : 5).map(it => {
+      const pctTxt = it.claimed_pct ? `<span class="bi-pct">−${it.claimed_pct}%</span>` : '';
+      const oldTxt = it.retail ? `<span class="bi-old">${money(it.retail)}</span>` : '';
+      const badge = verdictBadge(it.verdict);
+      return `<div class="broch-item">
+        <div class="bi-name">${it.name}${badge}</div>
+        <div style="text-align:right">${oldTxt} ${pctTxt}<br><span class="bi-price">${money(it.price)}</span></div>
+      </div>`;
+    }).join('');
+    const toggleBtn = items.length > 5
+      ? `<div style="text-align:center;padding:8px;border-top:1px solid var(--line);font-size:12px;color:var(--green);cursor:pointer;font-weight:700"
+           onclick="brochOpen['${ch.chain}']=${!isOpen};renderBrochures()">
+           ${isOpen ? X.brochCollapse : X.brochExpand + ` (${items.length - 5})`}
+         </div>` : '';
+    return `<div class="broch-chain">
+      <div class="broch-head" onclick="brochOpen['${ch.chain}']=!${isOpen};renderBrochures()">
+        <div><span class="bh-name">${ch.chain}</span><span class="bh-count" style="margin-left:8px">${ch.total_promos} ${X.brochPromos}</span></div>
+        <div class="bh-badge">${badges} <span style="color:var(--muted);font-size:16px">${isOpen?'▲':'▼'}</span></div>
+      </div>
+      ${isOpen ? `<div class="broch-body">${rows}${toggleBtn}</div>` : ''}
+    </div>`;
+  }).join('');
+  document.getElementById('basket').innerHTML = `
+    <div class="broch-hero">
+      <div class="bh-title">📋 ${X.brochTitle} <span style="font-weight:400;font-size:13px;opacity:.85">${BD.week_label || ''}</span></div>
+      <div class="bh-sub">${X.brochSub}</div>
+    </div>
+    ${chains || `<div style="text-align:center;padding:20px;color:var(--muted)">${X.brochNoData}</div>`}`;
+}
+
 function renderTitans() {
   const X = BX[country.lang];
   const data = (DEMO.titans || []).slice().sort((a, b) => {
@@ -817,6 +917,7 @@ function render() {
   if (prod) { renderProducts(); }
   else if (view === 'basket') { renderBasket(); }
   else if (view === 'table') { renderTable(); }
+  else if (view === 'brochures') { renderBrochures(); }
   else if (view === 'titans') { renderTitans(); }
   else { renderFridge(); }
 }
