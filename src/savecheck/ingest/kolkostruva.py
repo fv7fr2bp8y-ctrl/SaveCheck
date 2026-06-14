@@ -112,12 +112,14 @@ def parse_export(directory: str | Path, observed_on: date) -> Iterator[RawPriceR
 def fetch_opendata(day: date, base_url: str | None = None) -> bytes:
     """Download the export ZIP for ``day``.
 
-    PROVISIONAL: the exact URL shape is confirmed once the host is reachable
-    (kolkostruva.bg is currently outside this environment's egress allowlist).
+    URL (confirmed): https://kolkostruva.bg/opendata_files/YYYY-MM-DD.zip
+    The server requires a browser-like User-Agent (returns 403 otherwise).
     """
     import httpx  # imported lazily so the module loads without the 'ingest' extra
 
-    url = base_url or settings.kolkostruva_base_url
-    resp = httpx.get(url, params={"date": day.isoformat()}, timeout=120.0)
+    base = (base_url or settings.kolkostruva_base_url).rstrip("/")
+    url = f"{base}/{day.isoformat()}.zip"
+    headers = {"User-Agent": "Mozilla/5.0 (compatible; SaveCheck/1.0)"}
+    resp = httpx.get(url, headers=headers, timeout=120.0, follow_redirects=True)
     resp.raise_for_status()
     return resp.content

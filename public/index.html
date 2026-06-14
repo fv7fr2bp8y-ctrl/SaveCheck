@@ -352,14 +352,16 @@ const CHAINS_BY_COUNTRY = {
   GR:['Sklavenitis','AB Vasilopoulos','Lidl','Masoutis'],
   TR:['BİM','A101','Migros','Carrefour'],
 };
-// Deterministic per-(chain,product) spread in [0,12%]; the cheapest chain in a
-// market is normalised to the product's current (promo) price.
+// Deterministic per-(chain,product) spread [0,12%] — fallback for non-BG markets.
 function chainDelta(chain, pid) {
   let h = 0; const s = chain + '|' + pid;
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
   return (h % 13) / 100;
 }
 function offersFor(p) {
+  // Use real chain prices from data.js when available (BG market).
+  if (p.offers && p.offers.length) return p.offers.map(o => ({...o}));
+  // Fallback: synthetic spread for other markets.
   const chains = CHAINS_BY_COUNTRY[country.code] || [];
   const raw = chains.map(c => ({ chain: c, d: chainDelta(c, p.id) }));
   const minD = Math.min(...raw.map(r => r.d));

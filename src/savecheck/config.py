@@ -16,7 +16,7 @@ class Settings:
     # exact path/format is finalised once the host is reachable (see
     # ingest/kolkostruva.py).
     kolkostruva_base_url: str = os.getenv(
-        "SAVECHECK_KOLKOSTRUVA_URL", "https://kolkostruva.bg/opendata"
+        "SAVECHECK_KOLKOSTRUVA_URL", "https://kolkostruva.bg/opendata_files"
     )
 
 
