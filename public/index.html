@@ -59,18 +59,27 @@
   .cards { background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:var(--shadow-card); }
   .prow {
     display:flex; align-items:center; gap:11px; width:100%; border:0; background:none; cursor:pointer;
-    padding:11px 13px; text-align:left; border-top:1px solid var(--line);
+    padding:11px 13px 11px 16px; text-align:left; border-top:1px solid var(--line);
+    position:relative;
+  }
+  .prow::before {
+    content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
+    background:var(--vc, transparent);
   }
   .cards .prow:first-child { border-top:0; }
-  .prow.on { background:#f7faf7; }
+  .prow.on { background:color-mix(in srgb, var(--vc, var(--green)) 7%, var(--card)); }
   .prow .dot { width:11px; height:11px; border-radius:50%; flex:none; }
-  .prow .ill { width:36px; height:36px; border-radius:11px; background:#f1ede3; display:flex; align-items:center; justify-content:center; font-size:20px; flex:none; }
-  .vtag { display:inline-block; font-size:9.5px; font-weight:750; color:#fff; padding:1px 7px; border-radius:999px; margin-left:4px; vertical-align:middle; letter-spacing:.02em; }
+  .prow .ill {
+    width:38px; height:38px; border-radius:12px;
+    background:color-mix(in srgb, var(--vc, #f1ede3) 14%, #f5f1ea);
+    display:flex; align-items:center; justify-content:center; font-size:21px; flex:none;
+  }
+  .vtag { display:inline-block; font-size:9px; font-weight:800; color:#fff; padding:2px 7px; border-radius:999px; margin-left:5px; vertical-align:middle; letter-spacing:.03em; }
   .prow .pnm { flex:1; font-weight:700; font-size:14px; line-height:1.25; }
-  .prow .pnm small { display:block; color:var(--muted); font-weight:500; font-size:11px; }
-  .prow .ppr { font-weight:800; font-size:15px; font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap; }
-  .prow .ppr em { display:block; font-style:normal; font-size:11px; font-weight:700; margin-top:1px; }
-  .detail { padding:2px 13px 14px; background:#fcfcfb; border-top:1px solid var(--line); }
+  .prow .pnm small { display:block; color:var(--muted); font-weight:500; font-size:11px; margin-top:1px; }
+  .prow .ppr { font-weight:900; font-size:16px; font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap; letter-spacing:-.01em; }
+  .prow .ppr em { display:inline-block; font-style:normal; font-size:10px; font-weight:800; margin-top:4px; color:#fff; padding:2px 7px; border-radius:999px; vertical-align:top; }
+  .detail { padding:2px 13px 14px; background:color-mix(in srgb, var(--vc, var(--green)) 4%, var(--card)); border-top:1px solid var(--line); }
   .detail .badge { margin-top:10px; }
   .panel { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px; margin-top:12px; box-shadow:var(--shadow-card); }
   .badge {
@@ -707,12 +716,12 @@ function renderProducts() {
     const meta = PRODUCTS[p.id];
     const on = i === active;
     const disc = p.discount_pct != null && p.discount_pct > 0
-        ? `<em style="color:${C.green}">−${p.discount_pct}%</em>` : '';
+        ? `<em style="background:${C[p.verdict]}">−${p.discount_pct}%</em>` : '';
     const unit = p.current_unit_price == null ? ''
         : ` <small>· ${disp(p.current_unit_price*country.fx)} ${unitLabel(p.unit_kind)}</small>`;
     const inCart = !!cart[p.id];
     const rowHtml = `
-      <button class="prow ${on?'on':''}" onclick="select(${i})">
+      <button class="prow ${on?'on':''}" onclick="select(${i})" data-v="${p.verdict}" style="--vc:${C[p.verdict]}">
         <span class="ill">${emojiOf(p.id)}</span>
         <span class="pnm">${meta.name[country.lang]} <span class="vtag" style="background:${C[p.verdict]}">${TAG[p.verdict][country.lang]}</span><small>${meta.pack[country.lang]}${unit}</small></span>
         <span class="cadd ${inCart?'in':''}" role="button" tabindex="0" onclick="event.stopPropagation();toggleCart('${p.id}')">${inCart?'✓':'+'}</span>
