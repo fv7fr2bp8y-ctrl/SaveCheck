@@ -180,6 +180,12 @@
   .hh-amt { font-size:var(--t-2xl); font-weight:900; letter-spacing:-.03em; line-height:1; color:var(--green); }
   .hh-sub { font-size:11.5px; color:var(--muted); }
   .hh-banner { width:154px; flex:none; padding:8px 14px 8px 0; background-size:108%; background-repeat:no-repeat; background-position:center center; background-origin:content-box; background-clip:content-box; }
+  .fake-hook { display:flex; align-items:center; gap:12px; background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; border-radius:16px; padding:14px 16px; margin-top:10px; cursor:pointer; box-shadow:0 8px 20px rgba(217,119,6,.28); }
+  .fake-hook .fh-ic { font-size:24px; flex:none; }
+  .fake-hook .fh-tx { flex:1; }
+  .fake-hook .fh-big { font-weight:900; font-size:15px; letter-spacing:-.01em; }
+  .fake-hook .fh-sub { font-size:11.5px; opacity:.92; margin-top:1px; }
+  .fake-hook .fh-arr { font-weight:800; font-size:18px; opacity:.9; }
   .section-label { font-size:var(--t-xs); font-weight:750; color:var(--muted); text-transform:uppercase; letter-spacing:.07em; margin:16px 0 8px; }
   .deal-scroll { display:flex; gap:10px; overflow-x:auto; padding:0 14px 6px; margin:0 -14px; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; }
   .deal-scroll::-webkit-scrollbar { display:none; }
@@ -645,16 +651,16 @@ Object.keys(BX_EX).forEach(lang => BX[lang] && Object.assign(BX[lang], BX_EX[lan
 const FILTER_ALL = { bg:'Всички', sr:'Sve', mk:'Сите', ro:'Toate', el:'Όλα', tr:'Tümü', sq:'Të gjitha', bs:'Sve', hr:'Sve', sl:'Vse' };
 const NO_MATCH = { bg:'Няма продукти в тази категория', sr:'Nema proizvoda u ovoj kategoriji', mk:'Нема производи во оваа категорија', ro:'Niciun produs în această categorie', el:'Δεν υπάρχουν προϊόντα σε αυτή την κατηγορία', tr:'Bu kategoride ürün yok', sq:'Nuk ka produkte në këtë kategori', bs:'Nema proizvoda u ovoj kategoriji', hr:'Nema proizvoda u ovoj kategoriji', sl:'Ni izdelkov v tej kategoriji' };
 const HX = {
-  bg:{ saved:'Спестяваш с реалните промоции', promos:'реални промоции', caught:'Хванахме', fakes:'фалшиви промоции', period:'последните 30 дни' },
-  sr:{ saved:'Štedite uz prave akcije', promos:'pravih akcija', caught:'Uhvatili smo', fakes:'lažnih akcija', period:'poslednjih 30 dana' },
-  mk:{ saved:'Заштедуваш со вистинските промоции', promos:'вистински промоции', caught:'Фативме', fakes:'лажни промоции', period:'последните 30 дена' },
-  ro:{ saved:'Economisești cu reducerile reale', promos:'reduceri reale', caught:'Am prins', fakes:'reduceri false', period:'ultimele 30 de zile' },
-  el:{ saved:'Εξοικονομείς με τις αληθινές προσφορές', promos:'αληθινές προσφορές', caught:'Εντοπίσαμε', fakes:'ψεύτικες προσφορές', period:'τελευταίες 30 ημέρες' },
-  tr:{ saved:'Gerçek indirimlerle tasarruf', promos:'gerçek indirim', caught:'Yakaladık', fakes:'sahte indirim', period:'son 30 gün' },
-  sq:{ saved:'Kurseni me ofertat e vërteta', promos:'oferta të vërteta', caught:'Kapëm', fakes:'oferta të rreme', period:'30 ditët e fundit' },
-  bs:{ saved:'Štedite uz prave akcije', promos:'pravih akcija', caught:'Uhvatili smo', fakes:'lažnih akcija', period:'posljednjih 30 dana' },
-  hr:{ saved:'Štedite uz prave akcije', promos:'pravih akcija', caught:'Uhvatili smo', fakes:'lažnih akcija', period:'zadnjih 30 dana' },
-  sl:{ saved:'Prihranite s pravimi akcijami', promos:'pravih akcij', caught:'Ujeli smo', fakes:'lažnih akcij', period:'zadnjih 30 dni' },
+  bg:{ saved:'Спестяваш с реалните промоции', promos:'реални промоции', fakes:'подвеждащи промоции', period:'последните 30 дни' },
+  sr:{ saved:'Štedite uz prave akcije', promos:'pravih akcija', fakes:'obmanjujućih akcija', period:'poslednjih 30 dana' },
+  mk:{ saved:'Заштедуваш со вистинските промоции', promos:'вистински промоции', fakes:'заблудувачки промоции', period:'последните 30 дена' },
+  ro:{ saved:'Economisești cu reducerile reale', promos:'reduceri reale', fakes:'reduceri înșelătoare', period:'ultimele 30 de zile' },
+  el:{ saved:'Εξοικονομείς με τις αληθινές προσφορές', promos:'αληθινές προσφορές', fakes:'παραπλανητικές προσφορές', period:'τελευταίες 30 ημέρες' },
+  tr:{ saved:'Gerçek indirimlerle tasarruf', promos:'gerçek indirim', fakes:'yanıltıcı indirim', period:'son 30 gün' },
+  sq:{ saved:'Kurseni me ofertat e vërteta', promos:'oferta të vërteta', fakes:'oferta mashtruese', period:'30 ditët e fundit' },
+  bs:{ saved:'Štedite uz prave akcije', promos:'pravih akcija', fakes:'obmanjujućih akcija', period:'posljednjih 30 dana' },
+  hr:{ saved:'Štedite uz prave akcije', promos:'pravih akcija', fakes:'obmanjujućih akcija', period:'zadnjih 30 dana' },
+  sl:{ saved:'Prihranite s pravimi akcijami', promos:'pravih akcij', fakes:'zavajajočih akcij', period:'zadnjih 30 dni' },
 };
 
 const EMOJI = {
@@ -1211,6 +1217,8 @@ function renderHome() {
     }
   });
 
+  const fakesCaught = (DEMO.titans || []).reduce((s, t) => s + (t.fake || 0), 0);
+
   const titans = (DEMO.titans || []).slice()
     .sort((a, b) => {
       const ra = a.total_promos ? a.real / a.total_promos : -1;
@@ -1238,6 +1246,12 @@ function renderHome() {
       </div>
       <div class="hh-banner" style="background-image:url('./img/hero-banner.png')"></div>
     </div>
+    ${fakesCaught ? `
+    <div class="fake-hook" onclick="setView('promos');promosTab='brochures';render()">
+      <span class="fh-ic">⚠️</span>
+      <span class="fh-tx"><div class="fh-big">${fakesCaught} ${H.fakes}</div><div class="fh-sub">${H.period}</div></span>
+      <span class="fh-arr">›</span>
+    </div>` : ''}
     ${titans.length ? `
     <div class="section-label" style="margin-top:14px">${X.titansTitle}</div>
     <div class="card-block">${titansHTML}
