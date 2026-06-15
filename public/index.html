@@ -54,11 +54,16 @@
   .brand h1 { font-size:24px; margin:0; letter-spacing:-.03em; font-weight:800; line-height:1.05; }
   .brand h1 b { color:var(--green); }
   .brand-tagline { font-size:11px; color:var(--muted); font-weight:600; letter-spacing:.01em; }
-  .appbar-right { margin-left:auto; display:flex; align-items:center; gap:7px; flex:none; }
-  .scan-quick { flex:none; width:38px; height:38px; display:flex; align-items:center; justify-content:center; border:1px solid var(--line); border-radius:11px; background:var(--cream); color:var(--green); cursor:pointer; padding:0; transition:border-color .15s; }
+  .appbar-search { display:flex; align-items:center; gap:8px; margin-top:12px; }
+  .search-field { flex:1; display:flex; align-items:center; gap:8px; background:var(--cream); border:1.5px solid var(--line); border-radius:12px; padding:0 12px; transition:border-color .15s; }
+  .search-field:focus-within { border-color:var(--green); }
+  .search-field svg { width:17px; height:17px; stroke:var(--muted); fill:none; stroke-width:2; flex:none; }
+  .search-field input { flex:1; border:0; background:none; outline:none; font-family:inherit; font-size:14px; color:var(--ink); padding:11px 0; min-width:0; }
+  .search-field input::placeholder { color:var(--muted); }
+  .scan-quick { flex:none; width:44px; height:44px; display:flex; align-items:center; justify-content:center; border:1.5px solid var(--line); border-radius:12px; background:var(--cream); color:var(--green); cursor:pointer; padding:0; transition:border-color .15s; }
   .scan-quick:hover { border-color:var(--green); }
-  .scan-quick svg { width:19px; height:19px; stroke:var(--green); fill:none; stroke-width:2; }
-  .country-picker { position:relative; }
+  .scan-quick svg { width:21px; height:21px; stroke:var(--green); fill:none; stroke-width:2; }
+  .country-picker { position:relative; margin-left:auto; }
   .cp-trigger { display:flex; align-items:center; gap:5px; border:1px solid var(--line); background:var(--cream); border-radius:11px; cursor:pointer; padding:8px 11px; font-size:18px; line-height:1; }
   .cp-trigger .cc { font-size:10px; font-weight:700; color:var(--muted); }
   .cp-chev { width:10px; height:10px; stroke:var(--muted); transition:transform .2s; flex:none; }
@@ -274,27 +279,27 @@
         <h1>Save<b>Check</b></h1>
         <div class="brand-tagline">Цените под лупа</div>
       </div>
-      <div class="appbar-right">
-        <button class="scan-quick" onclick="setView('scan')" aria-label="Сканирай баркод">
-          <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      <div class="country-picker" id="country-picker">
+        <button class="cp-trigger" id="cp-trigger" onclick="toggleCountryPicker()">
+          <span id="cp-flag">🇧🇬</span>
+          <span id="cp-code" class="cc">BG</span>
+          <svg class="cp-chev" viewBox="0 0 10 10" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5L5 6.5L8 3.5"/></svg>
         </button>
-        <div class="country-picker" id="country-picker">
-          <button class="cp-trigger" id="cp-trigger" onclick="toggleCountryPicker()">
-            <span id="cp-flag">🇧🇬</span>
-            <span id="cp-code" class="cc">BG</span>
-            <svg class="cp-chev" viewBox="0 0 10 10" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5L5 6.5L8 3.5"/></svg>
-          </button>
-          <div class="cp-menu" id="flags"></div>
-        </div>
-        <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" aria-label="Смени тема">
-          <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
-        </button>
+        <div class="cp-menu" id="flags"></div>
       </div>
+    </div>
+    <div class="appbar-search">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="search" id="search-input" oninput="doSearch(this.value)" />
+      </div>
+      <button class="scan-quick" onclick="setView('scan')" aria-label="Сканирай баркод">
+        <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </button>
     </div>
   </div>
   <div class="hero" id="hero" style="display:none"></div>
   <div id="sub-tabs-wrap"></div>
-  <div class="search-wrap" id="search-wrap" style="display:none"><input type="search" id="search-input" oninput="doSearch(this.value)" /></div>
   <div class="filter-wrap" id="filter-wrap" style="display:none"></div>
   <div class="scroll">
     <div class="cards" id="cards"></div>
@@ -798,7 +803,17 @@ function renderChrome() {
 
 // Single-screen accordion: one compact row per product; tap to expand its
 // chart + summary inline, without leaving the screen.
-function doSearch(q) { query = q.trim().toLowerCase(); active = -1; renderProducts(); }
+function doSearch(q) {
+  query = q.trim().toLowerCase();
+  active = -1;
+  // Search lives in the header now — typing from any tab jumps to the product list.
+  if (query && !(view === 'shop' && shopTab === 'products')) {
+    view = 'shop'; shopTab = 'products';
+    render();
+  } else {
+    renderProducts();
+  }
+}
 
 const VERDICT_FILTERS = ['all', 'green', 'red', 'yellow'];
 function renderFilters() {
@@ -1429,9 +1444,7 @@ function render() {
   document.getElementById('panel').style.display = 'none';
   document.getElementById('basket').style.display = isProd ? 'none' : '';
 
-  const sw = document.getElementById('search-wrap');
-  sw.style.display = isProd ? '' : 'none';
-  if (isProd) document.getElementById('search-input').placeholder = X.search;
+  document.getElementById('search-input').placeholder = X.search;
 
   const fw = document.getElementById('filter-wrap');
   fw.style.display = isProd ? '' : 'none';
@@ -1482,7 +1495,10 @@ function setCountry(i){ country = COUNTRIES[i]; document.documentElement.lang = 
 function setView(v){
   if (v !== 'scan') stopScanner();
   view = v;
-  if (v !== 'shop' || shopTab !== 'products') query = '';
+  if (v !== 'shop' || shopTab !== 'products') {
+    query = '';
+    const si = document.getElementById('search-input'); if (si) si.value = '';
+  }
   render();
   animIn(v === 'shop' && shopTab === 'products' ? 'cards' : 'basket');
 }
