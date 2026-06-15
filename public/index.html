@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- build: home hook bar v2 -->
 <html lang="bg">
 <head>
 <meta charset="utf-8" />
@@ -11,7 +12,17 @@
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="./og.svg" />
+<!-- Home Screen / PWA -->
+<link rel="manifest" href="./manifest.webmanifest" />
+<meta name="theme-color" content="#16a34a" />
+<link rel="apple-touch-icon" href="./img/icon-180.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="./img/icon-192.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="SaveCheck" />
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
 <script src="./data.js"></script>
 <script src="./brochures.js"></script>
 <style>
@@ -33,7 +44,7 @@
   [data-theme="dark"] body { background:radial-gradient(1100px 560px at 50% -8%,#0a2418,#0f0f11); }
   [data-theme="dark"] .phone { border-color:#2c2c2e; box-shadow:0 30px 70px rgba(0,0,0,.7); }
   [data-theme="dark"] .titan-bar-wrap { background:#2c2c2e; }
-  [data-theme="dark"] .flags button.active { background:color-mix(in srgb,var(--green) 18%,var(--cream)); }
+  [data-theme="dark"] .cp-menu button.active { background:color-mix(in srgb,var(--green) 18%,var(--cream)); }
   [data-theme="dark"] .advice-box { background:color-mix(in srgb,var(--green) 12%,var(--card)); }
   * { box-sizing:border-box; }
   body {
@@ -45,23 +56,36 @@
     max-width:430px; margin:0 auto; background:var(--cream); border:1px solid var(--line);
     border-radius:34px; overflow:hidden; box-shadow:0 30px 70px rgba(28,25,23,.20);
   }
-  .appbar { background:var(--card); padding:16px 18px 12px; border-bottom:1px solid var(--line); }
-  .brand { display:flex; align-items:center; gap:10px; }
-  .brand .logo { width:32px; height:32px; flex:none; }
-  .brand h1 { font-size:20px; margin:0; letter-spacing:-.02em; }
+  .appbar { background:var(--card); padding:14px 14px; border-bottom:1px solid var(--line); }
+  .brand { display:flex; align-items:center; gap:8px; }
+  .brand .logo { width:54px; height:54px; flex:none; object-fit:contain; }
+  .brand-text { display:flex; flex-direction:column; gap:2px; }
+  .brand h1 { font-size:24px; margin:0; letter-spacing:-.03em; font-weight:800; line-height:1.05; }
   .brand h1 b { color:var(--green); }
-  .brand .sub { color:var(--muted); font-size:11.5px; margin-top:2px; line-height:1.3; }
-  .flags { display:flex; gap:6px; margin-top:12px; overflow-x:auto; padding-bottom:2px; }
-  .flags::-webkit-scrollbar { display:none; }
-  .flags button {
-    flex:none; border:1px solid var(--line); background:var(--cream); border-radius:9px; cursor:pointer;
-    padding:4px 7px; font-size:15px; line-height:1; display:flex; align-items:center; gap:4px;
-  }
-  .flags button .cc { font-size:10px; font-weight:700; color:var(--muted); }
-  .flags button.active { border-color:var(--green); background:var(--green-bg); }
-  .theme-btn { border:0; background:none; cursor:pointer; color:var(--muted); padding:4px; margin-left:auto; line-height:1; border-radius:8px; transition:color .15s; flex:none; }
+  .brand-tagline { font-size:11px; color:var(--muted); font-weight:600; letter-spacing:.01em; }
+  .appbar-search { display:flex; align-items:center; gap:8px; margin-top:12px; }
+  .search-field { flex:1; display:flex; align-items:center; gap:8px; background:var(--cream); border:1.5px solid var(--line); border-radius:12px; padding:0 12px; transition:border-color .15s; }
+  .search-field:focus-within { border-color:var(--green); }
+  .search-field svg { width:17px; height:17px; stroke:var(--muted); fill:none; stroke-width:2; flex:none; }
+  .search-field input { flex:1; border:0; background:none; outline:none; font-family:inherit; font-size:14px; color:var(--ink); padding:11px 0; min-width:0; }
+  .search-field input::placeholder { color:var(--muted); }
+  .scan-quick { flex:none; width:44px; height:44px; display:flex; align-items:center; justify-content:center; border:1.5px solid var(--line); border-radius:12px; background:var(--cream); color:var(--green); cursor:pointer; padding:0; transition:border-color .15s; }
+  .scan-quick:hover { border-color:var(--green); }
+  .scan-quick svg { width:21px; height:21px; stroke:var(--green); fill:none; stroke-width:2; }
+  .country-picker { position:relative; margin-left:auto; }
+  .cp-trigger { display:flex; align-items:center; gap:5px; border:1px solid var(--line); background:var(--cream); border-radius:11px; cursor:pointer; padding:8px 11px; font-size:18px; line-height:1; }
+  .cp-trigger .cc { font-size:10px; font-weight:700; color:var(--muted); }
+  .cp-chev { width:10px; height:10px; stroke:var(--muted); transition:transform .2s; flex:none; }
+  .cp-trigger.open .cp-chev { transform:rotate(180deg); }
+  .cp-menu { position:absolute; right:0; top:calc(100% + 8px); background:var(--card); border:1px solid var(--line); border-radius:14px; box-shadow:0 8px 28px rgba(0,0,0,.14); padding:6px; display:none; z-index:200; min-width:130px; }
+  .cp-menu.open { display:flex; flex-direction:column; gap:2px; }
+  .cp-menu button { border:0; background:none; cursor:pointer; padding:8px 12px; border-radius:9px; font-size:16px; display:flex; align-items:center; gap:8px; width:100%; text-align:left; color:var(--ink); }
+  .cp-menu button:hover { background:var(--cream); }
+  .cp-menu button.active { background:var(--green-bg); }
+  .cp-menu button .cc { font-size:11px; font-weight:700; color:var(--muted); }
+  .cp-menu button.active .cc { color:var(--green-d); }
+  .theme-btn { border:0; background:none; cursor:pointer; color:var(--muted); padding:4px; line-height:1; border-radius:8px; transition:color .15s; flex:none; }
   .theme-btn:hover { color:var(--ink); }
-  .flags button.active .cc { color:var(--green-d); }
   .hero {
     margin:14px 14px 0; color:#fff; border-radius:18px; padding:15px 17px;
     background:linear-gradient(135deg,#16a34a,#15803d); box-shadow:0 12px 26px rgba(22,163,74,.28);
@@ -169,10 +193,18 @@
   .scan-result-card { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px; }
   .scan-ean { font-size:10.5px; color:var(--muted); margin-top:8px; }
   /* ── Home tab ── */
-  .home-hero { background:linear-gradient(135deg,#16a34a,#15803d); color:#fff; border-radius:20px; padding:20px; margin-bottom:6px; box-shadow:0 8px 24px rgba(22,163,74,.28); }
-  .home-hero-lbl { font-size:var(--t-sm); opacity:.9; font-weight:600; letter-spacing:.01em; }
-  .home-hero-amt { font-size:var(--t-2xl); font-weight:900; letter-spacing:-.03em; margin-top:2px; line-height:1; }
-  .home-hero-meta { font-size:var(--t-sm); opacity:.9; margin-top:6px; }
+  .home-hero { border-radius:20px; margin-bottom:6px; box-shadow:0 4px 16px rgba(22,163,74,.12); display:flex; align-items:stretch; overflow:hidden; border:2px solid var(--green); background:var(--card); }
+  .hh-left { flex:1; padding:16px 18px; display:flex; flex-direction:column; justify-content:center; gap:4px; }
+  .hh-lbl { font-size:11.5px; color:var(--green); font-weight:600; letter-spacing:.01em; }
+  .hh-amt { font-size:var(--t-2xl); font-weight:900; letter-spacing:-.03em; line-height:1; color:var(--green); }
+  .hh-sub { font-size:11.5px; color:var(--muted); }
+  .hh-banner { width:154px; flex:none; padding:8px 14px 8px 0; background-size:108%; background-repeat:no-repeat; background-position:center center; background-origin:content-box; background-clip:content-box; }
+  .fake-hook { display:flex; align-items:center; gap:12px; background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; border-radius:16px; padding:14px 16px; margin-top:10px; cursor:pointer; box-shadow:0 8px 20px rgba(217,119,6,.28); }
+  .fake-hook .fh-ic { font-size:24px; flex:none; }
+  .fake-hook .fh-tx { flex:1; }
+  .fake-hook .fh-big { font-weight:900; font-size:15px; letter-spacing:-.01em; }
+  .fake-hook .fh-sub { font-size:11.5px; opacity:.92; margin-top:1px; }
+  .fake-hook .fh-arr { font-weight:800; font-size:18px; opacity:.9; }
   .section-label { font-size:var(--t-xs); font-weight:750; color:var(--muted); text-transform:uppercase; letter-spacing:.07em; margin:16px 0 8px; }
   .deal-scroll { display:flex; gap:10px; overflow-x:auto; padding:0 14px 6px; margin:0 -14px; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; }
   .deal-scroll::-webkit-scrollbar { display:none; }
@@ -220,7 +252,14 @@
     outline:none; font-family:inherit;
   }
   .search-wrap input:focus { border-color:var(--green); }
-  .cadd { width:28px; height:28px; border-radius:50%; border:1.5px solid var(--green); background:none; cursor:pointer; font-size:15px; font-weight:800; display:flex; align-items:center; justify-content:center; flex:none; color:var(--green); line-height:1; padding:0; }
+  .filter-wrap { padding:10px 14px 0; display:flex; gap:6px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .filter-wrap::-webkit-scrollbar { display:none; }
+  .fchip { flex:none; border:1.5px solid var(--line); background:var(--card); border-radius:999px; padding:6px 12px; font-size:12px; font-weight:700; color:var(--muted); cursor:pointer; font-family:inherit; display:flex; align-items:center; gap:5px; white-space:nowrap; line-height:1; transition:background .12s,color .12s,border-color .12s; }
+  .fchip .fc-n { font-weight:800; opacity:.65; }
+  .fchip.active { color:#fff; border-color:transparent; }
+  .fchip.active .fc-n { opacity:.85; }
+  .empty-filter { text-align:center; padding:28px 16px; color:var(--muted); font-size:14px; }
+  .cadd { width:28px; height:28px; border-radius:50%; border:1.5px solid var(--green); background:none; cursor:pointer; font-size:15px; font-weight:800; display:flex; align-items:center; justify-content:center; flex:none; color:var(--green); line-height:1; padding:0; font-family:inherit; }
   .cadd.in { background:var(--green); color:#fff; }
   .advice-box { background:#eaf5ee; border:1.5px solid var(--green); border-radius:14px; padding:12px 14px; margin-bottom:12px; }
   .advice-box .advice-lbl { font-size:10.5px; font-weight:700; color:var(--green-d); text-transform:uppercase; letter-spacing:.04em; }
@@ -244,23 +283,33 @@
 <div class="phone">
   <div class="appbar">
     <div class="brand">
-      <svg class="logo" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-        <rect x="3" y="3" width="26" height="26" rx="8" fill="#16a34a"/>
-        <path d="M9.5 16.5l4.2 4.2L23 11" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <div>
+      <img class="logo" src="./img/logos/logo-d.png" alt="SaveCheck" onclick="setView('home')" style="cursor:pointer"/>
+      <div class="brand-text" onclick="setView('home')" style="cursor:pointer">
         <h1>Save<b>Check</b></h1>
-        <div class="sub" id="tagline"></div>
+        <div class="brand-tagline">Цените под лупа</div>
       </div>
-      <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" aria-label="Смени тема">
-        <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
+      <div class="country-picker" id="country-picker">
+        <button class="cp-trigger" id="cp-trigger" onclick="toggleCountryPicker()">
+          <span id="cp-flag">🇧🇬</span>
+          <span id="cp-code" class="cc">BG</span>
+          <svg class="cp-chev" viewBox="0 0 10 10" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5L5 6.5L8 3.5"/></svg>
+        </button>
+        <div class="cp-menu" id="flags"></div>
+      </div>
+    </div>
+    <div class="appbar-search">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="search" id="search-input" oninput="doSearch(this.value)" />
+      </div>
+      <button class="scan-quick" onclick="setView('scan')" aria-label="Сканирай баркод">
+        <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
       </button>
     </div>
-    <div class="flags" id="flags"></div>
   </div>
   <div class="hero" id="hero" style="display:none"></div>
   <div id="sub-tabs-wrap"></div>
-  <div class="search-wrap" id="search-wrap" style="display:none"><input type="search" id="search-input" oninput="doSearch(this.value)" /></div>
+  <div class="filter-wrap" id="filter-wrap" style="display:none"></div>
   <div class="scroll">
     <div class="cards" id="cards"></div>
     <div class="panel" id="panel"></div>
@@ -623,17 +672,19 @@ const BX_EX = {
 Object.keys(BX_EX).forEach(lang => BX[lang] && Object.assign(BX[lang], BX_EX[lang]));
 
 // Hero strings (savings dashboard).
+const FILTER_ALL = { bg:'Всички', sr:'Sve', mk:'Сите', ro:'Toate', el:'Όλα', tr:'Tümü', sq:'Të gjitha', bs:'Sve', hr:'Sve', sl:'Vse' };
+const NO_MATCH = { bg:'Няма продукти в тази категория', sr:'Nema proizvoda u ovoj kategoriji', mk:'Нема производи во оваа категорија', ro:'Niciun produs în această categorie', el:'Δεν υπάρχουν προϊόντα σε αυτή την κατηγορία', tr:'Bu kategoride ürün yok', sq:'Nuk ka produkte në këtë kategori', bs:'Nema proizvoda u ovoj kategoriji', hr:'Nema proizvoda u ovoj kategoriji', sl:'Ni izdelkov v tej kategoriji' };
 const HX = {
-  bg:{ saved:'Спестяваш с реалните промоции', promos:'реални промоции' },
-  sr:{ saved:'Štedite uz prave akcije', promos:'pravih akcija' },
-  mk:{ saved:'Заштедуваш со вистинските промоции', promos:'вистински промоции' },
-  ro:{ saved:'Economisești cu reducerile reale', promos:'reduceri reale' },
-  el:{ saved:'Εξοικονομείς με τις αληθινές προσφορές', promos:'αληθινές προσφορές' },
-  tr:{ saved:'Gerçek indirimlerle tasarruf', promos:'gerçek indirim' },
-  sq:{ saved:'Kurseni me ofertat e vërteta', promos:'oferta të vërteta' },
-  bs:{ saved:'Štedite uz prave akcije', promos:'pravih akcija' },
-  hr:{ saved:'Štedite uz prave akcije', promos:'pravih akcija' },
-  sl:{ saved:'Prihranite s pravimi akcijami', promos:'pravih akcij' },
+  bg:{ saved:'Спестяваш с реалните промоции', promos:'реални промоции', fakes:'подвеждащи промоции', period:'последните 30 дни' },
+  sr:{ saved:'Štedite uz prave akcije', promos:'pravih akcija', fakes:'obmanjujućih akcija', period:'poslednjih 30 dana' },
+  mk:{ saved:'Заштедуваш со вистинските промоции', promos:'вистински промоции', fakes:'заблудувачки промоции', period:'последните 30 дена' },
+  ro:{ saved:'Economisești cu reducerile reale', promos:'reduceri reale', fakes:'reduceri înșelătoare', period:'ultimele 30 de zile' },
+  el:{ saved:'Εξοικονομείς με τις αληθινές προσφορές', promos:'αληθινές προσφορές', fakes:'παραπλανητικές προσφορές', period:'τελευταίες 30 ημέρες' },
+  tr:{ saved:'Gerçek indirimlerle tasarruf', promos:'gerçek indirim', fakes:'yanıltıcı indirim', period:'son 30 gün' },
+  sq:{ saved:'Kurseni me ofertat e vërteta', promos:'oferta të vërteta', fakes:'oferta mashtruese', period:'30 ditët e fundit' },
+  bs:{ saved:'Štedite uz prave akcije', promos:'pravih akcija', fakes:'obmanjujućih akcija', period:'posljednjih 30 dana' },
+  hr:{ saved:'Štedite uz prave akcije', promos:'pravih akcija', fakes:'obmanjujućih akcija', period:'zadnjih 30 dana' },
+  sl:{ saved:'Prihranite s pravimi akcijami', promos:'pravih akcij', fakes:'zavajajočih akcij', period:'zadnjih 30 dni' },
 };
 
 const EMOJI = {
@@ -683,6 +734,7 @@ const DEMO = (window.SAVECHECK_DEMO || {products:[]});
 const products = DEMO.products;
 let active = -1, country = COUNTRIES[0], view = 'home', query = '', cart = {};
 let shopTab = 'products', promosTab = 'brochures';
+let verdictFilter = 'all';
 let scanStream = null;
 
 // Store chains per market — a mix of domestic and foreign (international)
@@ -727,20 +779,65 @@ const fmtQty = v => Number.isInteger(v) ? String(v) : String(Math.round(v * 100)
 const t = () => UI[country.lang];
 
 function renderFlags() {
+  const flagEl = document.getElementById('cp-flag');
+  const codeEl = document.getElementById('cp-code');
+  if (flagEl) flagEl.textContent = country.flag;
+  if (codeEl) codeEl.textContent = country.code;
   document.getElementById('flags').innerHTML = COUNTRIES.map((c, i) => `
-    <button class="${c.code===country.code?'active':''}" onclick="setCountry(${i})" title="${c.code}">
+    <button class="${c.code===country.code?'active':''}" onclick="selectCountry(${i})">
       ${c.flag}<span class="cc">${c.code}</span>
     </button>`).join('');
 }
+function toggleCountryPicker() {
+  const menu = document.getElementById('flags');
+  const trigger = document.getElementById('cp-trigger');
+  const open = menu.classList.toggle('open');
+  trigger.classList.toggle('open', open);
+}
+function selectCountry(i) {
+  document.getElementById('flags').classList.remove('open');
+  document.getElementById('cp-trigger').classList.remove('open');
+  setCountry(i);
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#country-picker')) {
+    document.getElementById('flags')?.classList.remove('open');
+    document.getElementById('cp-trigger')?.classList.remove('open');
+  }
+});
 
 function renderChrome() {
-  document.getElementById('tagline').textContent = t().tagline;
   document.getElementById('footer').textContent = t().footer;
 }
 
 // Single-screen accordion: one compact row per product; tap to expand its
 // chart + summary inline, without leaving the screen.
-function doSearch(q) { query = q.trim().toLowerCase(); active = -1; renderProducts(); }
+function doSearch(q) {
+  query = q.trim().toLowerCase();
+  active = -1;
+  // Search lives in the header now — typing from any tab jumps to the product list.
+  if (query && !(view === 'shop' && shopTab === 'products')) {
+    view = 'shop'; shopTab = 'products';
+    render();
+  } else {
+    renderProducts();
+  }
+}
+
+const VERDICT_FILTERS = ['all', 'green', 'red', 'yellow'];
+function renderFilters() {
+  const counts = { all: products.length, green: 0, yellow: 0, red: 0, gray: 0 };
+  products.forEach(p => { if (counts[p.verdict] != null) counts[p.verdict]++; });
+  document.getElementById('filter-wrap').innerHTML = VERDICT_FILTERS.map(key => {
+    const label = key === 'all' ? FILTER_ALL[country.lang] : TAG[key][country.lang];
+    const col = key === 'all' ? 'var(--ink)' : C[key];
+    const active = verdictFilter === key;
+    const style = active ? `background:${col};border-color:transparent;color:#fff` : '';
+    return `<button class="fchip ${active ? 'active' : ''}" style="${style}" onclick="setFilter('${key}')">${label} <span class="fc-n">${counts[key]}</span></button>`;
+  }).join('');
+}
+function setFilter(f) { verdictFilter = f; active = -1; renderProducts(); renderFilters(); }
+function rowKey(e, i) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(i); } }
 function toggleCart(id) {
   cart[id] = cart[id] ? 0 : 1;
   renderProducts();
@@ -783,9 +880,14 @@ function sparkline(series, w=58, h=20) {
 }
 
 function renderProducts() {
-  const filtered = query
+  let filtered = query
     ? products.filter(p => { const m = PRODUCTS[p.id]; const n = m ? (m.name[country.lang] || m.name.bg || '') : p.id; return n.toLowerCase().includes(query); })
     : products;
+  if (verdictFilter !== 'all') filtered = filtered.filter(p => p.verdict === verdictFilter);
+  if (!filtered.length) {
+    document.getElementById('cards').innerHTML = `<div class="empty-filter">${NO_MATCH[country.lang]}</div>`;
+    return;
+  }
   document.getElementById('cards').innerHTML = filtered.map((p, i) => {
     const meta = PRODUCTS[p.id];
     const on = i === active;
@@ -795,12 +897,12 @@ function renderProducts() {
         : ` <small>· ${disp(p.current_unit_price*country.fx)} ${unitLabel(p.unit_kind)}</small>`;
     const inCart = !!cart[p.id];
     const rowHtml = `
-      <button class="prow ${on?'on':''}" onclick="select(${i})" data-v="${p.verdict}" style="--vc:${C[p.verdict]}">
+      <div class="prow ${on?'on':''}" role="button" tabindex="0" onclick="select(${i})" onkeydown="rowKey(event,${i})" data-v="${p.verdict}" style="--vc:${C[p.verdict]}">
         <span class="ill">${productIcon(p.id)}</span>
         <span class="pnm">${meta.name[country.lang]} <span class="vtag" style="background:${C[p.verdict]}">${TAG[p.verdict][country.lang]}</span><small>${meta.pack[country.lang]}${unit}</small></span>
-        <span class="cadd ${inCart?'in':''}" role="button" tabindex="0" onclick="event.stopPropagation();toggleCart('${p.id}')">${inCart?'✓':'+'}</span>
+        <button class="cadd ${inCart?'in':''}" onclick="event.stopPropagation();toggleCart('${p.id}')" aria-label="${meta.name[country.lang]}">${inCart?'✓':'+'}</button>
         <span class="ppr">${money(p.current_price)}${disc}${sparkline(p.series)}</span>
-      </button>`;
+      </div>`;
     return rowHtml + (on ? detailHTML(p) : '');
   }).join('');
   if (active >= 0 && active < filtered.length) {
@@ -1133,35 +1235,30 @@ function renderTitans() {
 
 function renderHome() {
   const X = BX[country.lang], H = HX[country.lang];
+
+  // Savings from REAL promotions only (verdict green), summed over the cart items
+  // — or all tracked products when the cart is empty. Each item contributes how much
+  // its current price is below its usual 90-day price.
+  const cartItems = cartIds();
+  const targetIds = cartItems.length ? cartItems : products.map(p => p.id);
   let saved = 0, realCount = 0;
-  products.forEach(p => {
-    if (p.median_90 != null && p.current_price != null) {
-      const d = p.median_90 - p.current_price;
-      if (d > 0 && p.verdict === 'green') { saved += d; realCount++; }
+  targetIds.forEach(id => {
+    const p = products.find(p => p.id === id);
+    if (!p || p.median_90 == null || p.current_price == null) return;
+    if (p.verdict === 'green' && p.median_90 - p.current_price > 0) {
+      saved += p.median_90 - p.current_price;
+      realCount++;
     }
   });
-  const deals = products
-    .filter(p => p.verdict === 'green' && p.discount_pct > 0)
-    .sort((a, b) => b.discount_pct - a.discount_pct)
-    .slice(0, 7);
+
+  const fakesCaught = (DEMO.titans || []).reduce((s, t) => s + (t.fake || 0), 0);
+
   const titans = (DEMO.titans || []).slice()
     .sort((a, b) => {
       const ra = a.total_promos ? a.real / a.total_promos : -1;
       const rb = b.total_promos ? b.real / b.total_promos : -1;
       return rb - ra;
     }).slice(0, 3);
-
-  const dealsHTML = deals.length
-    ? deals.map(p => {
-        const meta = PRODUCTS[p.id], idx = products.indexOf(p);
-        return `<div class="deal-card" style="--vc:${C[p.verdict]}" onclick="setView('shop');shopTab='products';setTimeout(()=>select(${idx}),80)">
-          <div class="deal-emoji">${productIcon(p.id)}</div>
-          <div class="deal-name">${meta.name[country.lang]||meta.name.bg}</div>
-          <div class="deal-disc" style="color:var(--green)">−${p.discount_pct}%</div>
-          <div class="deal-price">${money(p.current_price)}</div>
-        </div>`;
-      }).join('')
-    : `<div style="color:var(--muted);font-size:var(--t-sm);padding:2px 0 10px">${X.homeNoDeals}</div>`;
 
   const titansHTML = titans.map((t, i) => {
     const medals = ['🥇','🥈','🥉'];
@@ -1176,12 +1273,19 @@ function renderHome() {
 
   document.getElementById('basket').innerHTML = `
     <div class="home-hero">
-      <div class="home-hero-lbl">${H.saved}</div>
-      <div class="home-hero-amt">${disp(saved * country.fx)} ${country.sym}</div>
-      <div class="home-hero-meta">🟢 ${realCount} ${H.promos}</div>
+      <div class="hh-left">
+        <div class="hh-lbl">${H.saved}</div>
+        <div class="hh-amt">${disp(saved * country.fx)} ${country.sym}</div>
+        <div class="hh-sub">🟢 ${realCount} ${H.promos}</div>
+      </div>
+      <div class="hh-banner" style="background-image:url('./img/hero-banner.png')"></div>
     </div>
-    <div class="section-label">${X.homeDeals}</div>
-    ${deals.length ? `<div class="deal-scroll">${dealsHTML}</div>` : dealsHTML}
+    ${fakesCaught ? `
+    <div class="fake-hook" onclick="setView('promos');promosTab='brochures';render()">
+      <span class="fh-ic">⚠️</span>
+      <span class="fh-tx"><div class="fh-big">${fakesCaught} ${H.fakes}</div><div class="fh-sub">${H.period}</div></span>
+      <span class="fh-arr">›</span>
+    </div>` : ''}
     ${titans.length ? `
     <div class="section-label" style="margin-top:14px">${X.titansTitle}</div>
     <div class="card-block">${titansHTML}
@@ -1197,63 +1301,88 @@ function renderScan() {
     <div id="scan-output"></div>`;
 }
 
+// Barcode scanning works through two engines: the native BarcodeDetector
+// (Chrome/Android) when present, otherwise the ZXing library loaded from CDN
+// — which also covers iOS Safari, where BarcodeDetector is unavailable.
+let zxingReader = null;
+function getZxingReader() {
+  if (!zxingReader && window.ZXing) zxingReader = new ZXing.BrowserMultiFormatReader();
+  return zxingReader;
+}
+const hasNativeBD = () => ('BarcodeDetector' in window);
+const fileFallbackHTML = X => `<div class="scan-result-card" style="text-align:center">
+    <div style="color:var(--muted);margin-bottom:10px">${X.scanNoBD}</div>
+    <label style="display:inline-block;background:var(--green);color:#fff;padding:8px 16px;border-radius:10px;cursor:pointer;font-weight:700;font-size:14px">
+      ${X.scanFile}<input type="file" accept="image/*" capture="environment" style="display:none" onchange="scanFile(this)">
+    </label>
+  </div>`;
+
 async function startScanner() {
   const X = BX[country.lang];
   const output = document.getElementById('scan-output');
-  if (!('BarcodeDetector' in window)) {
-    output.innerHTML = `<div class="scan-result-card" style="text-align:center">
-      <div style="color:var(--muted);margin-bottom:10px">${X.scanNoBD}</div>
-      <label style="display:inline-block;background:var(--green);color:#fff;padding:8px 16px;border-radius:10px;cursor:pointer;font-weight:700;font-size:14px">
-        ${X.scanFile}<input type="file" accept="image/*" capture="environment" style="display:none" onchange="scanFile(this)">
-      </label>
-    </div>`;
-    return;
-  }
+  // No live engine at all → offer photo upload.
+  if (!hasNativeBD() && !window.ZXing) { output.innerHTML = fileFallbackHTML(X); return; }
   output.innerHTML = `<div class="scan-wrap"><video id="scan-video" autoplay playsinline muted></video>
     <div class="scan-frame"></div><div class="scan-hint">${X.scanHint}</div></div>`;
+  const video = document.getElementById('scan-video');
   try {
-    scanStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
-    const video = document.getElementById('scan-video');
-    video.srcObject = scanStream;
-    const detector = new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e']});
-    const detect = async () => {
-      if (!scanStream) return;
-      try {
-        const codes = await detector.detect(video);
-        if (codes.length) { stopScanner(); await handleBarcode(codes[0].rawValue); }
-        else requestAnimationFrame(detect);
-      } catch(e) { requestAnimationFrame(detect); }
-    };
-    await video.play(); detect();
+    if (hasNativeBD()) {
+      scanStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+      video.srcObject = scanStream;
+      const detector = new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e']});
+      const detect = async () => {
+        if (!scanStream) return;
+        try {
+          const codes = await detector.detect(video);
+          if (codes.length) { stopScanner(); await handleBarcode(codes[0].rawValue); }
+          else requestAnimationFrame(detect);
+        } catch(e) { requestAnimationFrame(detect); }
+      };
+      await video.play(); detect();
+    } else {
+      // ZXing path (iOS Safari etc.)
+      const reader = getZxingReader();
+      await reader.decodeFromConstraints({video:{facingMode:'environment'}}, video, (result) => {
+        if (result) { stopScanner(); handleBarcode(result.getText()); }
+      });
+      scanStream = video.srcObject || null;
+    }
   } catch(e) {
     output.innerHTML = `<div class="scan-result-card" style="text-align:center;color:var(--red)">Camera error: ${e.message}</div>`;
   }
 }
 
 function stopScanner() {
-  if (scanStream) { scanStream.getTracks().forEach(t => t.stop()); scanStream = null; }
+  if (zxingReader) { try { zxingReader.reset(); } catch(e){} }
+  if (scanStream && scanStream.getTracks) scanStream.getTracks().forEach(t => t.stop());
+  scanStream = null;
 }
 
 async function scanFile(input) {
   const file = input.files[0]; if (!file) return;
   const X = BX[country.lang];
-  document.getElementById('scan-output').innerHTML = `<div class="scan-result-card" style="text-align:center;color:var(--muted)">${X.scanLookup}</div>`;
-  const img = new Image();
+  const output = document.getElementById('scan-output');
+  output.innerHTML = `<div class="scan-result-card" style="text-align:center;color:var(--muted)">${X.scanLookup}</div>`;
   const url = URL.createObjectURL(file);
-  img.src = url;
-  img.onload = async () => {
-    try {
+  const notFound = () => {
+    output.innerHTML =
+      `<div class="scan-result-card" style="text-align:center;color:var(--muted)">${X.scanUnknown}</div>
+       <button class="scan-btn" style="margin-top:12px" onclick="renderScan()">${X.scanAgain}</button>`;
+  };
+  try {
+    let raw = null;
+    if (hasNativeBD()) {
+      const img = await new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = url; });
       const detector = new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e']});
       const codes = await detector.detect(img);
-      if (codes.length) { await handleBarcode(codes[0].rawValue); }
-      else {
-        document.getElementById('scan-output').innerHTML =
-          `<div class="scan-result-card" style="text-align:center;color:var(--muted)">${X.scanUnknown}</div>
-           <button class="scan-btn" style="margin-top:12px" onclick="renderScan()">${X.scanAgain}</button>`;
-      }
-    } catch(e) { console.error(e); }
-    URL.revokeObjectURL(url);
-  };
+      if (codes.length) raw = codes[0].rawValue;
+    } else if (window.ZXing) {
+      const result = await getZxingReader().decodeFromImageUrl(url);
+      raw = result && result.getText();
+    }
+    if (raw) await handleBarcode(raw); else notFound();
+  } catch(e) { notFound(); }
+  URL.revokeObjectURL(url);
 }
 
 async function handleBarcode(ean) {
@@ -1324,9 +1453,11 @@ function render() {
   document.getElementById('panel').style.display = 'none';
   document.getElementById('basket').style.display = isProd ? 'none' : '';
 
-  const sw = document.getElementById('search-wrap');
-  sw.style.display = isProd ? '' : 'none';
-  if (isProd) document.getElementById('search-input').placeholder = X.search;
+  document.getElementById('search-input').placeholder = X.search;
+
+  const fw = document.getElementById('filter-wrap');
+  fw.style.display = isProd ? '' : 'none';
+  if (isProd) renderFilters();
 
   // Sub-tabs
   const stw = document.getElementById('sub-tabs-wrap');
@@ -1373,7 +1504,10 @@ function setCountry(i){ country = COUNTRIES[i]; document.documentElement.lang = 
 function setView(v){
   if (v !== 'scan') stopScanner();
   view = v;
-  if (v !== 'shop' || shopTab !== 'products') query = '';
+  if (v !== 'shop' || shopTab !== 'products') {
+    query = '';
+    const si = document.getElementById('search-input'); if (si) si.value = '';
+  }
   render();
   animIn(v === 'shop' && shopTab === 'products' ? 'cards' : 'basket');
 }

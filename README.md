@@ -34,10 +34,11 @@ Vercel auto-deploy ──► Live сайт
 
 ## Функционалности
 
-- **🏠 Начало** — Hero с реалните спестявания + топ промоции (horizontal scroll) + Titans мини класация
-- **🛒 Пазарувай** — 24+ проследени продукта с 90-дневна графика, кошница с анализ по верига, хладилник
+- **Хедър** — лого (тап → Начало) + слоган + държава; втори ред с **глобална търсачка** и бутон **скенер**. Търсенето от всеки таб прехвърля към списъка с продукти.
+- **🏠 Начало** — Hero с реалните спестявания (акварелен банер) + лента-кука „**N подвеждащи промоции**" (последните 30 дни) + мини класация на Титаните
+- **🛒 Пазарувай** — 24+ проследени продукта с **филтър по присъда** (Всички / 🟢 Реална / 🔴 Фалшива / 🟡 Обичайна), 90-дневна графика, кошница с анализ по верига, хладилник
 - **🏷️ Промоции** — Всички промо оферти тази седмица по верига с Omnibus верификация + **Битката на Титаните** (класация коя верига лъже най-много)
-- **📷 Скенер** — Сканирай EAN баркод → Open Food Facts → Omnibus verdict
+- **📷 Скенер** — Сканирай EAN баркод → Open Food Facts → Omnibus verdict. Работи нативно (Chrome/Android) и през **ZXing** като резервен вариант на iOS Safari
 - **10 езика** — BG, SR, MK, RO, EL, TR, SQ, BS, HR, SL
 
 ---
@@ -66,6 +67,7 @@ kolkostruva.bg/opendata_files/YYYY-MM-DD.zip
 |-------|------------|
 | Frontend | Single-file HTML/CSS/JS (vanilla, no framework) |
 | Charts | Chart.js 4.4 |
+| Barcode | Native `BarcodeDetector` + [ZXing](https://github.com/zxing-js/library) 0.21 fallback (iOS Safari) |
 | Data | `window.SAVECHECK_DEMO` + `window.SAVECHECK_BROCHURES` (JS globals) |
 | Backend | Python 3.11+ (`src/savecheck/`) |
 | Pricing engine | `savecheck.pricing` — `evaluate_series()`, `compute_stats()` |

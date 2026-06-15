@@ -1,0 +1,17 @@
+{
+  "name": "SaveCheck — Реална ли е промоцията?",
+  "short_name": "SaveCheck",
+  "description": "Проверява дали промоцията е истинска чрез 90-дневна история на цените (EU Omnibus).",
+  "lang": "bg",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5f1ea",
+  "theme_color": "#16a34a",
+  "icons": [
+    { "src": "./img/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "./img/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "./img/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
