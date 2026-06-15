@@ -91,8 +91,9 @@
   .vtag { display:inline-block; font-size:9px; font-weight:800; color:#fff; padding:2px 7px; border-radius:999px; margin-left:5px; vertical-align:middle; letter-spacing:.03em; }
   .prow .pnm { flex:1; font-weight:700; font-size:14px; line-height:1.25; }
   .prow .pnm small { display:block; color:var(--muted); font-weight:500; font-size:11px; margin-top:1px; }
-  .prow .ppr { font-weight:900; font-size:16px; font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap; letter-spacing:-.01em; }
-  .prow .ppr em { display:inline-block; font-style:normal; font-size:10px; font-weight:800; margin-top:4px; color:#fff; padding:2px 7px; border-radius:999px; vertical-align:top; }
+  .prow .ppr { font-weight:900; font-size:16px; font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap; letter-spacing:-.01em; display:flex; flex-direction:column; align-items:flex-end; gap:1px; }
+  .prow .ppr em { display:block; font-style:normal; font-size:10px; font-weight:800; color:#fff; padding:2px 7px; border-radius:999px; }
+  .spark { display:block; opacity:.8; }
   .detail { padding:2px 13px 14px; background:color-mix(in srgb, var(--vc, var(--green)) 4%, var(--card)); border-top:1px solid var(--line); }
   .detail .badge { margin-top:10px; }
   .panel { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px; margin-top:12px; box-shadow:var(--shadow-card); }
@@ -725,6 +726,22 @@ function analyzeStores() {
   }).sort((a, b) => b.covered.length - a.covered.length || a.total - b.total);
 }
 
+function sparkline(series, w=58, h=20) {
+  if (!series || series.length < 3) return '';
+  const vals = series.map(s => s.price);
+  const mn = Math.min(...vals), mx = Math.max(...vals);
+  const rng = mx - mn || mn * 0.01 || 1;
+  const pad = 2;
+  const pts = vals.map((v, i) =>
+    `${(i / (vals.length - 1) * w).toFixed(1)},${(h - pad - (v - mn) / rng * (h - pad * 2)).toFixed(1)}`
+  ).join(' ');
+  const lx = w, ly = +(h - pad - (vals.at(-1) - mn) / rng * (h - pad * 2)).toFixed(1);
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true">
+    <polyline points="${pts}" fill="none" stroke="var(--vc,#16a34a)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${lx}" cy="${ly}" r="2.2" fill="var(--vc,#16a34a)"/>
+  </svg>`;
+}
+
 function renderProducts() {
   const filtered = query
     ? products.filter(p => { const m = PRODUCTS[p.id]; const n = m ? (m.name[country.lang] || m.name.bg || '') : p.id; return n.toLowerCase().includes(query); })
@@ -742,7 +759,7 @@ function renderProducts() {
         <span class="ill">${emojiOf(p.id)}</span>
         <span class="pnm">${meta.name[country.lang]} <span class="vtag" style="background:${C[p.verdict]}">${TAG[p.verdict][country.lang]}</span><small>${meta.pack[country.lang]}${unit}</small></span>
         <span class="cadd ${inCart?'in':''}" role="button" tabindex="0" onclick="event.stopPropagation();toggleCart('${p.id}')">${inCart?'✓':'+'}</span>
-        <span class="ppr">${money(p.current_price)}${disc}</span>
+        <span class="ppr">${money(p.current_price)}${disc}${sparkline(p.series)}</span>
       </button>`;
     return rowHtml + (on ? detailHTML(p) : '');
   }).join('');
