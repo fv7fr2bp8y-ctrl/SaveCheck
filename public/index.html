@@ -33,7 +33,7 @@
   [data-theme="dark"] body { background:radial-gradient(1100px 560px at 50% -8%,#0a2418,#0f0f11); }
   [data-theme="dark"] .phone { border-color:#2c2c2e; box-shadow:0 30px 70px rgba(0,0,0,.7); }
   [data-theme="dark"] .titan-bar-wrap { background:#2c2c2e; }
-  [data-theme="dark"] .flags button.active { background:color-mix(in srgb,var(--green) 18%,var(--cream)); }
+  [data-theme="dark"] .cp-menu button.active { background:color-mix(in srgb,var(--green) 18%,var(--cream)); }
   [data-theme="dark"] .advice-box { background:color-mix(in srgb,var(--green) 12%,var(--card)); }
   * { box-sizing:border-box; }
   body {
@@ -45,24 +45,27 @@
     max-width:430px; margin:0 auto; background:var(--cream); border:1px solid var(--line);
     border-radius:34px; overflow:hidden; box-shadow:0 30px 70px rgba(28,25,23,.20);
   }
-  .appbar { background:var(--card); padding:12px 14px 12px; border-bottom:1px solid var(--line); }
-  .brand { display:flex; align-items:center; gap:10px; }
-  .brand .logo { width:42px; height:42px; flex:none; object-fit:contain; }
-  .brand-text { display:flex; flex-direction:column; gap:1px; }
-  .brand h1 { font-size:26px; margin:0; letter-spacing:-.03em; font-weight:800; line-height:1.1; }
+  .appbar { background:var(--card); padding:16px 16px; border-bottom:1px solid var(--line); }
+  .brand { display:flex; align-items:center; gap:12px; }
+  .brand .logo { width:48px; height:48px; flex:none; object-fit:contain; }
+  .brand-text { display:flex; flex-direction:column; gap:2px; }
+  .brand h1 { font-size:30px; margin:0; letter-spacing:-.03em; font-weight:800; line-height:1.05; }
   .brand h1 b { color:var(--green); }
-  .brand-tagline { font-size:10px; color:var(--muted); font-weight:500; letter-spacing:.01em; }
-  .flags { display:flex; gap:5px; overflow-x:auto; padding:0; margin-left:auto; flex-shrink:1; }
-  .flags::-webkit-scrollbar { display:none; }
-  .flags button {
-    flex:none; border:1px solid var(--line); background:var(--cream); border-radius:9px; cursor:pointer;
-    padding:4px 7px; font-size:15px; line-height:1; display:flex; align-items:center; gap:4px;
-  }
-  .flags button .cc { font-size:10px; font-weight:700; color:var(--muted); }
-  .flags button.active { border-color:var(--green); background:var(--green-bg); }
+  .brand-tagline { font-size:11px; color:var(--muted); font-weight:500; letter-spacing:.01em; }
+  .country-picker { position:relative; margin-left:auto; }
+  .cp-trigger { display:flex; align-items:center; gap:5px; border:1px solid var(--line); background:var(--cream); border-radius:11px; cursor:pointer; padding:8px 11px; font-size:18px; line-height:1; }
+  .cp-trigger .cc { font-size:10px; font-weight:700; color:var(--muted); }
+  .cp-chev { width:10px; height:10px; stroke:var(--muted); transition:transform .2s; flex:none; }
+  .cp-trigger.open .cp-chev { transform:rotate(180deg); }
+  .cp-menu { position:absolute; right:0; top:calc(100% + 8px); background:var(--card); border:1px solid var(--line); border-radius:14px; box-shadow:0 8px 28px rgba(0,0,0,.14); padding:6px; display:none; z-index:200; min-width:130px; }
+  .cp-menu.open { display:flex; flex-direction:column; gap:2px; }
+  .cp-menu button { border:0; background:none; cursor:pointer; padding:8px 12px; border-radius:9px; font-size:16px; display:flex; align-items:center; gap:8px; width:100%; text-align:left; color:var(--ink); }
+  .cp-menu button:hover { background:var(--cream); }
+  .cp-menu button.active { background:var(--green-bg); }
+  .cp-menu button .cc { font-size:11px; font-weight:700; color:var(--muted); }
+  .cp-menu button.active .cc { color:var(--green-d); }
   .theme-btn { border:0; background:none; cursor:pointer; color:var(--muted); padding:4px; line-height:1; border-radius:8px; transition:color .15s; flex:none; }
   .theme-btn:hover { color:var(--ink); }
-  .flags button.active .cc { color:var(--green-d); }
   .hero {
     margin:14px 14px 0; color:#fff; border-radius:18px; padding:15px 17px;
     background:linear-gradient(135deg,#16a34a,#15803d); box-shadow:0 12px 26px rgba(22,163,74,.28);
@@ -252,7 +255,14 @@
         <h1>Save<b>Check</b></h1>
         <div class="brand-tagline">Цените под лупа</div>
       </div>
-      <div class="flags" id="flags"></div>
+      <div class="country-picker" id="country-picker">
+        <button class="cp-trigger" id="cp-trigger" onclick="toggleCountryPicker()">
+          <span id="cp-flag">🇧🇬</span>
+          <span id="cp-code" class="cc">BG</span>
+          <svg class="cp-chev" viewBox="0 0 10 10" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5L5 6.5L8 3.5"/></svg>
+        </button>
+        <div class="cp-menu" id="flags"></div>
+      </div>
       <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" aria-label="Смени тема">
         <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
       </button>
@@ -727,11 +737,32 @@ const fmtQty = v => Number.isInteger(v) ? String(v) : String(Math.round(v * 100)
 const t = () => UI[country.lang];
 
 function renderFlags() {
+  const flagEl = document.getElementById('cp-flag');
+  const codeEl = document.getElementById('cp-code');
+  if (flagEl) flagEl.textContent = country.flag;
+  if (codeEl) codeEl.textContent = country.code;
   document.getElementById('flags').innerHTML = COUNTRIES.map((c, i) => `
-    <button class="${c.code===country.code?'active':''}" onclick="setCountry(${i})" title="${c.code}">
+    <button class="${c.code===country.code?'active':''}" onclick="selectCountry(${i})">
       ${c.flag}<span class="cc">${c.code}</span>
     </button>`).join('');
 }
+function toggleCountryPicker() {
+  const menu = document.getElementById('flags');
+  const trigger = document.getElementById('cp-trigger');
+  const open = menu.classList.toggle('open');
+  trigger.classList.toggle('open', open);
+}
+function selectCountry(i) {
+  document.getElementById('flags').classList.remove('open');
+  document.getElementById('cp-trigger').classList.remove('open');
+  setCountry(i);
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#country-picker')) {
+    document.getElementById('flags')?.classList.remove('open');
+    document.getElementById('cp-trigger')?.classList.remove('open');
+  }
+});
 
 function renderChrome() {
   document.getElementById('footer').textContent = t().footer;
