@@ -1164,27 +1164,21 @@ function renderTitans() {
 function renderHome() {
   const X = BX[country.lang], H = HX[country.lang];
 
-  // Savings = cheapest store vs most expensive, across cart items (or all products if cart empty).
+  // Savings from REAL promotions only (verdict green), summed over the cart items
+  // — or all tracked products when the cart is empty. Each item contributes how much
+  // its current price is below its usual 90-day price.
   const cartItems = cartIds();
   const targetIds = cartItems.length ? cartItems : products.map(p => p.id);
-  const chainSet = new Set();
-  targetIds.forEach(id => { const p = products.find(p => p.id === id); if (p) offersFor(p).forEach(o => chainSet.add(o.chain)); });
-  const storeTotals = Array.from(chainSet).map(chain => {
-    let total = 0;
-    targetIds.forEach(id => {
-      const p = products.find(p => p.id === id);
-      const offer = p ? offersFor(p).find(o => o.chain === chain) : null;
-      if (offer) total += offer.price;
-    });
-    return total;
-  }).filter(t => t > 0);
-  const saved = storeTotals.length >= 2 ? Math.max(...storeTotals) - Math.min(...storeTotals) : 0;
-  const realCount = cartItems.length || products.filter(p => p.verdict === 'green').length;
+  let saved = 0, realCount = 0;
+  targetIds.forEach(id => {
+    const p = products.find(p => p.id === id);
+    if (!p || p.median_90 == null || p.current_price == null) return;
+    if (p.verdict === 'green' && p.median_90 - p.current_price > 0) {
+      saved += p.median_90 - p.current_price;
+      realCount++;
+    }
+  });
 
-  const deals = products
-    .filter(p => p.verdict === 'green' && p.discount_pct > 0)
-    .sort((a, b) => b.discount_pct - a.discount_pct)
-    .slice(0, 7);
   const titans = (DEMO.titans || []).slice()
     .sort((a, b) => {
       const ra = a.total_promos ? a.real / a.total_promos : -1;
