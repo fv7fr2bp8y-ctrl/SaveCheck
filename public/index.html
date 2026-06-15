@@ -1136,13 +1136,24 @@ function renderTitans() {
 
 function renderHome() {
   const X = BX[country.lang], H = HX[country.lang];
-  let saved = 0, realCount = 0;
-  products.forEach(p => {
-    if (p.median_90 != null && p.current_price != null) {
-      const d = p.median_90 - p.current_price;
-      if (d > 0 && p.verdict === 'green') { saved += d; realCount++; }
-    }
-  });
+
+  // Savings = cheapest store vs most expensive, across cart items (or all products if cart empty).
+  const cartItems = cartIds();
+  const targetIds = cartItems.length ? cartItems : products.map(p => p.id);
+  const chainSet = new Set();
+  targetIds.forEach(id => { const p = products.find(p => p.id === id); if (p) offersFor(p).forEach(o => chainSet.add(o.chain)); });
+  const storeTotals = Array.from(chainSet).map(chain => {
+    let total = 0;
+    targetIds.forEach(id => {
+      const p = products.find(p => p.id === id);
+      const offer = p ? offersFor(p).find(o => o.chain === chain) : null;
+      if (offer) total += offer.price;
+    });
+    return total;
+  }).filter(t => t > 0);
+  const saved = storeTotals.length >= 2 ? Math.max(...storeTotals) - Math.min(...storeTotals) : 0;
+  const realCount = cartItems.length || products.filter(p => p.verdict === 'green').length;
+
   const deals = products
     .filter(p => p.verdict === 'green' && p.discount_pct > 0)
     .sort((a, b) => b.discount_pct - a.discount_pct)
