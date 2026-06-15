@@ -1178,12 +1178,12 @@ function renderHome() {
 
   document.getElementById('basket').innerHTML = `
     <div class="home-hero">
+      <div class="hh-banner"><img src="./img/hero-banner.png" alt="" loading="eager"></div>
       <div class="hh-left">
         <div class="hh-lbl">${H.saved}</div>
         <div class="hh-amt">${disp(saved * country.fx)} ${country.sym}</div>
         <div class="hh-sub">🟢 ${realCount} ${H.promos}</div>
       </div>
-      <div class="hh-banner"><img src="./img/hero-banner.png" alt="" loading="eager"></div>
     </div>
     ${titans.length ? `
     <div class="section-label" style="margin-top:14px">${X.titansTitle}</div>
