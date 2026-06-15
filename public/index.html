@@ -84,10 +84,14 @@
   .prow.on { background:color-mix(in srgb, var(--vc, var(--green)) 7%, var(--card)); }
   .prow .dot { width:11px; height:11px; border-radius:50%; flex:none; }
   .prow .ill {
-    width:38px; height:38px; border-radius:12px;
-    background:color-mix(in srgb, var(--vc, #f1ede3) 14%, #f5f1ea);
-    display:flex; align-items:center; justify-content:center; font-size:21px; flex:none;
+    width:44px; height:44px; border-radius:13px;
+    background:var(--card);
+    box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--vc, var(--line)) 28%, var(--line));
+    display:flex; align-items:center; justify-content:center; flex:none;
   }
+  .prow .ill svg { width:36px; height:36px; display:block; }
+  .picon { display:inline-flex; width:20px; height:20px; vertical-align:-5px; }
+  .picon svg { width:100%; height:100%; }
   .vtag { display:inline-block; font-size:9px; font-weight:800; color:#fff; padding:2px 7px; border-radius:999px; margin-left:5px; vertical-align:middle; letter-spacing:.03em; }
   .prow .pnm { flex:1; font-weight:700; font-size:14px; line-height:1.25; }
   .prow .pnm small { display:block; color:var(--muted); font-weight:500; font-size:11px; margin-top:1px; }
@@ -173,7 +177,8 @@
   .deal-scroll::-webkit-scrollbar { display:none; }
   .deal-card { flex:none; width:110px; background:var(--card); border-radius:16px; padding:13px 12px 11px; box-shadow:var(--shadow-card); cursor:pointer; scroll-snap-align:start; transition:transform .12s; }
   .deal-card:active { transform:scale(.96); }
-  .deal-emoji { font-size:28px; margin-bottom:6px; line-height:1; }
+  .deal-emoji { width:46px; height:46px; border-radius:13px; background:color-mix(in srgb, var(--vc, var(--green)) 9%, var(--card)); display:flex; align-items:center; justify-content:center; margin-bottom:8px; }
+  .deal-emoji svg { width:38px; height:38px; display:block; }
   .deal-name { font-size:11px; font-weight:700; line-height:1.3; margin-bottom:5px; color:var(--ink); }
   .deal-disc { font-size:var(--t-xl); font-weight:900; letter-spacing:-.02em; line-height:1; }
   .deal-price { font-size:var(--t-xs); color:var(--muted); margin-top:2px; font-variant-numeric:tabular-nums; }
@@ -638,6 +643,37 @@ const EMOJI = {
 };
 const emojiOf = id => EMOJI[id] || '🛒';
 
+// Hand-authored flat SVG product illustrations (viewBox 0 0 40 40).
+// Replaces emoji with a consistent, theme-friendly icon set — zero deps.
+const PROD_SVG = {
+  milk:'<svg viewBox="0 0 40 40"><path d="M12 16l8-6 8 6v18a2 2 0 0 1-2 2H14a2 2 0 0 1-2-2V16z" fill="#e3eefb" stroke="#9cc0ec" stroke-width="1.5"/><path d="M12 16l8-6 8 6z" fill="#cfe2fa"/><rect x="17" y="20" width="6" height="9" rx="1" fill="#3b82f6"/></svg>',
+  oil:'<svg viewBox="0 0 40 40"><rect x="16" y="6" width="8" height="5" rx="1" fill="#f59e0b"/><path d="M15 13h10l2 6v15a3 3 0 0 1-3 3H16a3 3 0 0 1-3-3V19l2-6z" fill="#fcd34d" stroke="#eab308" stroke-width="1.2"/><rect x="16" y="22" width="8" height="9" rx="1.5" fill="#fff" opacity=".55"/></svg>',
+  cheese:'<svg viewBox="0 0 40 40"><path d="M6 26L30 14a4 4 0 0 1 4 0v12H6z" fill="#fbbf24"/><path d="M6 26h28v4a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-4z" fill="#f59e0b"/><circle cx="16" cy="23" r="2" fill="#fff7e0"/><circle cx="24" cy="21" r="1.6" fill="#fff7e0"/><circle cx="21" cy="26" r="1.4" fill="#fff7e0"/></svg>',
+  coffee:'<svg viewBox="0 0 40 40"><path d="M14 7c0 2-2 2-2 4M20 7c0 2-2 2-2 4" stroke="#cbb6a6" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M10 14h18v10a8 8 0 0 1-8 8h-2a8 8 0 0 1-8-8V14z" fill="#a87144"/><path d="M28 16h3a4 4 0 0 1 0 8h-3" fill="none" stroke="#a87144" stroke-width="2.4"/><rect x="10" y="14" width="18" height="3.5" fill="#7c4a23"/></svg>',
+  flour:'<svg viewBox="0 0 40 40"><path d="M12 12c2-2 14-2 16 0l2 22a2 2 0 0 1-2 2H12a2 2 0 0 1-2-2l2-22z" fill="#efe6d2" stroke="#cbb890" stroke-width="1.3"/><path d="M13 12c3-3 11-3 14 0z" fill="#e2d4b6"/><path d="M20 18v9M20 18l-3 2M20 22l-3 2M20 18l3 2M20 22l3 2" stroke="#c9a96a" stroke-width="1.4" stroke-linecap="round"/></svg>',
+  sugar:'<svg viewBox="0 0 40 40"><path d="M12 13c2-2 14-2 16 0l1.5 21a2 2 0 0 1-2 2H12.5a2 2 0 0 1-2-2L12 13z" fill="#f3f4f6" stroke="#cdd2da" stroke-width="1.3"/><rect x="16" y="20" width="8" height="8" rx="1.5" fill="#fff" stroke="#bcd6f5" stroke-width="1.4"/><path d="M16 24h8M20 20v8" stroke="#bcd6f5" stroke-width="1.2"/></svg>',
+  bread:'<svg viewBox="0 0 40 40"><path d="M8 20c0-5 5-8 12-8s12 3 12 8v10a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V20z" fill="#d8a45e"/><path d="M8 20c0-5 5-8 12-8s12 3 12 8c0 2-24 2-24 0z" fill="#e8be83"/><path d="M14 18c0-2 1-3 2-3M20 17c0-2 1-3 2-3M26 18c0-2 1-3 2-3" stroke="#b97f3e" stroke-width="1.3" stroke-linecap="round" fill="none"/></svg>',
+  rice:'<svg viewBox="0 0 40 40"><circle cx="16" cy="16" r="1.3" fill="#cbd5e1"/><circle cx="20" cy="13" r="1.3" fill="#cbd5e1"/><circle cx="24" cy="16" r="1.3" fill="#cbd5e1"/><path d="M7 20h26a13 13 0 0 1-26 0z" fill="#e7eaf0"/><path d="M10 20a10 10 0 0 0 20 0z" fill="#f7f9fc"/><path d="M7 20c0-2 26-2 26 0z" fill="#cfd5df"/></svg>',
+  tomatoes:'<svg viewBox="0 0 40 40"><path d="M20 11l-3-3M20 11l3-3M20 11h-4M20 11h4M20 11v-3" stroke="#16a34a" stroke-width="1.8" stroke-linecap="round"/><circle cx="20" cy="23" r="12" fill="#ef4444"/><circle cx="20" cy="11" r="2.4" fill="#22c55e"/><ellipse cx="16" cy="19" rx="2.5" ry="3.5" fill="#fff" opacity=".25"/></svg>',
+  oliveoil:'<svg viewBox="0 0 40 40"><rect x="17" y="5" width="6" height="5" rx="1" fill="#4d7c0f"/><path d="M16 12h8l2 7v13a3 3 0 0 1-3 3H17a3 3 0 0 1-3-3V19l2-7z" fill="#65a30d" stroke="#4d7c0f" stroke-width="1.2"/><rect x="15" y="21" width="10" height="6" fill="#84cc16" opacity=".4"/><circle cx="20" cy="26" r="2.6" fill="#3f6212"/></svg>',
+  pasta:'<svg viewBox="0 0 40 40"><rect x="13" y="10" width="14" height="26" rx="3" fill="#fde68a" opacity=".5" stroke="#eab308" stroke-width="1.3"/><path d="M17 13v20M20 13v20M23 13v20" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/><rect x="12" y="7" width="16" height="5" rx="2" fill="#d97706"/></svg>',
+  feta:'<svg viewBox="0 0 40 40"><rect x="9" y="16" width="22" height="16" rx="2" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.3"/><path d="M9 20h22M16 16v16M23 20v12" stroke="#dbe3ec" stroke-width="1.2"/><rect x="11" y="11" width="7" height="7" rx="1" fill="#fff" stroke="#cbd5e1" stroke-width="1.2"/></svg>',
+  bananas:'<svg viewBox="0 0 40 40"><path d="M9 14c2 12 11 18 22 16 2 0 2-3 0-3-9 1-16-5-18-14-.5-2-4.3-1-4 1z" fill="#facc15" stroke="#eab308" stroke-width="1.2"/><path d="M9 14c-.3-2 3.5-3 4-1l.6 2.4c-1.6.2-3 .4-4.6-1.4z" fill="#a3e635"/><path d="M30 30c1.6 0 2 .4 2.4 1.6" stroke="#854d0e" stroke-width="1.4" stroke-linecap="round"/></svg>',
+  chicken:'<svg viewBox="0 0 40 40"><circle cx="23" cy="15" r="9" fill="#e8b277"/><path d="M22 7a9 9 0 0 1 7 14z" fill="#d99a5b"/><path d="M19 19l-9 9a3 3 0 1 0 4 4l9-9z" fill="#f0d9b8"/><rect x="8.5" y="28.5" width="4.5" height="4.5" rx="2.2" fill="#fff"/></svg>',
+  water:'<svg viewBox="0 0 40 40"><rect x="17" y="5" width="6" height="4" rx="1" fill="#60a5fa"/><path d="M16 11h8v3l1 4v15a3 3 0 0 1-3 3h-4a3 3 0 0 1-3-3V18l1-4v-3z" fill="#bfdbfe" stroke="#60a5fa" stroke-width="1.2"/><rect x="15" y="22" width="10" height="8" fill="#3b82f6" opacity=".35"/></svg>',
+  eggs:'<svg viewBox="0 0 40 40"><ellipse cx="16" cy="24" rx="7" ry="9" fill="#fef3c7" stroke="#fcd34d" stroke-width="1.2"/><ellipse cx="25" cy="21" rx="6.5" ry="8.5" fill="#fffbeb" stroke="#fcd34d" stroke-width="1.2"/><ellipse cx="14" cy="21" rx="2" ry="3" fill="#fff" opacity=".7"/></svg>',
+  butter:'<svg viewBox="0 0 40 40"><path d="M8 18l18-6 6 2-2 14-18 6-6-2 2-14z" fill="#fde047" stroke="#eab308" stroke-width="1.2"/><path d="M8 18l6 2 18-6M14 20l-2 14" stroke="#eab308" stroke-width="1.2" fill="none"/><path d="M14 20l18-6" stroke="#fef9c3" stroke-width="1.5"/></svg>',
+  yogurt:'<svg viewBox="0 0 40 40"><path d="M12 14h16l-2 20a2 2 0 0 1-2 2H16a2 2 0 0 1-2-2l-2-20z" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.3"/><rect x="11" y="11" width="18" height="4" rx="2" fill="#a3a3a3"/><path d="M16 22c2 1 6 1 8 0" stroke="#f87171" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="20" cy="27" r="2" fill="#fca5a5"/></svg>',
+  potato:'<svg viewBox="0 0 40 40"><ellipse cx="20" cy="21" rx="13" ry="10" fill="#c89b6a" stroke="#a87c4a" stroke-width="1.2" transform="rotate(-15 20 21)"/><circle cx="15" cy="18" r="1" fill="#8a6234"/><circle cx="23" cy="22" r="1" fill="#8a6234"/><circle cx="19" cy="24" r="1" fill="#8a6234"/></svg>',
+  onion:'<svg viewBox="0 0 40 40"><path d="M18 11c1-3 3-3 4 0" stroke="#84cc16" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M20 12c6 0 11 5 11 12 0 6-5 10-11 10S9 30 9 24c0-7 5-12 11-12z" fill="#e9d5c4" stroke="#c9a989" stroke-width="1.2"/><path d="M20 12c-2 6-2 16 0 22M20 12c2 6 2 16 0 22M14 14c-1 6-1 14 1 19M26 14c1 6 1 14-1 19" stroke="#c9a989" stroke-width="1" fill="none"/></svg>',
+  apple:'<svg viewBox="0 0 40 40"><path d="M20 13c-3-2-9-2-10 5-1 6 3 14 6 15 2 .7 3-.5 4-.5s2 1.2 4 .5c3-1 7-9 6-15-1-7-7-7-10-5z" fill="#ef4444"/><path d="M20 13c1-3 4-5 6-4-1 3-3 4-6 4z" fill="#16a34a"/><path d="M20 13v-3" stroke="#7c2d12" stroke-width="1.6" stroke-linecap="round"/><ellipse cx="14" cy="20" rx="2" ry="3.5" fill="#fff" opacity=".3"/></svg>',
+  salt:'<svg viewBox="0 0 40 40"><circle cx="17" cy="13" r="1" fill="#94a3b8"/><circle cx="20" cy="12" r="1" fill="#94a3b8"/><circle cx="23" cy="13" r="1" fill="#94a3b8"/><path d="M13 16h14v16a3 3 0 0 1-3 3H16a3 3 0 0 1-3-3V16z" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.3"/><path d="M13 16c0-4 3-6 7-6s7 2 7 6z" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1.3"/><rect x="16" y="22" width="8" height="8" fill="#dbe3ec"/></svg>',
+  cucumber:'<svg viewBox="0 0 40 40"><g transform="rotate(-35 20 20)"><rect x="6" y="15" width="28" height="11" rx="5.5" fill="#65a30d" stroke="#4d7c0f" stroke-width="1.2"/><rect x="9" y="17" width="22" height="7" rx="3.5" fill="#84cc16" opacity=".6"/><circle cx="14" cy="20.5" r="1" fill="#3f6212"/><circle cx="20" cy="20.5" r="1" fill="#3f6212"/><circle cx="26" cy="20.5" r="1" fill="#3f6212"/></g></svg>',
+  _default:'<svg viewBox="0 0 40 40"><path d="M9 14h22l-2 16a3 3 0 0 1-3 3H14a3 3 0 0 1-3-3L9 14z" fill="#16a34a" opacity=".14"/><path d="M9 14h22l-2 16a3 3 0 0 1-3 3H14a3 3 0 0 1-3-3L9 14z" fill="none" stroke="#16a34a" stroke-width="1.5"/><path d="M15 14l2-6M25 14l-2-6" stroke="#16a34a" stroke-width="1.6" stroke-linecap="round"/></svg>',
+};
+const productIcon = id => PROD_SVG[id] || PROD_SVG._default;
+const picon = id => `<span class="picon">${productIcon(id)}</span>`;
+
 const DEMO = (window.SAVECHECK_DEMO || {products:[]});
 const products = DEMO.products;
 let active = -1, country = COUNTRIES[0], view = 'home', query = '', cart = {};
@@ -739,7 +775,7 @@ function renderProducts() {
     const inCart = !!cart[p.id];
     const rowHtml = `
       <button class="prow ${on?'on':''}" onclick="select(${i})" data-v="${p.verdict}" style="--vc:${C[p.verdict]}">
-        <span class="ill">${emojiOf(p.id)}</span>
+        <span class="ill">${productIcon(p.id)}</span>
         <span class="pnm">${meta.name[country.lang]} <span class="vtag" style="background:${C[p.verdict]}">${TAG[p.verdict][country.lang]}</span><small>${meta.pack[country.lang]}${unit}</small></span>
         <span class="cadd ${inCart?'in':''}" role="button" tabindex="0" onclick="event.stopPropagation();toggleCart('${p.id}')">${inCart?'✓':'+'}</span>
         <span class="ppr">${money(p.current_price)}${disc}</span>
@@ -822,13 +858,13 @@ function renderFridge() {
   const X = BX[country.lang], F = DEMO.fridge || { recognized: [], shopping: [] };
   const nameOf = id => (PRODUCTS[id] ? PRODUCTS[id].name[country.lang] : id);
   const recognized = F.recognized.map(r => `
-    <div class="irow"><span>${emojiOf(r.id)} ${nameOf(r.id)}</span>
+    <div class="irow"><span>${picon(r.id)} ${nameOf(r.id)}</span>
       <span>${fmtQty(r.quantity)} ${unitWord(r.unit)} · ${Math.round(r.confidence*100)}%</span></div>`).join('');
   const shopping = F.shopping.map(s => {
     const prod = products.find(p => p.id === s.id);  // links to стълб 1 verdict
     const pill = prod ? `<span class="tag" style="background:${C[prod.verdict]};margin-left:7px">${TAG[prod.verdict][country.lang]}</span>` : '';
     const reason = s.reason_code === 'missing' ? X.missing : X.low;
-    return `<div class="brow"><span>${emojiOf(s.id)} ${nameOf(s.id)}${pill}</span>
+    return `<div class="brow"><span>${picon(s.id)} ${nameOf(s.id)}${pill}</span>
       <span>${fmtQty(s.needed_quantity)} ${unitWord(s.unit)} <span class="date">· ${reason}</span></span></div>`;
   }).join('');
   document.getElementById('basket').innerHTML = `
@@ -855,7 +891,7 @@ function renderBasket() {
     const name = meta ? (meta.name[country.lang] || meta.name.bg) : id;
     const price = p ? money(p.current_price) : '';
     return `<div class="irow">
-      <span>${emojiOf(id)} ${name}</span>
+      <span>${picon(id)} ${name}</span>
       <span>${price} <button class="cadd in" style="width:22px;height:22px;font-size:12px;margin-left:6px" onclick="toggleCart('${id}')">✕</button></span>
     </div>`;
   }).join('');
@@ -907,7 +943,7 @@ function renderTable() {
       const isBest = Math.abs(o.price - minPrice) < 0.005;
       return `<td class="${isBest ? 'tmin' : ''}">${money(o.price)}</td>`;
     }).join('');
-    return `<tr><td>${emojiOf(p.id)} ${name}<br><span class="tpack">${pack}</span></td>${cells}</tr>`;
+    return `<tr><td>${picon(p.id)} ${name}<br><span class="tpack">${pack}</span></td>${cells}</tr>`;
   }).join('');
   document.getElementById('basket').innerHTML = `
     <div class="panel" style="padding:0;overflow-x:auto;border-radius:16px">
@@ -1097,8 +1133,8 @@ function renderHome() {
   const dealsHTML = deals.length
     ? deals.map(p => {
         const meta = PRODUCTS[p.id], idx = products.indexOf(p);
-        return `<div class="deal-card" onclick="setView('shop');shopTab='products';setTimeout(()=>select(${idx}),80)">
-          <div class="deal-emoji">${emojiOf(p.id)}</div>
+        return `<div class="deal-card" style="--vc:${C[p.verdict]}" onclick="setView('shop');shopTab='products';setTimeout(()=>select(${idx}),80)">
+          <div class="deal-emoji">${productIcon(p.id)}</div>
           <div class="deal-name">${meta.name[country.lang]||meta.name.bg}</div>
           <div class="deal-disc" style="color:var(--green)">−${p.discount_pct}%</div>
           <div class="deal-price">${money(p.current_price)}</div>
