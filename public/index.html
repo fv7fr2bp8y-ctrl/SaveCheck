@@ -277,6 +277,28 @@
   .bottomnav button .ic svg { width:100%; height:100%; display:block; }
   .bottomnav button.on { color:var(--green-d); }
   footer { color:var(--muted); font-size:11px; line-height:1.5; max-width:430px; margin:14px auto 0; text-align:center; padding:0 16px; }
+  /* ── Recipes ── */
+  .recipe-card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px 16px; margin-bottom:10px; cursor:pointer; transition:border-color .15s; }
+  .recipe-card.open { border-color:var(--green); }
+  .recipe-head { display:flex; align-items:center; gap:10px; }
+  .recipe-icon { font-size:28px; flex:none; line-height:1; }
+  .recipe-name { font-size:14px; font-weight:800; flex:1; line-height:1.2; }
+  .recipe-meta { font-size:11px; color:var(--muted); margin-top:2px; }
+  .recipe-btn { border:0; background:var(--green); color:#fff; border-radius:10px; padding:7px 12px; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; font-family:inherit; flex:none; }
+  .recipe-btn.added { background:var(--green-d); }
+  .recipe-ing { margin-top:12px; border-top:1px solid var(--line); padding-top:6px; }
+  .recipe-ing-row { display:flex; align-items:center; gap:8px; padding:7px 0; border-top:1px solid var(--line); font-size:13px; }
+  .recipe-ing-row:first-child { border-top:0; }
+  .recipe-add-all { width:100%; margin-top:10px; background:var(--green); color:#fff; border:0; border-radius:12px; padding:11px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
+  /* ── List custom items ── */
+  .list-custom { display:flex; gap:8px; margin-bottom:12px; }
+  .list-custom input { flex:1; border:1.5px solid var(--line); border-radius:12px; padding:9px 14px; font-size:14px; background:var(--cream); color:var(--ink); outline:none; font-family:inherit; }
+  .list-custom input:focus { border-color:var(--green); }
+  .list-custom button { border:0; background:var(--green); color:#fff; border-radius:12px; padding:9px 16px; font-size:20px; line-height:1; font-weight:700; cursor:pointer; }
+  .list-summary { background:var(--green-bg); border:1.5px solid var(--green); border-radius:14px; padding:11px 14px; margin-bottom:12px; display:flex; align-items:center; gap:10px; }
+  .list-summary .ls-ico { font-size:22px; flex:none; }
+  .list-summary .ls-tx { flex:1; font-size:13px; font-weight:700; color:var(--green-d); }
+  .list-summary .ls-amt { font-size:16px; font-weight:900; color:var(--green); font-variant-numeric:tabular-nums; }
 </style>
 </head>
 <body>
@@ -658,16 +680,46 @@ const BX = {
 
 // Extra BX keys for new 4-tab architecture.
 const BX_EX = {
-  bg: { tabHome:'Начало', tabShop:'Пазарувай', tabPromos:'Промоции', homeDeals:'Реални промоции', homeNoDeals:'Няма реални промоции' },
-  sr: { tabHome:'Početna', tabShop:'Kupovina', tabPromos:'Akcije', homeDeals:'Prave akcije', homeNoDeals:'Nema pravih akcija danas' },
-  mk: { tabHome:'Дома', tabShop:'Купувај', tabPromos:'Промоции', homeDeals:'Вистински промоции', homeNoDeals:'Нема вистински промоции' },
-  ro: { tabHome:'Acasă', tabShop:'Cumpărături', tabPromos:'Promoții', homeDeals:'Reduceri reale', homeNoDeals:'Fără reduceri reale azi' },
-  el: { tabHome:'Αρχική', tabShop:'Αγορά', tabPromos:'Προσφορές', homeDeals:'Αληθινές προσφορές', homeNoDeals:'Δεν υπάρχουν σήμερα' },
-  tr: { tabHome:'Ana Sayfa', tabShop:'Alışveriş', tabPromos:'Kampanyalar', homeDeals:'Gerçek indirimler', homeNoDeals:'Bugün gerçek indirim yok' },
-  sq: { tabHome:'Kryesorja', tabShop:'Blej', tabPromos:'Ofertat', homeDeals:'Oferta reale', homeNoDeals:'Nuk ka oferta reale sot' },
-  bs: { tabHome:'Početna', tabShop:'Kupovina', tabPromos:'Akcije', homeDeals:'Prave akcije', homeNoDeals:'Nema pravih akcija' },
-  hr: { tabHome:'Početna', tabShop:'Kupovina', tabPromos:'Akcije', homeDeals:'Prave akcije', homeNoDeals:'Nema pravih akcija' },
-  sl: { tabHome:'Domov', tabShop:'Nakup', tabPromos:'Akcije', homeDeals:'Prave akcije', homeNoDeals:'Danes ni pravih akcij' },
+  bg: { tabHome:'Начало', tabShop:'Пазарувай', tabPromos:'Промоции', homeDeals:'Реални промоции', homeNoDeals:'Няма реални промоции',
+        tabRecipes:'Рецепти', recipeAdd:'Добави', recipeAddAll:'+ Добави всичко в списъка', recipeAddedAll:'✓ Всички са в списъка',
+        recipeHint:'Избери рецепта → добави съставките в списъка', recipeMin:'мин', recipeServ:'порции', recipeIng:'съставки',
+        listCustomPh:'Добави продукт ръчно…', listRealPromos:'реални промоции в списъка', listSave:'Спестяваш', listCustomTitle:'Мои продукти' },
+  sr: { tabHome:'Početna', tabShop:'Kupovina', tabPromos:'Akcije', homeDeals:'Prave akcije', homeNoDeals:'Nema pravih akcija danas',
+        tabRecipes:'Recepti', recipeAdd:'Dodaj', recipeAddAll:'+ Dodaj sve na listu', recipeAddedAll:'✓ Sve je na listi',
+        recipeHint:'Odaberi recept → dodaj sastojke na listu', recipeMin:'min', recipeServ:'porcije', recipeIng:'sastojci',
+        listCustomPh:'Dodaj ručno…', listRealPromos:'pravih akcija na listi', listSave:'Štedite', listCustomTitle:'Moji proizvodi' },
+  mk: { tabHome:'Дома', tabShop:'Купувај', tabPromos:'Промоции', homeDeals:'Вистински промоции', homeNoDeals:'Нема вистински промоции',
+        tabRecipes:'Рецепти', recipeAdd:'Додај', recipeAddAll:'+ Додај сè во листата', recipeAddedAll:'✓ Сè е во листата',
+        recipeHint:'Избери рецепт → додај состојки во листата', recipeMin:'мин', recipeServ:'порции', recipeIng:'состојки',
+        listCustomPh:'Додај рачно…', listRealPromos:'вистински промоции во листата', listSave:'Заштедуваш', listCustomTitle:'Мои производи' },
+  ro: { tabHome:'Acasă', tabShop:'Cumpărături', tabPromos:'Promoții', homeDeals:'Reduceri reale', homeNoDeals:'Fără reduceri reale azi',
+        tabRecipes:'Rețete', recipeAdd:'Adaugă', recipeAddAll:'+ Adaugă tot pe listă', recipeAddedAll:'✓ Totul e pe listă',
+        recipeHint:'Alege o rețetă → adaugă ingredientele pe listă', recipeMin:'min', recipeServ:'porții', recipeIng:'ingrediente',
+        listCustomPh:'Adaugă manual…', listRealPromos:'reduceri reale pe listă', listSave:'Economisești', listCustomTitle:'Produsele mele' },
+  el: { tabHome:'Αρχική', tabShop:'Αγορά', tabPromos:'Προσφορές', homeDeals:'Αληθινές προσφορές', homeNoDeals:'Δεν υπάρχουν σήμερα',
+        tabRecipes:'Συνταγές', recipeAdd:'Προσθήκη', recipeAddAll:'+ Προσθήκη όλων', recipeAddedAll:'✓ Όλα στη λίστα',
+        recipeHint:'Επίλεξε συνταγή → πρόσθεσε υλικά', recipeMin:'λεπτά', recipeServ:'μερίδες', recipeIng:'υλικά',
+        listCustomPh:'Πρόσθεσε χειροκίνητα…', listRealPromos:'αληθινές προσφορές στη λίστα', listSave:'Εξοικονομείς', listCustomTitle:'Τα προϊόντα μου' },
+  tr: { tabHome:'Ana Sayfa', tabShop:'Alışveriş', tabPromos:'Kampanyalar', homeDeals:'Gerçek indirimler', homeNoDeals:'Bugün gerçek indirim yok',
+        tabRecipes:'Tarifler', recipeAdd:'Ekle', recipeAddAll:'+ Hepsini listeye ekle', recipeAddedAll:'✓ Hepsi listede',
+        recipeHint:'Tarif seç → malzemeleri listeye ekle', recipeMin:'dk', recipeServ:'porsiyon', recipeIng:'malzeme',
+        listCustomPh:'Manuel ekle…', listRealPromos:'gerçek indirim listede', listSave:'Tasarruf', listCustomTitle:'Ürünlerim' },
+  sq: { tabHome:'Kryesorja', tabShop:'Blej', tabPromos:'Ofertat', homeDeals:'Oferta reale', homeNoDeals:'Nuk ka oferta reale sot',
+        tabRecipes:'Receta', recipeAdd:'Shto', recipeAddAll:'+ Shto të gjitha', recipeAddedAll:'✓ Të gjitha janë',
+        recipeHint:'Zgjedh recetë → shto përbërësit', recipeMin:'min', recipeServ:'porcione', recipeIng:'përbërës',
+        listCustomPh:'Shto manualisht…', listRealPromos:'oferta reale në listë', listSave:'Kurseni', listCustomTitle:'Produktet e mia' },
+  bs: { tabHome:'Početna', tabShop:'Kupovina', tabPromos:'Akcije', homeDeals:'Prave akcije', homeNoDeals:'Nema pravih akcija',
+        tabRecipes:'Recepti', recipeAdd:'Dodaj', recipeAddAll:'+ Dodaj sve na listu', recipeAddedAll:'✓ Sve je na listi',
+        recipeHint:'Odaberi recept → dodaj sastojke na listu', recipeMin:'min', recipeServ:'porcije', recipeIng:'sastojci',
+        listCustomPh:'Dodaj ručno…', listRealPromos:'pravih akcija na listi', listSave:'Štedite', listCustomTitle:'Moji proizvodi' },
+  hr: { tabHome:'Početna', tabShop:'Kupovina', tabPromos:'Akcije', homeDeals:'Prave akcije', homeNoDeals:'Nema pravih akcija',
+        tabRecipes:'Recepti', recipeAdd:'Dodaj', recipeAddAll:'+ Dodaj sve na popis', recipeAddedAll:'✓ Sve je na popisu',
+        recipeHint:'Odaberi recept → dodaj sastojke na popis', recipeMin:'min', recipeServ:'porcije', recipeIng:'sastojci',
+        listCustomPh:'Dodaj ručno…', listRealPromos:'pravih akcija na popisu', listSave:'Štedite', listCustomTitle:'Moji proizvodi' },
+  sl: { tabHome:'Domov', tabShop:'Nakup', tabPromos:'Akcije', homeDeals:'Prave akcije', homeNoDeals:'Danes ni pravih akcij',
+        tabRecipes:'Recepti', recipeAdd:'Dodaj', recipeAddAll:'+ Dodaj vse na seznam', recipeAddedAll:'✓ Vse je na seznamu',
+        recipeHint:'Izberi recept → dodaj sestavine na seznam', recipeMin:'min', recipeServ:'porcije', recipeIng:'sestavin',
+        listCustomPh:'Dodaj ročno…', listRealPromos:'pravih akcij na seznamu', listSave:'Prihranite', listCustomTitle:'Moji izdelki' },
 };
 Object.keys(BX_EX).forEach(lang => BX[lang] && Object.assign(BX[lang], BX_EX[lang]));
 
@@ -694,6 +746,49 @@ const EMOJI = {
   potato:'🥔', onion:'🧅', apple:'🍎', salt:'🧂', cucumber:'🥒',
 };
 const emojiOf = id => EMOJI[id] || '🛒';
+
+const RECIPES = [
+  { id:'shopska', icon:'🥗',
+    name:{bg:'Шопска салата',sr:'Šopska salata',mk:'Шопска салата',ro:'Salată Şopska',el:'Σόπσκα σαλάτα',tr:'Şopska salatası',sq:'Sallata Shopska',bs:'Šopska salata',hr:'Šopska salata',sl:'Šopska solata'},
+    time:15, servings:4,
+    ingredients:[{id:'tomatoes',qty:'500 г'},{id:'cucumber',qty:'2 бр.'},{id:'feta',qty:'200 г'},{id:'oliveoil',qty:'3 с.л.'},{id:'salt',qty:'на вкус'}] },
+  { id:'omlet', icon:'🍳',
+    name:{bg:'Омлет',sr:'Omlet',mk:'Омлет',ro:'Omletă',el:'Ομελέτα',tr:'Omlet',sq:'Omëletë',bs:'Omlet',hr:'Omlet',sl:'Omleta'},
+    time:10, servings:2,
+    ingredients:[{id:'eggs',qty:'3 бр.'},{id:'milk',qty:'50 мл'},{id:'butter',qty:'1 с.л.'},{id:'salt',qty:'на вкус'}] },
+  { id:'smoothie', icon:'🍌',
+    name:{bg:'Банански смути',sr:'Bananin smoothie',mk:'Банански смути',ro:'Smoothie de banane',el:'Smoothie μπανάνας',tr:'Muzlu smoothie',sq:'Smoothie me banane',bs:'Bananin smoothie',hr:'Bananin smoothie',sl:'Bananin smoothie'},
+    time:5, servings:2,
+    ingredients:[{id:'bananas',qty:'2 бр.'},{id:'milk',qty:'300 мл'},{id:'yogurt',qty:'150 г'}] },
+  { id:'pileshka_supa', icon:'🍲',
+    name:{bg:'Пилешка супа',sr:'Pileća čorba',mk:'Пилешка чорба',ro:'Supă de pui',el:'Κοτόσουπα',tr:'Tavuk çorbası',sq:'Supë pule',bs:'Pileća čorba',hr:'Pileća juha',sl:'Piščančja juha'},
+    time:60, servings:4,
+    ingredients:[{id:'chicken',qty:'600 г'},{id:'potato',qty:'2 бр.'},{id:'onion',qty:'1 бр.'},{id:'salt',qty:'на вкус'}] },
+  { id:'banica', icon:'🥐',
+    name:{bg:'Баница',sr:'Banica',mk:'Баница',ro:'Banica',el:'Μπάνιτσα',tr:'Banitsa',sq:'Banica',bs:'Banica',hr:'Banica',sl:'Banica'},
+    time:45, servings:8,
+    ingredients:[{id:'flour',qty:'500 г'},{id:'eggs',qty:'3 бр.'},{id:'feta',qty:'400 г'},{id:'butter',qty:'100 г'}] },
+  { id:'pileshko_oriz', icon:'🍗',
+    name:{bg:'Пилешко с ориз',sr:'Piletina s pirinčem',mk:'Пилешко со ориз',ro:'Pui cu orez',el:'Κοτόπουλο με ρύζι',tr:'Tavuklu pilav',sq:'Pulë me oriz',bs:'Piletina s rižom',hr:'Piletina s rižom',sl:'Piščanec z rižem'},
+    time:40, servings:4,
+    ingredients:[{id:'chicken',qty:'500 г'},{id:'rice',qty:'200 г'},{id:'onion',qty:'1 бр.'},{id:'salt',qty:'на вкус'}] },
+  { id:'pasta', icon:'🍝',
+    name:{bg:'Спагети с масло',sr:'Špagete s puterom',mk:'Шпагети со масло',ro:'Spaghete cu unt',el:'Μακαρόνια με βούτυρο',tr:'Tereyağlı spagetti',sq:'Spageta me gjalpë',bs:'Špagete s maslacem',hr:'Špagete s maslacem',sl:'Špagetke z maslom'},
+    time:20, servings:2,
+    ingredients:[{id:'pasta',qty:'200 г'},{id:'butter',qty:'2 с.л.'},{id:'salt',qty:'на вкус'}] },
+  { id:'kartofena_salata', icon:'🥔',
+    name:{bg:'Картофена салата',sr:'Krompir salata',mk:'Компирска салата',ro:'Salată de cartofi',el:'Πατατοσαλάτα',tr:'Patates salatası',sq:'Sallata me patate',bs:'Krompir salata',hr:'Krumpirova salata',sl:'Krompirjeva solata'},
+    time:30, servings:4,
+    ingredients:[{id:'potato',qty:'500 г'},{id:'onion',qty:'1 бр.'},{id:'oliveoil',qty:'3 с.л.'},{id:'salt',qty:'на вкус'}] },
+  { id:'zakuska', icon:'☕',
+    name:{bg:'Закуска с кафе',sr:'Doručak s kafom',mk:'Појадок со кафе',ro:'Mic dejun cu cafea',el:'Πρωινό με καφέ',tr:'Kahveli kahvaltı',sq:'Mëngjes me kafe',bs:'Doručak s kafom',hr:'Doručak s kavom',sl:'Zajtrk s kavo'},
+    time:10, servings:1,
+    ingredients:[{id:'coffee',qty:'1 к.л.'},{id:'milk',qty:'200 мл'},{id:'sugar',qty:'1 к.л.'},{id:'bread',qty:'2 филии'},{id:'butter',qty:'1 с.л.'}] },
+  { id:'yogurt_apple', icon:'🍎',
+    name:{bg:'Кисело мляко с ябълка',sr:'Jogurt s jabukom',mk:'Кисело млеко со јаболко',ro:'Iaurt cu măr',el:'Γιαούρτι με μήλο',tr:'Elmalı yoğurt',sq:'Kos me mollë',bs:'Jogurt s jabukom',hr:'Jogurt s jabukom',sl:'Jogurt z jabolkom'},
+    time:5, servings:1,
+    ingredients:[{id:'yogurt',qty:'200 г'},{id:'apple',qty:'1 бр.'}] },
+];
 
 // Hand-authored flat SVG product illustrations (viewBox 0 0 40 40).
 // Replaces emoji with a consistent, theme-friendly icon set — zero deps.
@@ -736,6 +831,8 @@ let active = -1, country = COUNTRIES[0], view = 'home', query = '', cart = {};
 let shopTab = 'products', promosTab = 'brochures';
 let verdictFilter = 'all';
 let scanStream = null;
+let openRecipe = null;
+let customList = [];
 
 // Store chains per market — a mix of domestic and foreign (international)
 // chains. Illustrative: real footprints vary.
@@ -999,23 +1096,63 @@ function renderFridge() {
 
 function renderBasket() {
   const X = BX[country.lang];
+  const lang = country.lang;
   const ids = cartIds();
-  if (!ids.length) {
+
+  const customSection = `
+    <div class="list-custom">
+      <input id="custom-item-input" type="text" placeholder="${X.listCustomPh}" onkeydown="if(event.key==='Enter')addCustomItem()" />
+      <button onclick="addCustomItem()">+</button>
+    </div>
+    ${customList.length ? `<div class="panel" style="margin-bottom:12px">
+      <div class="otitle">${X.listCustomTitle}</div>
+      ${customList.map((it, i) => `<div class="irow">
+        <span style="flex:1">📝 ${it}</span>
+        <button class="cadd in" style="width:22px;height:22px;font-size:12px" onclick="removeCustomItem(${i})">✕</button>
+      </div>`).join('')}
+    </div>` : ''}`;
+
+  if (!ids.length && !customList.length) {
     document.getElementById('basket').innerHTML = `
+      ${customSection}
       <div class="panel" style="text-align:center;padding:28px 16px;color:var(--muted)">
         <div style="font-size:36px;margin-bottom:10px">🛒</div>
         <div style="font-size:14px">${X.cartEmpty}</div>
       </div>`;
     return;
   }
-  // Cart items list
+
+  if (!ids.length) {
+    document.getElementById('basket').innerHTML = customSection;
+    return;
+  }
+
+  // Savings summary for tracked items in list
+  let listSaved = 0, realInList = 0;
+  ids.forEach(id => {
+    const p = products.find(p => p.id === id);
+    if (!p || p.median_90 == null || p.current_price == null) return;
+    if (p.verdict === 'green' && p.median_90 - p.current_price > 0) {
+      listSaved += p.median_90 - p.current_price;
+      realInList++;
+    }
+  });
+  const summaryHTML = realInList > 0 ? `
+    <div class="list-summary">
+      <span class="ls-ico">🟢</span>
+      <span class="ls-tx">${realInList} ${X.listRealPromos}</span>
+      <span class="ls-amt">${X.listSave} ${disp(listSaved * country.fx)} ${country.sym}</span>
+    </div>` : '';
+
+  // Items with verdict badge
   const itemRows = ids.map(id => {
     const p = products.find(p => p.id === id), meta = PRODUCTS[id];
-    const name = meta ? (meta.name[country.lang] || meta.name.bg) : id;
+    const name = meta ? (meta.name[lang] || meta.name.bg) : id;
     const price = p ? money(p.current_price) : '';
+    const tag = p ? `<span class="vtag" style="background:${C[p.verdict]}">${TAG[p.verdict][lang]}</span>` : '';
     return `<div class="irow">
-      <span>${picon(id)} ${name}</span>
-      <span>${price} <button class="cadd in" style="width:22px;height:22px;font-size:12px;margin-left:6px" onclick="toggleCart('${id}')">✕</button></span>
+      <span style="flex:1">${picon(id)} ${name} ${tag}</span>
+      <span style="white-space:nowrap">${price} <button class="cadd in" style="width:22px;height:22px;font-size:12px;margin-left:6px" onclick="toggleCart('${id}')">✕</button></span>
     </div>`;
   }).join('');
 
@@ -1024,30 +1161,92 @@ function renderBasket() {
   const n = ids.length;
   const storeRows = analysis.map((s, i) => {
     const pct = s.covered.length + '/' + n;
-    const missTxt = s.missing.length ? ` · ${X.noData}: ${s.missing.map(id => { const m = PRODUCTS[id]; return m ? (m.name[country.lang] || m.name.bg) : id; }).join(', ')}` : '';
+    const missTxt = s.missing.length ? ` · ${X.noData}: ${s.missing.map(id => { const m = PRODUCTS[id]; return m ? (m.name[lang] || m.name.bg) : id; }).join(', ')}` : '';
     return `<div class="srow ${i===0?'sbest':''}">
       <span>${i===0?'✓ ':''}${s.chain}<span class="scov">${X.covers} ${pct} ${X.artItems}${missTxt}</span></span>
       <span style="font-variant-numeric:tabular-nums;font-weight:700">${money(s.total)}</span>
     </div>`;
   }).join('');
 
-  // Best advice box
   const best = analysis[0];
-  const bestMiss = best.missing.length ? ` · ${X.noData}: ${best.missing.map(id => { const m = PRODUCTS[id]; return m ? (m.name[country.lang] || m.name.bg) : id; }).join(', ')}` : '';
   document.getElementById('basket').innerHTML = `
+    ${customSection}
+    ${summaryHTML}
     <div class="advice-box">
       <div class="advice-lbl">${X.storeAdvice}</div>
       <div class="advice-chain">${best.chain} — ${money(best.total)}</div>
-      <div class="advice-sub">${best.covered.length} ${X.of} ${n} ${X.artItems}${bestMiss}</div>
+      <div class="advice-sub">${best.covered.length} ${X.of} ${n} ${X.artItems}</div>
     </div>
     <div class="panel">
-      <div class="otitle">${X.cartTitle} <button onclick="cart={};render()" style="border:0;background:none;color:var(--muted);font-size:11px;cursor:pointer;float:right">${X.clearCart}</button></div>
+      <div class="otitle">${X.cartTitle} <button onclick="cart={};customList=[];render()" style="border:0;background:none;color:var(--muted);font-size:11px;cursor:pointer;float:right">${X.clearCart}</button></div>
       ${itemRows}
     </div>
     <div class="panel" style="margin-top:12px">
       <div class="otitle">${X.storeAdvice}</div>
       ${storeRows}
     </div>`;
+}
+
+function addCustomItem() {
+  const inp = document.getElementById('custom-item-input');
+  if (!inp) return;
+  const val = inp.value.trim();
+  if (!val) return;
+  customList.push(val);
+  inp.value = '';
+  renderBasket();
+}
+
+function removeCustomItem(i) {
+  customList.splice(i, 1);
+  renderBasket();
+}
+
+function addRecipeToCart(recipeId) {
+  const r = RECIPES.find(r => r.id === recipeId);
+  if (!r) return;
+  r.ingredients.forEach(ing => { cart[ing.id] = 1; });
+  renderTabs();
+}
+
+function renderRecipes() {
+  const lang = country.lang;
+  const X = BX[lang];
+  const html = RECIPES.map(r => {
+    const isOpen = openRecipe === r.id;
+    const rname = r.name[lang] || r.name.bg;
+    const allInCart = r.ingredients.every(ing => !!cart[ing.id]);
+    const ingHTML = r.ingredients.map(ing => {
+      const p = products.find(p => p.id === ing.id);
+      const meta = PRODUCTS[ing.id];
+      const name = meta ? (meta.name[lang] || meta.name.bg) : ing.id;
+      const tag = p ? `<span class="vtag" style="background:${C[p.verdict]}">${TAG[p.verdict][lang]}</span>` : '';
+      const inCart = !!cart[ing.id];
+      return `<div class="recipe-ing-row">
+        <span style="font-size:20px;flex:none;line-height:1">${emojiOf(ing.id)}</span>
+        <span style="flex:1;font-weight:600">${name} ${tag}<br><small style="color:var(--muted);font-weight:400">${ing.qty}</small></span>
+        <button class="cadd ${inCart?'in':''}" onclick="event.stopPropagation();cart['${ing.id}']=cart['${ing.id}']?0:1;renderTabs();renderRecipes()" aria-label="${name}">${inCart?'✓':'+'}</button>
+      </div>`;
+    }).join('');
+    return `<div class="recipe-card ${isOpen?'open':''}" onclick="openRecipe=${isOpen?'null':`'${r.id}'`};renderRecipes()">
+      <div class="recipe-head">
+        <span class="recipe-icon">${r.icon}</span>
+        <div style="flex:1;min-width:0">
+          <div class="recipe-name">${rname}</div>
+          <div class="recipe-meta">⏱ ${r.time} ${X.recipeMin} · ${r.servings} ${X.recipeServ} · ${r.ingredients.length} ${X.recipeIng}</div>
+        </div>
+        ${!isOpen ? `<button class="recipe-btn ${allInCart?'added':''}" onclick="event.stopPropagation();addRecipeToCart('${r.id}');renderRecipes()">${allInCart?'✓':X.recipeAdd}</button>` : ''}
+      </div>
+      ${isOpen ? `<div class="recipe-ing">${ingHTML}
+        <button class="recipe-add-all" onclick="event.stopPropagation();addRecipeToCart('${r.id}');renderRecipes()">
+          ${allInCart ? X.recipeAddedAll : X.recipeAddAll}
+        </button>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+  document.getElementById('basket').innerHTML = `
+    <div style="color:var(--muted);font-size:12px;text-align:center;padding:4px 0 12px;font-weight:600">${X.recipeHint}</div>
+    ${html}`;
 }
 
 function renderTable() {
@@ -1286,6 +1485,18 @@ function renderHome() {
       <span class="fh-tx"><div class="fh-big">${fakesCaught} ${H.fakes}</div><div class="fh-sub">${H.period}</div></span>
       <span class="fh-arr">›</span>
     </div>` : ''}
+    ${(cartIds().length + customList.length) > 0 ? (() => {
+      const n = cartIds().length + customList.length;
+      const analysis = analyzeStores();
+      const best = analysis[0];
+      const bestTxt = best ? ` · ${best.chain} ${money(best.total)}` : '';
+      return `<div class="fake-hook" style="background:linear-gradient(135deg,#16a34a,#15803d);box-shadow:0 8px 20px rgba(22,163,74,.28);margin-top:10px"
+           onclick="setView('shop');shopTab='basket';render()">
+        <span class="fh-ic">🛒</span>
+        <span class="fh-tx"><div class="fh-big">${n} ${X.cartTitle}</div><div class="fh-sub">${bestTxt}</div></span>
+        <span class="fh-arr">›</span>
+      </div>`;
+    })() : ''}
     ${titans.length ? `
     <div class="section-label" style="margin-top:14px">${X.titansTitle}</div>
     <div class="card-block">${titansHTML}
@@ -1414,6 +1625,7 @@ function showScanResult(ean, name, match) {
   let html = '';
   if (match) {
     const col = C[match.verdict];
+    const inCart = !!cart[match.id];
     html = `<div class="scan-result-card">
       <span class="badge" style="background:${col}"><span class="ico">${ICON[match.verdict]}</span>${BADGE[match.verdict][country.lang]}</span>
       <div class="ptitle">${PRODUCTS[match.id].name[country.lang]}
@@ -1427,6 +1639,9 @@ function showScanResult(ean, name, match) {
         ${row(null, t().floor30, money(match.min_30_prior))}
       </table>
       <div class="scan-ean">EAN ${ean}</div>
+      <button class="cadd ${inCart?'in':''}" style="width:auto;border-radius:10px;padding:7px 14px;font-size:13px;margin-top:10px" onclick="toggleCart('${match.id}');showScanResult('${ean}',${JSON.stringify(name)},products.find(p=>p.id==='${match.id}'))">
+        ${inCart?'✓ В списъка':'+ Добави в списъка'}
+      </button>
     </div>`;
   } else if (name) {
     html = `<div class="scan-result-card" style="text-align:center">
@@ -1462,12 +1677,12 @@ function render() {
   // Sub-tabs
   const stw = document.getElementById('sub-tabs-wrap');
   if (isShop) {
-    const n = cartSize();
+    const n = cartSize() + customList.length;
     const cb = n ? `<span style="background:var(--green);color:#fff;font-size:9px;border-radius:999px;padding:0 5px;font-weight:800;margin-left:3px;line-height:1.6">${n}</span>` : '';
     stw.innerHTML = `<div class="sub-tabs">
       <button class="${shopTab==='products'?'active':''}" onclick="setShopTab('products')">${X.tabProducts}</button>
       <button class="${shopTab==='basket'?'active':''}" onclick="setShopTab('basket')">${X.tabBasket}${cb}</button>
-      <button class="${shopTab==='fridge'?'active':''}" onclick="setShopTab('fridge')">${X.tabFridge}</button>
+      <button class="${shopTab==='recipes'?'active':''}" onclick="setShopTab('recipes')">${X.tabRecipes}</button>
     </div>`;
   } else if (view === 'promos') {
     stw.innerHTML = `<div class="sub-tabs">
@@ -1482,6 +1697,7 @@ function render() {
   else if (isShop) {
     if (shopTab === 'products') renderProducts();
     else if (shopTab === 'basket') renderBasket();
+    else if (shopTab === 'recipes') renderRecipes();
     else renderFridge();
   }
   else if (view === 'promos') {
