@@ -1,17 +1,51 @@
 <!DOCTYPE html>
+<!-- build: home hook bar v2 -->
 <html lang="bg">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>SaveCheck — реална ли е промоцията?</title>
+<meta name="description" content="Проверява дали промоцията в супермаркета е истинска. 90 дни история на цените, EU Omnibus директива, 5 вериги в България." />
+<meta property="og:title" content="SaveCheck — Реална ли е промоцията?" />
+<meta property="og:description" content="Сравнява текущата цена с 90-дневната история и казва дали промоцията е реална или фалшива. EU Omnibus директива." />
+<meta property="og:image" content="./og.svg" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="./og.svg" />
+<!-- Home Screen / PWA -->
+<link rel="manifest" href="./manifest.webmanifest" />
+<meta name="theme-color" content="#16a34a" />
+<link rel="apple-touch-icon" href="./img/icon-180.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="./img/icon-192.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="SaveCheck" />
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
 <script src="./data.js"></script>
 <script src="./brochures.js"></script>
 <style>
   :root {
-    --green:#16a34a; --green-d:#15803d; --yellow:#f59e0b; --red:#dc2626; --gray:#6b7280;
-    --ink:#1c1917; --muted:#78716c; --line:#ece7df; --card:#ffffff; --cream:#f6f3ec;
+    --green:#16a34a; --green-d:#15803d; --green-bg:#eaf5ee;
+    --yellow:#d97706; --red:#dc2626; --gray:#6b7280;
+    --ink:#111827; --muted:#6b7280; --line:#f0ece4; --card:#ffffff; --cream:#f5f1ea;
+    --t-xs:10px; --t-sm:12px; --t-base:14px; --t-md:15px; --t-lg:17px; --t-xl:22px; --t-2xl:28px;
+    --shadow-card:0 1px 2px rgba(0,0,0,.06),0 2px 8px rgba(0,0,0,.08);
+    --shadow-raised:0 4px 16px rgba(0,0,0,.12);
   }
+  [data-theme="dark"] {
+    --green:#22c55e; --green-d:#16a34a; --green-bg:#14532d;
+    --yellow:#fbbf24; --red:#f87171; --gray:#9ca3af;
+    --ink:#e8eaf0; --muted:#8b9ab0; --line:#2c2c2e; --card:#1c1c1e; --cream:#111113;
+    --shadow-card:0 1px 2px rgba(0,0,0,.5),0 2px 8px rgba(0,0,0,.5);
+    --shadow-raised:0 4px 16px rgba(0,0,0,.7);
+  }
+  [data-theme="dark"] body { background:radial-gradient(1100px 560px at 50% -8%,#0a2418,#0f0f11); }
+  [data-theme="dark"] .phone { border-color:#2c2c2e; box-shadow:0 30px 70px rgba(0,0,0,.7); }
+  [data-theme="dark"] .titan-bar-wrap { background:#2c2c2e; }
+  [data-theme="dark"] .cp-menu button.active { background:color-mix(in srgb,var(--green) 18%,var(--cream)); }
+  [data-theme="dark"] .advice-box { background:color-mix(in srgb,var(--green) 12%,var(--card)); }
   * { box-sizing:border-box; }
   body {
     margin:0; font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
@@ -19,24 +53,39 @@
     background:radial-gradient(1100px 560px at 50% -8%, #e9f5ed, #e6e0d5);
   }
   .phone {
-    max-width:430px; margin:0 auto; background:var(--cream); border:1px solid #e6e0d6;
+    max-width:430px; margin:0 auto; background:var(--cream); border:1px solid var(--line);
     border-radius:34px; overflow:hidden; box-shadow:0 30px 70px rgba(28,25,23,.20);
   }
-  .appbar { background:var(--card); padding:16px 18px 12px; border-bottom:1px solid var(--line); }
-  .brand { display:flex; align-items:center; gap:10px; }
-  .brand .logo { width:32px; height:32px; flex:none; }
-  .brand h1 { font-size:20px; margin:0; letter-spacing:-.02em; }
+  .appbar { background:var(--card); padding:14px 14px; border-bottom:1px solid var(--line); }
+  .brand { display:flex; align-items:center; gap:8px; }
+  .brand .logo { width:54px; height:54px; flex:none; object-fit:contain; }
+  .brand-text { display:flex; flex-direction:column; gap:2px; }
+  .brand h1 { font-size:24px; margin:0; letter-spacing:-.03em; font-weight:800; line-height:1.05; }
   .brand h1 b { color:var(--green); }
-  .brand .sub { color:var(--muted); font-size:11.5px; margin-top:2px; line-height:1.3; }
-  .flags { display:flex; gap:6px; margin-top:12px; overflow-x:auto; padding-bottom:2px; }
-  .flags::-webkit-scrollbar { display:none; }
-  .flags button {
-    flex:none; border:1px solid var(--line); background:var(--cream); border-radius:9px; cursor:pointer;
-    padding:4px 7px; font-size:15px; line-height:1; display:flex; align-items:center; gap:4px;
-  }
-  .flags button .cc { font-size:10px; font-weight:700; color:var(--muted); }
-  .flags button.active { border-color:var(--green); background:#eaf5ee; }
-  .flags button.active .cc { color:var(--green-d); }
+  .brand-tagline { font-size:11px; color:var(--muted); font-weight:600; letter-spacing:.01em; }
+  .appbar-search { display:flex; align-items:center; gap:8px; margin-top:12px; }
+  .search-field { flex:1; display:flex; align-items:center; gap:8px; background:var(--cream); border:1.5px solid var(--line); border-radius:12px; padding:0 12px; transition:border-color .15s; }
+  .search-field:focus-within { border-color:var(--green); }
+  .search-field svg { width:17px; height:17px; stroke:var(--muted); fill:none; stroke-width:2; flex:none; }
+  .search-field input { flex:1; border:0; background:none; outline:none; font-family:inherit; font-size:14px; color:var(--ink); padding:11px 0; min-width:0; }
+  .search-field input::placeholder { color:var(--muted); }
+  .scan-quick { flex:none; width:44px; height:44px; display:flex; align-items:center; justify-content:center; border:1.5px solid var(--line); border-radius:12px; background:var(--cream); color:var(--green); cursor:pointer; padding:0; transition:border-color .15s; }
+  .scan-quick:hover { border-color:var(--green); }
+  .scan-quick svg { width:21px; height:21px; stroke:var(--green); fill:none; stroke-width:2; }
+  .country-picker { position:relative; margin-left:auto; }
+  .cp-trigger { display:flex; align-items:center; gap:5px; border:1px solid var(--line); background:var(--cream); border-radius:11px; cursor:pointer; padding:8px 11px; font-size:18px; line-height:1; }
+  .cp-trigger .cc { font-size:10px; font-weight:700; color:var(--muted); }
+  .cp-chev { width:10px; height:10px; stroke:var(--muted); transition:transform .2s; flex:none; }
+  .cp-trigger.open .cp-chev { transform:rotate(180deg); }
+  .cp-menu { position:absolute; right:0; top:calc(100% + 8px); background:var(--card); border:1px solid var(--line); border-radius:14px; box-shadow:0 8px 28px rgba(0,0,0,.14); padding:6px; display:none; z-index:200; min-width:130px; }
+  .cp-menu.open { display:flex; flex-direction:column; gap:2px; }
+  .cp-menu button { border:0; background:none; cursor:pointer; padding:8px 12px; border-radius:9px; font-size:16px; display:flex; align-items:center; gap:8px; width:100%; text-align:left; color:var(--ink); }
+  .cp-menu button:hover { background:var(--cream); }
+  .cp-menu button.active { background:var(--green-bg); }
+  .cp-menu button .cc { font-size:11px; font-weight:700; color:var(--muted); }
+  .cp-menu button.active .cc { color:var(--green-d); }
+  .theme-btn { border:0; background:none; cursor:pointer; color:var(--muted); padding:4px; line-height:1; border-radius:8px; transition:color .15s; flex:none; }
+  .theme-btn:hover { color:var(--ink); }
   .hero {
     margin:14px 14px 0; color:#fff; border-radius:18px; padding:15px 17px;
     background:linear-gradient(135deg,#16a34a,#15803d); box-shadow:0 12px 26px rgba(22,163,74,.28);
@@ -45,23 +94,37 @@
   .hero .amt { font-size:30px; font-weight:800; letter-spacing:-.02em; margin-top:2px; }
   .hero .meta { font-size:12px; opacity:.95; margin-top:3px; }
   .scroll { padding:14px; }
-  .cards { background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; }
+  .cards { background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:var(--shadow-card); }
   .prow {
     display:flex; align-items:center; gap:11px; width:100%; border:0; background:none; cursor:pointer;
-    padding:11px 13px; text-align:left; border-top:1px solid var(--line);
+    padding:11px 13px 11px 16px; text-align:left; border-top:1px solid var(--line);
+    position:relative;
+  }
+  .prow::before {
+    content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
+    background:var(--vc, transparent);
   }
   .cards .prow:first-child { border-top:0; }
-  .prow.on { background:#f7faf7; }
+  .prow.on { background:color-mix(in srgb, var(--vc, var(--green)) 7%, var(--card)); }
   .prow .dot { width:11px; height:11px; border-radius:50%; flex:none; }
-  .prow .ill { width:36px; height:36px; border-radius:11px; background:#f1ede3; display:flex; align-items:center; justify-content:center; font-size:20px; flex:none; }
-  .vtag { display:inline-block; font-size:9.5px; font-weight:750; color:#fff; padding:1px 7px; border-radius:999px; margin-left:4px; vertical-align:middle; letter-spacing:.02em; }
+  .prow .ill {
+    width:48px; height:48px; border-radius:14px;
+    background:var(--card);
+    box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--vc, var(--line)) 28%, var(--line));
+    display:flex; align-items:center; justify-content:center; flex:none; overflow:hidden;
+  }
+  .prow .ill svg, .prow .ill img { width:40px; height:40px; display:block; object-fit:contain; }
+  .picon { display:inline-flex; width:20px; height:20px; vertical-align:-5px; }
+  .picon svg { width:100%; height:100%; }
+  .vtag { display:inline-block; font-size:9px; font-weight:800; color:#fff; padding:2px 7px; border-radius:999px; margin-left:5px; vertical-align:middle; letter-spacing:.03em; }
   .prow .pnm { flex:1; font-weight:700; font-size:14px; line-height:1.25; }
-  .prow .pnm small { display:block; color:var(--muted); font-weight:500; font-size:11px; }
-  .prow .ppr { font-weight:800; font-size:15px; font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap; }
-  .prow .ppr em { display:block; font-style:normal; font-size:11px; font-weight:700; margin-top:1px; }
-  .detail { padding:2px 13px 14px; background:#fcfcfb; border-top:1px solid var(--line); }
+  .prow .pnm small { display:block; color:var(--muted); font-weight:500; font-size:11px; margin-top:1px; }
+  .prow .ppr { font-weight:900; font-size:16px; font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap; letter-spacing:-.01em; display:flex; flex-direction:column; align-items:flex-end; gap:1px; }
+  .prow .ppr em { display:block; font-style:normal; font-size:10px; font-weight:800; color:#fff; padding:2px 7px; border-radius:999px; }
+  .spark { display:block; opacity:.8; }
+  .detail { padding:2px 13px 14px; background:color-mix(in srgb, var(--vc, var(--green)) 4%, var(--card)); border-top:1px solid var(--line); }
   .detail .badge { margin-top:10px; }
-  .panel { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px; margin-top:12px; }
+  .panel { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px; margin-top:12px; box-shadow:var(--shadow-card); }
   .badge {
     display:inline-flex; align-items:center; gap:8px; color:#fff; font-weight:750; font-size:13.5px;
     padding:7px 13px; border-radius:999px;
@@ -121,6 +184,67 @@
   .broch-hero { background:linear-gradient(135deg,#1d4ed8,#1e40af); color:#fff; border-radius:18px; padding:14px 16px; margin-bottom:12px; }
   .broch-hero .bh-title { font-size:17px; font-weight:900; margin-bottom:3px; }
   .broch-hero .bh-sub { font-size:12px; opacity:.9; }
+  .scan-wrap { position:relative; border-radius:18px; overflow:hidden; background:#000; aspect-ratio:4/3; margin-bottom:12px; }
+  .scan-wrap video { width:100%; height:100%; object-fit:cover; display:block; }
+  .scan-frame { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; }
+  .scan-frame::before { content:''; display:block; width:70%; aspect-ratio:3/1; border:2.5px solid rgba(255,255,255,.85); border-radius:10px; box-shadow:0 0 0 2000px rgba(0,0,0,.35); }
+  .scan-hint { position:absolute; bottom:14px; left:0; right:0; text-align:center; color:#fff; font-size:12px; font-weight:600; opacity:.9; }
+  .scan-btn { width:100%; background:var(--green); color:#fff; border:0; border-radius:14px; padding:13px; font-size:15px; font-weight:800; cursor:pointer; margin-bottom:12px; }
+  .scan-result-card { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px; }
+  .scan-ean { font-size:10.5px; color:var(--muted); margin-top:8px; }
+  /* ── Home tab ── */
+  .home-hero { border-radius:20px; margin-bottom:6px; box-shadow:0 4px 16px rgba(22,163,74,.12); display:flex; align-items:stretch; overflow:hidden; border:2px solid var(--green); background:var(--card); }
+  .hh-left { flex:1; padding:16px 18px; display:flex; flex-direction:column; justify-content:center; gap:4px; }
+  .hh-lbl { font-size:11.5px; color:var(--green); font-weight:600; letter-spacing:.01em; }
+  .hh-amt { font-size:var(--t-2xl); font-weight:900; letter-spacing:-.03em; line-height:1; color:var(--green); }
+  .hh-sub { font-size:11.5px; color:var(--muted); }
+  .hh-banner { width:154px; flex:none; padding:8px 14px 8px 0; background-size:108%; background-repeat:no-repeat; background-position:center center; background-origin:content-box; background-clip:content-box; }
+  .fake-hook { display:flex; align-items:center; gap:12px; background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; border-radius:16px; padding:14px 16px; margin-top:10px; cursor:pointer; box-shadow:0 8px 20px rgba(217,119,6,.28); }
+  .fake-hook .fh-ic { font-size:24px; flex:none; }
+  .fake-hook .fh-tx { flex:1; }
+  .fake-hook .fh-big { font-weight:900; font-size:15px; letter-spacing:-.01em; }
+  .fake-hook .fh-sub { font-size:11.5px; opacity:.92; margin-top:1px; }
+  .fake-hook .fh-arr { font-weight:800; font-size:18px; opacity:.9; }
+  .section-label { font-size:var(--t-xs); font-weight:750; color:var(--muted); text-transform:uppercase; letter-spacing:.07em; margin:16px 0 8px; }
+  .deal-scroll { display:flex; gap:10px; overflow-x:auto; padding:0 14px 6px; margin:0 -14px; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; }
+  .deal-scroll::-webkit-scrollbar { display:none; }
+  .deal-card { flex:none; width:120px; background:var(--card); border-radius:18px; padding:13px 12px 11px; box-shadow:var(--shadow-card); cursor:pointer; scroll-snap-align:start; transition:transform .12s; }
+  .deal-card:active { transform:scale(.96); }
+  .deal-emoji { width:64px; height:64px; border-radius:16px; background:color-mix(in srgb, var(--vc, var(--green)) 9%, var(--card)); display:flex; align-items:center; justify-content:center; margin-bottom:8px; overflow:hidden; }
+  .deal-emoji svg, .deal-emoji img { width:54px; height:54px; display:block; object-fit:contain; }
+  .deal-name { font-size:11px; font-weight:700; line-height:1.3; margin-bottom:5px; color:var(--ink); }
+  .deal-disc { font-size:var(--t-xl); font-weight:900; letter-spacing:-.02em; line-height:1; }
+  .deal-price { font-size:var(--t-xs); color:var(--muted); margin-top:2px; font-variant-numeric:tabular-nums; }
+  .card-block { background:var(--card); border-radius:16px; overflow:hidden; box-shadow:var(--shadow-card); margin-bottom:12px; }
+  .mini-titan { display:flex; align-items:center; gap:10px; padding:11px 14px; border-top:1px solid var(--line); }
+  .mini-titan:first-child { border-top:0; }
+  /* ── Sub-tabs (pill toggle) ── */
+  #sub-tabs-wrap { padding:10px 14px 0; }
+  .sub-tabs { display:flex; gap:4px; background:var(--cream); border-radius:13px; padding:3px; border:1px solid var(--line); }
+  .sub-tabs button { flex:1; border:0; background:none; cursor:pointer; padding:7px 6px; border-radius:10px; font-size:var(--t-sm); font-weight:700; color:var(--muted); font-family:inherit; line-height:1.2; white-space:nowrap; transition:all .15s; }
+  .sub-tabs button.active { background:var(--card); color:var(--ink); box-shadow:0 1px 4px rgba(0,0,0,.10); }
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(10px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  @keyframes cardIn {
+    from { opacity:0; transform:translateY(8px) scale(.95); }
+    to   { opacity:1; transform:translateY(0) scale(1); }
+  }
+  .anim-in { animation: fadeUp .2s ease-out; }
+  .detail { animation: fadeUp .16s ease-out; }
+  .deal-card:nth-child(1) { animation: cardIn .22s ease-out both; }
+  .deal-card:nth-child(2) { animation: cardIn .22s .06s ease-out both; }
+  .deal-card:nth-child(3) { animation: cardIn .22s .12s ease-out both; }
+  .deal-card:nth-child(4) { animation: cardIn .22s .18s ease-out both; }
+  .deal-card:nth-child(5) { animation: cardIn .22s .24s ease-out both; }
+  .deal-card:nth-child(6) { animation: cardIn .22s .30s ease-out both; }
+  .deal-card:nth-child(7) { animation: cardIn .22s .36s ease-out both; }
+  .prow { transition: background .12s; }
+  .bottomnav button { transition: color .15s, transform .1s; }
+  .bottomnav button:active { transform: scale(.86); }
+  /* ── Search ── */
   .search-wrap { padding:10px 14px 0; }
   .search-wrap input {
     width:100%; border:1.5px solid var(--line); border-radius:12px;
@@ -128,7 +252,14 @@
     outline:none; font-family:inherit;
   }
   .search-wrap input:focus { border-color:var(--green); }
-  .cadd { width:28px; height:28px; border-radius:50%; border:1.5px solid var(--green); background:none; cursor:pointer; font-size:15px; font-weight:800; display:flex; align-items:center; justify-content:center; flex:none; color:var(--green); line-height:1; padding:0; }
+  .filter-wrap { padding:10px 14px 0; display:flex; gap:6px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .filter-wrap::-webkit-scrollbar { display:none; }
+  .fchip { flex:none; border:1.5px solid var(--line); background:var(--card); border-radius:999px; padding:6px 12px; font-size:12px; font-weight:700; color:var(--muted); cursor:pointer; font-family:inherit; display:flex; align-items:center; gap:5px; white-space:nowrap; line-height:1; transition:background .12s,color .12s,border-color .12s; }
+  .fchip .fc-n { font-weight:800; opacity:.65; }
+  .fchip.active { color:#fff; border-color:transparent; }
+  .fchip.active .fc-n { opacity:.85; }
+  .empty-filter { text-align:center; padding:28px 16px; color:var(--muted); font-size:14px; }
+  .cadd { width:28px; height:28px; border-radius:50%; border:1.5px solid var(--green); background:none; cursor:pointer; font-size:15px; font-weight:800; display:flex; align-items:center; justify-content:center; flex:none; color:var(--green); line-height:1; padding:0; font-family:inherit; }
   .cadd.in { background:var(--green); color:#fff; }
   .advice-box { background:#eaf5ee; border:1.5px solid var(--green); border-radius:14px; padding:12px 14px; margin-bottom:12px; }
   .advice-box .advice-lbl { font-size:10.5px; font-weight:700; color:var(--green-d); text-transform:uppercase; letter-spacing:.04em; }
@@ -137,12 +268,13 @@
   .srow { display:flex; justify-content:space-between; align-items:center; padding:8px 2px; border-top:1px solid var(--line); font-size:13px; }
   .srow .scov { font-size:11px; color:var(--muted); margin-left:6px; }
   .srow.sbest span:first-child { color:var(--green); font-weight:700; }
-  .bottomnav { display:flex; background:var(--card); border-top:1px solid var(--line); }
+  .bottomnav { display:flex; background:var(--card); border-top:1px solid var(--line); padding-bottom:env(safe-area-inset-bottom,0); }
   .bottomnav button {
-    flex:1; border:0; background:none; cursor:pointer; padding:9px 4px 12px; color:var(--muted);
-    font-size:11px; font-weight:600; display:flex; flex-direction:column; align-items:center; gap:3px;
+    flex:1; border:0; background:none; cursor:pointer; padding:8px 4px 10px; color:var(--muted);
+    font-size:10px; font-weight:600; display:flex; flex-direction:column; align-items:center; gap:2px; position:relative;
   }
-  .bottomnav button .ic { font-size:18px; line-height:1; }
+  .bottomnav button .ic { width:22px; height:22px; display:block; }
+  .bottomnav button .ic svg { width:100%; height:100%; display:block; }
   .bottomnav button.on { color:var(--green-d); }
   footer { color:var(--muted); font-size:11px; line-height:1.5; max-width:430px; margin:14px auto 0; text-align:center; padding:0 16px; }
 </style>
@@ -151,19 +283,33 @@
 <div class="phone">
   <div class="appbar">
     <div class="brand">
-      <svg class="logo" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-        <rect x="3" y="3" width="26" height="26" rx="8" fill="#16a34a"/>
-        <path d="M9.5 16.5l4.2 4.2L23 11" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <div>
+      <img class="logo" src="./img/logos/logo-d.png" alt="SaveCheck" onclick="setView('home')" style="cursor:pointer"/>
+      <div class="brand-text" onclick="setView('home')" style="cursor:pointer">
         <h1>Save<b>Check</b></h1>
-        <div class="sub" id="tagline"></div>
+        <div class="brand-tagline">Цените под лупа</div>
+      </div>
+      <div class="country-picker" id="country-picker">
+        <button class="cp-trigger" id="cp-trigger" onclick="toggleCountryPicker()">
+          <span id="cp-flag">🇧🇬</span>
+          <span id="cp-code" class="cc">BG</span>
+          <svg class="cp-chev" viewBox="0 0 10 10" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5L5 6.5L8 3.5"/></svg>
+        </button>
+        <div class="cp-menu" id="flags"></div>
       </div>
     </div>
-    <div class="flags" id="flags"></div>
+    <div class="appbar-search">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="search" id="search-input" oninput="doSearch(this.value)" />
+      </div>
+      <button class="scan-quick" onclick="setView('scan')" aria-label="Сканирай баркод">
+        <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </button>
+    </div>
   </div>
-  <div class="hero" id="hero"></div>
-  <div class="search-wrap" id="search-wrap" style="display:none"><input type="search" id="search-input" oninput="doSearch(this.value)" /></div>
+  <div class="hero" id="hero" style="display:none"></div>
+  <div id="sub-tabs-wrap"></div>
+  <div class="filter-wrap" id="filter-wrap" style="display:none"></div>
   <div class="scroll">
     <div class="cards" id="cards"></div>
     <div class="panel" id="panel"></div>
@@ -358,7 +504,12 @@ const BX = {
        titansReal:'реални', titansFake:'фалшиви', titansNoPromos:'без промоции', titansTracked:'проследени продукта',
        tabBrochures:'Брошури', brochTitle:'Тази седмица', brochSub:'Верифицирани промо оферти по верига',
        brochFake:'Фалшива!', brochReal:'Реална', brochClaimed:'обявена', brochNoData:'Без брошура',
-       brochPromos:'промоции', brochExpand:'Виж всички', brochCollapse:'Скрий' },
+       brochPromos:'промоции', brochExpand:'Виж всички', brochCollapse:'Скрий',
+       tabScan:'Скенер', scanBtn:'Сканирай баркод', scanHint:'Насочи камерата към баркода',
+       scanLookup:'Търся продукт…', scanNotTracked:'Продуктът не е в следения ни списък',
+       scanUnknown:'Продуктът не е разпознат', scanAgain:'Сканирай пак',
+       scanNoBD:'Скенерът работи в Chrome. Пробвай с файл:', scanFile:'Избери снимка',
+       scanMatched:'Разпознат като' },
   sr:{ tabProducts:'Proizvodi', tabBasket:'Korpa', tabFridge:'Frižider', tabTable:'Tabela', tabTitans:'Titani', chains:'Cene po lancima', cheapest:'najjeftinije',
        basketTitle:'Cena korpe po lancu', cheapestBasket:'Najjeftinija korpa', save:'uštedite', perItem:'Najjeftinije po proizvodu',
        recognized:'Prepoznato u frižideru', shopping:'Lista za kupovinu', missing:'nedostaje', low:'pri kraju',
@@ -369,7 +520,12 @@ const BX = {
        titansReal:'prave', titansFake:'lažne', titansNoPromos:'bez akcija', titansTracked:'praćena proizvoda',
        tabBrochures:'Brošure', brochTitle:'Ova nedelja', brochSub:'Verifikovane promo ponude po lancu',
        brochFake:'Lažna!', brochReal:'Prava', brochClaimed:'objavljena', brochNoData:'Nema brošure',
-       brochPromos:'akcija', brochExpand:'Vidi sve', brochCollapse:'Sakrij' },
+       brochPromos:'akcija', brochExpand:'Vidi sve', brochCollapse:'Sakrij',
+       tabScan:'Skener', scanBtn:'Skeniraj barkod', scanHint:'Usmeri kameru ka barkodu',
+       scanLookup:'Tražim proizvod…', scanNotTracked:'Proizvod nije u našoj listi',
+       scanUnknown:'Proizvod nije prepoznat', scanAgain:'Skeniraj ponovo',
+       scanNoBD:'Skener radi u Chrome-u. Pokušaj sa fajlom:', scanFile:'Izaberi sliku',
+       scanMatched:'Prepoznat kao' },
   mk:{ tabProducts:'Производи', tabBasket:'Кошница', tabFridge:'Фрижидер', tabTable:'Табела', tabTitans:'Титани', chains:'Цени по синџири', cheapest:'најевтино',
        basketTitle:'Цена на кошницата по синџир', cheapestBasket:'Најевтина кошница', save:'заштедуваш', perItem:'Најевтино по производ',
        recognized:'Препознато во фрижидерот', shopping:'Список за пазарување', missing:'недостасува', low:'снемнува',
@@ -380,7 +536,12 @@ const BX = {
        titansReal:'вистински', titansFake:'лажни', titansNoPromos:'без промоции', titansTracked:'следени производи',
        tabBrochures:'Брошури', brochTitle:'Оваа седмица', brochSub:'Верифицирани промо понуди по синџир',
        brochFake:'Лажна!', brochReal:'Вистинска', brochClaimed:'објавена', brochNoData:'Нема брошура',
-       brochPromos:'промоции', brochExpand:'Види ги сите', brochCollapse:'Сокриј' },
+       brochPromos:'промоции', brochExpand:'Види ги сите', brochCollapse:'Сокриј',
+       tabScan:'Скенер', scanBtn:'Скенирај баркод', scanHint:'Насочи ја камерата кон баркодот',
+       scanLookup:'Барам производ…', scanNotTracked:'Производот не е во нашата листа',
+       scanUnknown:'Производот не е препознаен', scanAgain:'Скенирај пак',
+       scanNoBD:'Скенерот работи во Chrome. Обиди се со датотека:', scanFile:'Избери слика',
+       scanMatched:'Препознаен како' },
   ro:{ tabProducts:'Produse', tabBasket:'Coș', tabFridge:'Frigider', tabTable:'Tabel', tabTitans:'Titani', chains:'Prețuri pe lanțuri', cheapest:'cel mai ieftin',
        basketTitle:'Costul coșului pe lanț', cheapestBasket:'Cel mai ieftin coș', save:'economisești', perItem:'Cel mai ieftin pe produs',
        recognized:'Recunoscut în frigider', shopping:'Listă de cumpărături', missing:'lipsește', low:'se termină',
@@ -391,7 +552,12 @@ const BX = {
        titansReal:'reale', titansFake:'false', titansNoPromos:'fără promoții', titansTracked:'produse monitorizate',
        tabBrochures:'Broșuri', brochTitle:'Săptămâna asta', brochSub:'Oferte promo verificate pe lanț',
        brochFake:'Falsă!', brochReal:'Reală', brochClaimed:'declarată', brochNoData:'Fără broșură',
-       brochPromos:'promoții', brochExpand:'Vezi toate', brochCollapse:'Ascunde' },
+       brochPromos:'promoții', brochExpand:'Vezi toate', brochCollapse:'Ascunde',
+       tabScan:'Scanner', scanBtn:'Scanează cod de bare', scanHint:'Îndreptați camera spre cod',
+       scanLookup:'Caut produsul…', scanNotTracked:'Produsul nu este în lista noastră',
+       scanUnknown:'Produs nerecunoscut', scanAgain:'Scanează din nou',
+       scanNoBD:'Scannerul funcționează în Chrome. Încearcă cu fișier:', scanFile:'Alege imagine',
+       scanMatched:'Recunoscut ca' },
   el:{ tabProducts:'Προϊόντα', tabBasket:'Καλάθι', tabFridge:'Ψυγείο', tabTable:'Πίνακας', tabTitans:'Τιτάνες', chains:'Τιμές ανά αλυσίδα', cheapest:'φθηνότερο',
        basketTitle:'Κόστος καλαθιού ανά αλυσίδα', cheapestBasket:'Φθηνότερο καλάθι', save:'εξοικονομείς', perItem:'Φθηνότερο ανά προϊόν',
        recognized:'Αναγνωρίστηκαν στο ψυγείο', shopping:'Λίστα αγορών', missing:'λείπει', low:'τελειώνει',
@@ -402,7 +568,12 @@ const BX = {
        titansReal:'αληθινές', titansFake:'ψεύτικες', titansNoPromos:'χωρίς προσφορές', titansTracked:'προϊόντα παρακολούθησης',
        tabBrochures:'Φυλλάδια', brochTitle:'Αυτή την εβδομάδα', brochSub:'Επαληθευμένες προσφορές ανά αλυσίδα',
        brochFake:'Ψεύτικη!', brochReal:'Αληθινή', brochClaimed:'δηλωθείσα', brochNoData:'Χωρίς φυλλάδιο',
-       brochPromos:'προσφορές', brochExpand:'Δες όλες', brochCollapse:'Απόκρυψη' },
+       brochPromos:'προσφορές', brochExpand:'Δες όλες', brochCollapse:'Απόκρυψη',
+       tabScan:'Σκάνερ', scanBtn:'Σάρωσε barcode', scanHint:'Στρέψε κάμερα στο barcode',
+       scanLookup:'Ψάχνω προϊόν…', scanNotTracked:'Το προϊόν δεν βρίσκεται στη λίστα μας',
+       scanUnknown:'Το προϊόν δεν αναγνωρίστηκε', scanAgain:'Σάρωσε ξανά',
+       scanNoBD:'Το σκάνερ λειτουργεί στο Chrome. Δοκιμάστε με αρχείο:', scanFile:'Επιλέξτε εικόνα',
+       scanMatched:'Αναγνωρίστηκε ως' },
   tr:{ tabProducts:'Ürünler', tabBasket:'Sepet', tabFridge:'Buzdolabı', tabTable:'Tablo', tabTitans:'Titanlar', chains:'Zincirlere göre fiyatlar', cheapest:'en ucuz',
        basketTitle:'Zincire göre sepet tutarı', cheapestBasket:'En ucuz sepet', save:'tasarruf', perItem:'Ürün başına en ucuz',
        recognized:'Buzdolabında tanındı', shopping:'Alışveriş listesi', missing:'eksik', low:'azalıyor',
@@ -413,7 +584,12 @@ const BX = {
        titansReal:'gerçek', titansFake:'sahte', titansNoPromos:'kampanya yok', titansTracked:'takip edilen ürün',
        tabBrochures:'Broşürler', brochTitle:'Bu hafta', brochSub:'Zincire göre doğrulanmış kampanyalar',
        brochFake:'Sahte!', brochReal:'Gerçek', brochClaimed:'ilan edilen', brochNoData:'Broşür yok',
-       brochPromos:'kampanya', brochExpand:'Tümünü gör', brochCollapse:'Gizle' },
+       brochPromos:'kampanya', brochExpand:'Tümünü gör', brochCollapse:'Gizle',
+       tabScan:'Tarayıcı', scanBtn:'Barkod Tara', scanHint:'Kamerayı barkoda doğrult',
+       scanLookup:'Ürün aranıyor…', scanNotTracked:'Ürün takip listemizde yok',
+       scanUnknown:'Ürün tanınmadı', scanAgain:'Tekrar tara',
+       scanNoBD:"Tarayıcı Chrome'da çalışır. Dosyayla deneyin:", scanFile:'Resim seç',
+       scanMatched:'Tanındı:' },
   sq:{ tabProducts:'Produktet', tabBasket:'Shporta', tabFridge:'Frigorifer', tabTable:'Tabelë', tabTitans:'Titanët', chains:'Çmimet sipas zinxhirëve', cheapest:'më i liri',
        basketTitle:'Kostoja e shportës sipas zinxhirit', cheapestBasket:'Shporta më e lirë', save:'kurseni', perItem:'Më i liri për produkt',
        recognized:'Të njohura në frigorifer', shopping:'Lista e blerjeve', missing:'mungon', low:'po mbaron',
@@ -424,7 +600,12 @@ const BX = {
        titansReal:'reale', titansFake:'të rreme', titansNoPromos:'pa oferta', titansTracked:'produkte të ndjekura',
        tabBrochures:'Fletushka', brochTitle:'Kjo javë', brochSub:'Oferta promo të verifikuara sipas zinxhirit',
        brochFake:'E rreme!', brochReal:'E vërtetë', brochClaimed:'e deklaruar', brochNoData:'Pa fletushkë',
-       brochPromos:'oferta', brochExpand:'Shiko të gjitha', brochCollapse:'Fshih' },
+       brochPromos:'oferta', brochExpand:'Shiko të gjitha', brochCollapse:'Fshih',
+       tabScan:'Skaner', scanBtn:'Skano barkod', scanHint:'Drejtoje kamerën te barkodi',
+       scanLookup:'Po kërkoj produktin…', scanNotTracked:'Produkti nuk është në listën tonë',
+       scanUnknown:'Produkti nuk u njoh', scanAgain:'Skano përsëri',
+       scanNoBD:'Skaneri funksionon në Chrome. Provoni me skedar:', scanFile:'Zgjidh imazh',
+       scanMatched:'U njoh si' },
   bs:{ tabProducts:'Proizvodi', tabBasket:'Korpa', tabFridge:'Frižider', tabTable:'Tabela', tabTitans:'Titani', chains:'Cijene po lancima', cheapest:'najjeftinije',
        basketTitle:'Cijena korpe po lancu', cheapestBasket:'Najjeftinija korpa', save:'uštedite', perItem:'Najjeftinije po proizvodu',
        recognized:'Prepoznato u frižideru', shopping:'Lista za kupovinu', missing:'nedostaje', low:'pri kraju',
@@ -435,7 +616,12 @@ const BX = {
        titansReal:'prave', titansFake:'lažne', titansNoPromos:'bez akcija', titansTracked:'praćena proizvoda',
        tabBrochures:'Brošure', brochTitle:'Ovaj tjedan', brochSub:'Verificirane promo ponude po lancu',
        brochFake:'Lažna!', brochReal:'Prava', brochClaimed:'objavljena', brochNoData:'Nema brošure',
-       brochPromos:'akcija', brochExpand:'Vidi sve', brochCollapse:'Sakrij' },
+       brochPromos:'akcija', brochExpand:'Vidi sve', brochCollapse:'Sakrij',
+       tabScan:'Skener', scanBtn:'Skeniraj barkod', scanHint:'Usmjeri kameru prema barkodu',
+       scanLookup:'Tražim proizvod…', scanNotTracked:'Proizvod nije na našoj listi',
+       scanUnknown:'Proizvod nije prepoznat', scanAgain:'Skeniraj ponovo',
+       scanNoBD:'Skener radi u Chrome-u. Pokušajte s datotekom:', scanFile:'Odaberi sliku',
+       scanMatched:'Prepoznat kao' },
   hr:{ tabProducts:'Proizvodi', tabBasket:'Košarica', tabFridge:'Hladnjak', tabTable:'Tablica', tabTitans:'Titani', chains:'Cijene po lancima', cheapest:'najjeftinije',
        basketTitle:'Cijena košarice po lancu', cheapestBasket:'Najjeftinija košarica', save:'uštedite', perItem:'Najjeftinije po proizvodu',
        recognized:'Prepoznato u hladnjaku', shopping:'Popis za kupnju', missing:'nedostaje', low:'pri kraju',
@@ -446,7 +632,12 @@ const BX = {
        titansReal:'prave', titansFake:'lažne', titansNoPromos:'bez akcija', titansTracked:'praćena proizvoda',
        tabBrochures:'Letci', brochTitle:'Ovaj tjedan', brochSub:'Verificirane promo ponude po lancu',
        brochFake:'Lažna!', brochReal:'Prava', brochClaimed:'objavljena', brochNoData:'Nema letka',
-       brochPromos:'akcija', brochExpand:'Vidi sve', brochCollapse:'Sakrij' },
+       brochPromos:'akcija', brochExpand:'Vidi sve', brochCollapse:'Sakrij',
+       tabScan:'Skener', scanBtn:'Skeniraj barkod', scanHint:'Usmjeri kameru prema barkodu',
+       scanLookup:'Tražim proizvod…', scanNotTracked:'Proizvod nije na našom popisu',
+       scanUnknown:'Proizvod nije prepoznat', scanAgain:'Skeniraj ponovo',
+       scanNoBD:'Skener radi u Chromeu. Pokušaj s datotekom:', scanFile:'Odaberi sliku',
+       scanMatched:'Prepoznat kao' },
   sl:{ tabProducts:'Izdelki', tabBasket:'Košarica', tabFridge:'Hladilnik', tabTable:'Tabela', tabTitans:'Titani', chains:'Cene po trgovinah', cheapest:'najceneje',
        basketTitle:'Cena košarice po trgovini', cheapestBasket:'Najcenejša košarica', save:'prihranite', perItem:'Najceneje po izdelku',
        recognized:'Prepoznano v hladilniku', shopping:'Nakupovalni seznam', missing:'manjka', low:'zmanjkuje',
@@ -457,21 +648,43 @@ const BX = {
        titansReal:'prave', titansFake:'lažne', titansNoPromos:'brez akcij', titansTracked:'sledenih izdelkov',
        tabBrochures:'Letaki', brochTitle:'Ta teden', brochSub:'Preverjene promo ponudbe po trgovini',
        brochFake:'Lažna!', brochReal:'Prava', brochClaimed:'navedena', brochNoData:'Ni letaka',
-       brochPromos:'akcij', brochExpand:'Prikaži vse', brochCollapse:'Skrij' },
+       brochPromos:'akcij', brochExpand:'Prikaži vse', brochCollapse:'Skrij',
+       tabScan:'Skener', scanBtn:'Skeniraj črtno kodo', scanHint:'Usmeri kamero na črtno kodo',
+       scanLookup:'Iščem izdelek…', scanNotTracked:'Izdelek ni na našem seznamu',
+       scanUnknown:'Izdelek ni prepoznan', scanAgain:'Skeniraj znova',
+       scanNoBD:'Skener deluje v Chromu. Poskusite z datoteko:', scanFile:'Izberi sliko',
+       scanMatched:'Prepoznan kot' },
 };
 
+// Extra BX keys for new 4-tab architecture.
+const BX_EX = {
+  bg: { tabHome:'Начало', tabShop:'Пазарувай', tabPromos:'Промоции', homeDeals:'Реални промоции', homeNoDeals:'Няма реални промоции' },
+  sr: { tabHome:'Početna', tabShop:'Kupovina', tabPromos:'Akcije', homeDeals:'Prave akcije', homeNoDeals:'Nema pravih akcija danas' },
+  mk: { tabHome:'Дома', tabShop:'Купувај', tabPromos:'Промоции', homeDeals:'Вистински промоции', homeNoDeals:'Нема вистински промоции' },
+  ro: { tabHome:'Acasă', tabShop:'Cumpărături', tabPromos:'Promoții', homeDeals:'Reduceri reale', homeNoDeals:'Fără reduceri reale azi' },
+  el: { tabHome:'Αρχική', tabShop:'Αγορά', tabPromos:'Προσφορές', homeDeals:'Αληθινές προσφορές', homeNoDeals:'Δεν υπάρχουν σήμερα' },
+  tr: { tabHome:'Ana Sayfa', tabShop:'Alışveriş', tabPromos:'Kampanyalar', homeDeals:'Gerçek indirimler', homeNoDeals:'Bugün gerçek indirim yok' },
+  sq: { tabHome:'Kryesorja', tabShop:'Blej', tabPromos:'Ofertat', homeDeals:'Oferta reale', homeNoDeals:'Nuk ka oferta reale sot' },
+  bs: { tabHome:'Početna', tabShop:'Kupovina', tabPromos:'Akcije', homeDeals:'Prave akcije', homeNoDeals:'Nema pravih akcija' },
+  hr: { tabHome:'Početna', tabShop:'Kupovina', tabPromos:'Akcije', homeDeals:'Prave akcije', homeNoDeals:'Nema pravih akcija' },
+  sl: { tabHome:'Domov', tabShop:'Nakup', tabPromos:'Akcije', homeDeals:'Prave akcije', homeNoDeals:'Danes ni pravih akcij' },
+};
+Object.keys(BX_EX).forEach(lang => BX[lang] && Object.assign(BX[lang], BX_EX[lang]));
+
 // Hero strings (savings dashboard).
+const FILTER_ALL = { bg:'Всички', sr:'Sve', mk:'Сите', ro:'Toate', el:'Όλα', tr:'Tümü', sq:'Të gjitha', bs:'Sve', hr:'Sve', sl:'Vse' };
+const NO_MATCH = { bg:'Няма продукти в тази категория', sr:'Nema proizvoda u ovoj kategoriji', mk:'Нема производи во оваа категорија', ro:'Niciun produs în această categorie', el:'Δεν υπάρχουν προϊόντα σε αυτή την κατηγορία', tr:'Bu kategoride ürün yok', sq:'Nuk ka produkte në këtë kategori', bs:'Nema proizvoda u ovoj kategoriji', hr:'Nema proizvoda u ovoj kategoriji', sl:'Ni izdelkov v tej kategoriji' };
 const HX = {
-  bg:{ saved:'Спестяваш с реалните промоции', promos:'реални промоции' },
-  sr:{ saved:'Štedite uz prave akcije', promos:'pravih akcija' },
-  mk:{ saved:'Заштедуваш со вистинските промоции', promos:'вистински промоции' },
-  ro:{ saved:'Economisești cu reducerile reale', promos:'reduceri reale' },
-  el:{ saved:'Εξοικονομείς με τις αληθινές προσφορές', promos:'αληθινές προσφορές' },
-  tr:{ saved:'Gerçek indirimlerle tasarruf', promos:'gerçek indirim' },
-  sq:{ saved:'Kurseni me ofertat e vërteta', promos:'oferta të vërteta' },
-  bs:{ saved:'Štedite uz prave akcije', promos:'pravih akcija' },
-  hr:{ saved:'Štedite uz prave akcije', promos:'pravih akcija' },
-  sl:{ saved:'Prihranite s pravimi akcijami', promos:'pravih akcij' },
+  bg:{ saved:'Спестяваш с реалните промоции', promos:'реални промоции', fakes:'подвеждащи промоции', period:'последните 30 дни' },
+  sr:{ saved:'Štedite uz prave akcije', promos:'pravih akcija', fakes:'obmanjujućih akcija', period:'poslednjih 30 dana' },
+  mk:{ saved:'Заштедуваш со вистинските промоции', promos:'вистински промоции', fakes:'заблудувачки промоции', period:'последните 30 дена' },
+  ro:{ saved:'Economisești cu reducerile reale', promos:'reduceri reale', fakes:'reduceri înșelătoare', period:'ultimele 30 de zile' },
+  el:{ saved:'Εξοικονομείς με τις αληθινές προσφορές', promos:'αληθινές προσφορές', fakes:'παραπλανητικές προσφορές', period:'τελευταίες 30 ημέρες' },
+  tr:{ saved:'Gerçek indirimlerle tasarruf', promos:'gerçek indirim', fakes:'yanıltıcı indirim', period:'son 30 gün' },
+  sq:{ saved:'Kurseni me ofertat e vërteta', promos:'oferta të vërteta', fakes:'oferta mashtruese', period:'30 ditët e fundit' },
+  bs:{ saved:'Štedite uz prave akcije', promos:'pravih akcija', fakes:'obmanjujućih akcija', period:'posljednjih 30 dana' },
+  hr:{ saved:'Štedite uz prave akcije', promos:'pravih akcija', fakes:'obmanjujućih akcija', period:'zadnjih 30 dana' },
+  sl:{ saved:'Prihranite s pravimi akcijami', promos:'pravih akcij', fakes:'zavajajočih akcij', period:'zadnjih 30 dni' },
 };
 
 const EMOJI = {
@@ -482,9 +695,47 @@ const EMOJI = {
 };
 const emojiOf = id => EMOJI[id] || '🛒';
 
+// Hand-authored flat SVG product illustrations (viewBox 0 0 40 40).
+// Replaces emoji with a consistent, theme-friendly icon set — zero deps.
+const PROD_SVG = {
+  milk:'<svg viewBox="0 0 40 40"><path d="M12 16l8-6 8 6v18a2 2 0 0 1-2 2H14a2 2 0 0 1-2-2V16z" fill="#e3eefb" stroke="#9cc0ec" stroke-width="1.5"/><path d="M12 16l8-6 8 6z" fill="#cfe2fa"/><rect x="17" y="20" width="6" height="9" rx="1" fill="#3b82f6"/></svg>',
+  oil:'<svg viewBox="0 0 40 40"><rect x="16" y="6" width="8" height="5" rx="1" fill="#f59e0b"/><path d="M15 13h10l2 6v15a3 3 0 0 1-3 3H16a3 3 0 0 1-3-3V19l2-6z" fill="#fcd34d" stroke="#eab308" stroke-width="1.2"/><rect x="16" y="22" width="8" height="9" rx="1.5" fill="#fff" opacity=".55"/></svg>',
+  cheese:'<svg viewBox="0 0 40 40"><path d="M6 26L30 14a4 4 0 0 1 4 0v12H6z" fill="#fbbf24"/><path d="M6 26h28v4a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-4z" fill="#f59e0b"/><circle cx="16" cy="23" r="2" fill="#fff7e0"/><circle cx="24" cy="21" r="1.6" fill="#fff7e0"/><circle cx="21" cy="26" r="1.4" fill="#fff7e0"/></svg>',
+  coffee:'<svg viewBox="0 0 40 40"><path d="M14 7c0 2-2 2-2 4M20 7c0 2-2 2-2 4" stroke="#cbb6a6" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M10 14h18v10a8 8 0 0 1-8 8h-2a8 8 0 0 1-8-8V14z" fill="#a87144"/><path d="M28 16h3a4 4 0 0 1 0 8h-3" fill="none" stroke="#a87144" stroke-width="2.4"/><rect x="10" y="14" width="18" height="3.5" fill="#7c4a23"/></svg>',
+  flour:'<svg viewBox="0 0 40 40"><path d="M12 12c2-2 14-2 16 0l2 22a2 2 0 0 1-2 2H12a2 2 0 0 1-2-2l2-22z" fill="#efe6d2" stroke="#cbb890" stroke-width="1.3"/><path d="M13 12c3-3 11-3 14 0z" fill="#e2d4b6"/><path d="M20 18v9M20 18l-3 2M20 22l-3 2M20 18l3 2M20 22l3 2" stroke="#c9a96a" stroke-width="1.4" stroke-linecap="round"/></svg>',
+  sugar:'<svg viewBox="0 0 40 40"><path d="M12 13c2-2 14-2 16 0l1.5 21a2 2 0 0 1-2 2H12.5a2 2 0 0 1-2-2L12 13z" fill="#f3f4f6" stroke="#cdd2da" stroke-width="1.3"/><rect x="16" y="20" width="8" height="8" rx="1.5" fill="#fff" stroke="#bcd6f5" stroke-width="1.4"/><path d="M16 24h8M20 20v8" stroke="#bcd6f5" stroke-width="1.2"/></svg>',
+  bread:'<svg viewBox="0 0 40 40"><path d="M8 20c0-5 5-8 12-8s12 3 12 8v10a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V20z" fill="#d8a45e"/><path d="M8 20c0-5 5-8 12-8s12 3 12 8c0 2-24 2-24 0z" fill="#e8be83"/><path d="M14 18c0-2 1-3 2-3M20 17c0-2 1-3 2-3M26 18c0-2 1-3 2-3" stroke="#b97f3e" stroke-width="1.3" stroke-linecap="round" fill="none"/></svg>',
+  rice:'<svg viewBox="0 0 40 40"><circle cx="16" cy="16" r="1.3" fill="#cbd5e1"/><circle cx="20" cy="13" r="1.3" fill="#cbd5e1"/><circle cx="24" cy="16" r="1.3" fill="#cbd5e1"/><path d="M7 20h26a13 13 0 0 1-26 0z" fill="#e7eaf0"/><path d="M10 20a10 10 0 0 0 20 0z" fill="#f7f9fc"/><path d="M7 20c0-2 26-2 26 0z" fill="#cfd5df"/></svg>',
+  tomatoes:'<svg viewBox="0 0 40 40"><path d="M20 11l-3-3M20 11l3-3M20 11h-4M20 11h4M20 11v-3" stroke="#16a34a" stroke-width="1.8" stroke-linecap="round"/><circle cx="20" cy="23" r="12" fill="#ef4444"/><circle cx="20" cy="11" r="2.4" fill="#22c55e"/><ellipse cx="16" cy="19" rx="2.5" ry="3.5" fill="#fff" opacity=".25"/></svg>',
+  oliveoil:'<svg viewBox="0 0 40 40"><rect x="17" y="5" width="6" height="5" rx="1" fill="#4d7c0f"/><path d="M16 12h8l2 7v13a3 3 0 0 1-3 3H17a3 3 0 0 1-3-3V19l2-7z" fill="#65a30d" stroke="#4d7c0f" stroke-width="1.2"/><rect x="15" y="21" width="10" height="6" fill="#84cc16" opacity=".4"/><circle cx="20" cy="26" r="2.6" fill="#3f6212"/></svg>',
+  pasta:'<svg viewBox="0 0 40 40"><rect x="13" y="10" width="14" height="26" rx="3" fill="#fde68a" opacity=".5" stroke="#eab308" stroke-width="1.3"/><path d="M17 13v20M20 13v20M23 13v20" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/><rect x="12" y="7" width="16" height="5" rx="2" fill="#d97706"/></svg>',
+  feta:'<svg viewBox="0 0 40 40"><rect x="9" y="16" width="22" height="16" rx="2" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.3"/><path d="M9 20h22M16 16v16M23 20v12" stroke="#dbe3ec" stroke-width="1.2"/><rect x="11" y="11" width="7" height="7" rx="1" fill="#fff" stroke="#cbd5e1" stroke-width="1.2"/></svg>',
+  bananas:'<svg viewBox="0 0 40 40"><path d="M9 14c2 12 11 18 22 16 2 0 2-3 0-3-9 1-16-5-18-14-.5-2-4.3-1-4 1z" fill="#facc15" stroke="#eab308" stroke-width="1.2"/><path d="M9 14c-.3-2 3.5-3 4-1l.6 2.4c-1.6.2-3 .4-4.6-1.4z" fill="#a3e635"/><path d="M30 30c1.6 0 2 .4 2.4 1.6" stroke="#854d0e" stroke-width="1.4" stroke-linecap="round"/></svg>',
+  chicken:'<svg viewBox="0 0 40 40"><circle cx="23" cy="15" r="9" fill="#e8b277"/><path d="M22 7a9 9 0 0 1 7 14z" fill="#d99a5b"/><path d="M19 19l-9 9a3 3 0 1 0 4 4l9-9z" fill="#f0d9b8"/><rect x="8.5" y="28.5" width="4.5" height="4.5" rx="2.2" fill="#fff"/></svg>',
+  water:'<svg viewBox="0 0 40 40"><rect x="17" y="5" width="6" height="4" rx="1" fill="#60a5fa"/><path d="M16 11h8v3l1 4v15a3 3 0 0 1-3 3h-4a3 3 0 0 1-3-3V18l1-4v-3z" fill="#bfdbfe" stroke="#60a5fa" stroke-width="1.2"/><rect x="15" y="22" width="10" height="8" fill="#3b82f6" opacity=".35"/></svg>',
+  eggs:'<svg viewBox="0 0 40 40"><ellipse cx="16" cy="24" rx="7" ry="9" fill="#fef3c7" stroke="#fcd34d" stroke-width="1.2"/><ellipse cx="25" cy="21" rx="6.5" ry="8.5" fill="#fffbeb" stroke="#fcd34d" stroke-width="1.2"/><ellipse cx="14" cy="21" rx="2" ry="3" fill="#fff" opacity=".7"/></svg>',
+  butter:'<svg viewBox="0 0 40 40"><path d="M8 18l18-6 6 2-2 14-18 6-6-2 2-14z" fill="#fde047" stroke="#eab308" stroke-width="1.2"/><path d="M8 18l6 2 18-6M14 20l-2 14" stroke="#eab308" stroke-width="1.2" fill="none"/><path d="M14 20l18-6" stroke="#fef9c3" stroke-width="1.5"/></svg>',
+  yogurt:'<svg viewBox="0 0 40 40"><path d="M12 14h16l-2 20a2 2 0 0 1-2 2H16a2 2 0 0 1-2-2l-2-20z" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.3"/><rect x="11" y="11" width="18" height="4" rx="2" fill="#a3a3a3"/><path d="M16 22c2 1 6 1 8 0" stroke="#f87171" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="20" cy="27" r="2" fill="#fca5a5"/></svg>',
+  potato:'<svg viewBox="0 0 40 40"><ellipse cx="20" cy="21" rx="13" ry="10" fill="#c89b6a" stroke="#a87c4a" stroke-width="1.2" transform="rotate(-15 20 21)"/><circle cx="15" cy="18" r="1" fill="#8a6234"/><circle cx="23" cy="22" r="1" fill="#8a6234"/><circle cx="19" cy="24" r="1" fill="#8a6234"/></svg>',
+  onion:'<svg viewBox="0 0 40 40"><path d="M18 11c1-3 3-3 4 0" stroke="#84cc16" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M20 12c6 0 11 5 11 12 0 6-5 10-11 10S9 30 9 24c0-7 5-12 11-12z" fill="#e9d5c4" stroke="#c9a989" stroke-width="1.2"/><path d="M20 12c-2 6-2 16 0 22M20 12c2 6 2 16 0 22M14 14c-1 6-1 14 1 19M26 14c1 6 1 14-1 19" stroke="#c9a989" stroke-width="1" fill="none"/></svg>',
+  apple:'<svg viewBox="0 0 40 40"><path d="M20 13c-3-2-9-2-10 5-1 6 3 14 6 15 2 .7 3-.5 4-.5s2 1.2 4 .5c3-1 7-9 6-15-1-7-7-7-10-5z" fill="#ef4444"/><path d="M20 13c1-3 4-5 6-4-1 3-3 4-6 4z" fill="#16a34a"/><path d="M20 13v-3" stroke="#7c2d12" stroke-width="1.6" stroke-linecap="round"/><ellipse cx="14" cy="20" rx="2" ry="3.5" fill="#fff" opacity=".3"/></svg>',
+  salt:'<svg viewBox="0 0 40 40"><circle cx="17" cy="13" r="1" fill="#94a3b8"/><circle cx="20" cy="12" r="1" fill="#94a3b8"/><circle cx="23" cy="13" r="1" fill="#94a3b8"/><path d="M13 16h14v16a3 3 0 0 1-3 3H16a3 3 0 0 1-3-3V16z" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.3"/><path d="M13 16c0-4 3-6 7-6s7 2 7 6z" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1.3"/><rect x="16" y="22" width="8" height="8" fill="#dbe3ec"/></svg>',
+  cucumber:'<svg viewBox="0 0 40 40"><g transform="rotate(-35 20 20)"><rect x="6" y="15" width="28" height="11" rx="5.5" fill="#65a30d" stroke="#4d7c0f" stroke-width="1.2"/><rect x="9" y="17" width="22" height="7" rx="3.5" fill="#84cc16" opacity=".6"/><circle cx="14" cy="20.5" r="1" fill="#3f6212"/><circle cx="20" cy="20.5" r="1" fill="#3f6212"/><circle cx="26" cy="20.5" r="1" fill="#3f6212"/></g></svg>',
+  _default:'<svg viewBox="0 0 40 40"><path d="M9 14h22l-2 16a3 3 0 0 1-3 3H14a3 3 0 0 1-3-3L9 14z" fill="#16a34a" opacity=".14"/><path d="M9 14h22l-2 16a3 3 0 0 1-3 3H14a3 3 0 0 1-3-3L9 14z" fill="none" stroke="#16a34a" stroke-width="1.5"/><path d="M15 14l2-6M25 14l-2-6" stroke="#16a34a" stroke-width="1.6" stroke-linecap="round"/></svg>',
+};
+const productIcon = id => {
+  const hasPng = ['milk','oil','cheese','coffee','flour','sugar','bread','rice','tomatoes','oliveoil','pasta','feta','bananas','chicken','water','eggs','butter','yogurt','potato','onion','apple','salt','cucumber'].includes(id);
+  if (hasPng) return `<img src="./img/${id}.png" alt="${id}" width="40" height="40" style="object-fit:contain;display:block;">`;
+  return PROD_SVG[id] || PROD_SVG._default;
+};
+const picon = id => `<span class="picon">${productIcon(id)}</span>`;
+
 const DEMO = (window.SAVECHECK_DEMO || {products:[]});
 const products = DEMO.products;
-let active = -1, country = COUNTRIES[0], view = 'products', query = '', cart = {};
+let active = -1, country = COUNTRIES[0], view = 'home', query = '', cart = {};
+let shopTab = 'products', promosTab = 'brochures';
+let verdictFilter = 'all';
+let scanStream = null;
 
 // Store chains per market — a mix of domestic and foreign (international)
 // chains. Illustrative: real footprints vary.
@@ -528,20 +779,65 @@ const fmtQty = v => Number.isInteger(v) ? String(v) : String(Math.round(v * 100)
 const t = () => UI[country.lang];
 
 function renderFlags() {
+  const flagEl = document.getElementById('cp-flag');
+  const codeEl = document.getElementById('cp-code');
+  if (flagEl) flagEl.textContent = country.flag;
+  if (codeEl) codeEl.textContent = country.code;
   document.getElementById('flags').innerHTML = COUNTRIES.map((c, i) => `
-    <button class="${c.code===country.code?'active':''}" onclick="setCountry(${i})" title="${c.code}">
+    <button class="${c.code===country.code?'active':''}" onclick="selectCountry(${i})">
       ${c.flag}<span class="cc">${c.code}</span>
     </button>`).join('');
 }
+function toggleCountryPicker() {
+  const menu = document.getElementById('flags');
+  const trigger = document.getElementById('cp-trigger');
+  const open = menu.classList.toggle('open');
+  trigger.classList.toggle('open', open);
+}
+function selectCountry(i) {
+  document.getElementById('flags').classList.remove('open');
+  document.getElementById('cp-trigger').classList.remove('open');
+  setCountry(i);
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#country-picker')) {
+    document.getElementById('flags')?.classList.remove('open');
+    document.getElementById('cp-trigger')?.classList.remove('open');
+  }
+});
 
 function renderChrome() {
-  document.getElementById('tagline').textContent = t().tagline;
   document.getElementById('footer').textContent = t().footer;
 }
 
 // Single-screen accordion: one compact row per product; tap to expand its
 // chart + summary inline, without leaving the screen.
-function doSearch(q) { query = q.trim().toLowerCase(); active = -1; renderProducts(); }
+function doSearch(q) {
+  query = q.trim().toLowerCase();
+  active = -1;
+  // Search lives in the header now — typing from any tab jumps to the product list.
+  if (query && !(view === 'shop' && shopTab === 'products')) {
+    view = 'shop'; shopTab = 'products';
+    render();
+  } else {
+    renderProducts();
+  }
+}
+
+const VERDICT_FILTERS = ['all', 'green', 'red', 'yellow'];
+function renderFilters() {
+  const counts = { all: products.length, green: 0, yellow: 0, red: 0, gray: 0 };
+  products.forEach(p => { if (counts[p.verdict] != null) counts[p.verdict]++; });
+  document.getElementById('filter-wrap').innerHTML = VERDICT_FILTERS.map(key => {
+    const label = key === 'all' ? FILTER_ALL[country.lang] : TAG[key][country.lang];
+    const col = key === 'all' ? 'var(--ink)' : C[key];
+    const active = verdictFilter === key;
+    const style = active ? `background:${col};border-color:transparent;color:#fff` : '';
+    return `<button class="fchip ${active ? 'active' : ''}" style="${style}" onclick="setFilter('${key}')">${label} <span class="fc-n">${counts[key]}</span></button>`;
+  }).join('');
+}
+function setFilter(f) { verdictFilter = f; active = -1; renderProducts(); renderFilters(); }
+function rowKey(e, i) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(i); } }
 function toggleCart(id) {
   cart[id] = cart[id] ? 0 : 1;
   renderProducts();
@@ -567,25 +863,46 @@ function analyzeStores() {
   }).sort((a, b) => b.covered.length - a.covered.length || a.total - b.total);
 }
 
+function sparkline(series, w=58, h=20) {
+  if (!series || series.length < 3) return '';
+  const vals = series.map(s => s.price);
+  const mn = Math.min(...vals), mx = Math.max(...vals);
+  const rng = mx - mn || mn * 0.01 || 1;
+  const pad = 2;
+  const pts = vals.map((v, i) =>
+    `${(i / (vals.length - 1) * w).toFixed(1)},${(h - pad - (v - mn) / rng * (h - pad * 2)).toFixed(1)}`
+  ).join(' ');
+  const lx = w, ly = +(h - pad - (vals.at(-1) - mn) / rng * (h - pad * 2)).toFixed(1);
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true">
+    <polyline points="${pts}" fill="none" stroke="var(--vc,#16a34a)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${lx}" cy="${ly}" r="2.2" fill="var(--vc,#16a34a)"/>
+  </svg>`;
+}
+
 function renderProducts() {
-  const filtered = query
+  let filtered = query
     ? products.filter(p => { const m = PRODUCTS[p.id]; const n = m ? (m.name[country.lang] || m.name.bg || '') : p.id; return n.toLowerCase().includes(query); })
     : products;
+  if (verdictFilter !== 'all') filtered = filtered.filter(p => p.verdict === verdictFilter);
+  if (!filtered.length) {
+    document.getElementById('cards').innerHTML = `<div class="empty-filter">${NO_MATCH[country.lang]}</div>`;
+    return;
+  }
   document.getElementById('cards').innerHTML = filtered.map((p, i) => {
     const meta = PRODUCTS[p.id];
     const on = i === active;
     const disc = p.discount_pct != null && p.discount_pct > 0
-        ? `<em style="color:${C.green}">−${p.discount_pct}%</em>` : '';
+        ? `<em style="background:${C[p.verdict]}">−${p.discount_pct}%</em>` : '';
     const unit = p.current_unit_price == null ? ''
         : ` <small>· ${disp(p.current_unit_price*country.fx)} ${unitLabel(p.unit_kind)}</small>`;
     const inCart = !!cart[p.id];
     const rowHtml = `
-      <button class="prow ${on?'on':''}" onclick="select(${i})">
-        <span class="ill">${emojiOf(p.id)}</span>
+      <div class="prow ${on?'on':''}" role="button" tabindex="0" onclick="select(${i})" onkeydown="rowKey(event,${i})" data-v="${p.verdict}" style="--vc:${C[p.verdict]}">
+        <span class="ill">${productIcon(p.id)}</span>
         <span class="pnm">${meta.name[country.lang]} <span class="vtag" style="background:${C[p.verdict]}">${TAG[p.verdict][country.lang]}</span><small>${meta.pack[country.lang]}${unit}</small></span>
-        <span class="cadd ${inCart?'in':''}" role="button" tabindex="0" onclick="event.stopPropagation();toggleCart('${p.id}')">${inCart?'✓':'+'}</span>
-        <span class="ppr">${money(p.current_price)}${disc}</span>
-      </button>`;
+        <button class="cadd ${inCart?'in':''}" onclick="event.stopPropagation();toggleCart('${p.id}')" aria-label="${meta.name[country.lang]}">${inCart?'✓':'+'}</button>
+        <span class="ppr">${money(p.current_price)}${disc}${sparkline(p.series)}</span>
+      </div>`;
     return rowHtml + (on ? detailHTML(p) : '');
   }).join('');
   if (active >= 0 && active < filtered.length) {
@@ -643,23 +960,34 @@ function renderHero() {
 function renderTabs() {
   const X = BX[country.lang];
   const n = cartSize();
-  const basketLbl = n ? `${X.tabBasket} <span style="background:var(--green);color:#fff;font-size:9px;border-radius:999px;padding:1px 5px;font-weight:800">${n}</span>` : X.tabBasket;
-  const items = [['products', '🏷️', X.tabProducts], ['basket', '🛒', basketLbl], ['brochures', '📋', X.tabBrochures], ['table', '📊', X.tabTable], ['titans', '⚔️', X.tabTitans], ['fridge', '🧊', X.tabFridge]];
-  document.getElementById('tabs').innerHTML = items.map(([v, ic, lbl]) =>
-    `<button class="${view===v?'on':''}" onclick="setView('${v}')"><span class="ic">${ic}</span>${lbl}</button>`).join('');
+  const badge = n ? `<span style="position:absolute;top:7px;right:calc(50% - 20px);min-width:14px;height:14px;background:var(--green);color:#fff;font-size:8px;border-radius:999px;padding:0 3px;font-weight:900;line-height:14px;text-align:center">${n}</span>` : '';
+  const SVG = {
+    home:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>`,
+    shop:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 1.98 1.61h9.72a2 2 0 0 0 1.98-1.67L23 6H6"/></svg>`,
+    promos:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`,
+    scan:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
+  };
+  const items = [
+    ['home',   SVG.home,   X.tabHome,   ''],
+    ['shop',   SVG.shop,   X.tabShop,   badge],
+    ['promos', SVG.promos, X.tabPromos, ''],
+    ['scan',   SVG.scan,   X.tabScan,   ''],
+  ];
+  document.getElementById('tabs').innerHTML = items.map(([v, ic, lbl, ex]) =>
+    `<button class="${view===v?'on':''}" onclick="setView('${v}')"><span class="ic">${ic}</span>${lbl}${ex}</button>`).join('');
 }
 
 function renderFridge() {
   const X = BX[country.lang], F = DEMO.fridge || { recognized: [], shopping: [] };
   const nameOf = id => (PRODUCTS[id] ? PRODUCTS[id].name[country.lang] : id);
   const recognized = F.recognized.map(r => `
-    <div class="irow"><span>${emojiOf(r.id)} ${nameOf(r.id)}</span>
+    <div class="irow"><span>${picon(r.id)} ${nameOf(r.id)}</span>
       <span>${fmtQty(r.quantity)} ${unitWord(r.unit)} · ${Math.round(r.confidence*100)}%</span></div>`).join('');
   const shopping = F.shopping.map(s => {
     const prod = products.find(p => p.id === s.id);  // links to стълб 1 verdict
     const pill = prod ? `<span class="tag" style="background:${C[prod.verdict]};margin-left:7px">${TAG[prod.verdict][country.lang]}</span>` : '';
     const reason = s.reason_code === 'missing' ? X.missing : X.low;
-    return `<div class="brow"><span>${emojiOf(s.id)} ${nameOf(s.id)}${pill}</span>
+    return `<div class="brow"><span>${picon(s.id)} ${nameOf(s.id)}${pill}</span>
       <span>${fmtQty(s.needed_quantity)} ${unitWord(s.unit)} <span class="date">· ${reason}</span></span></div>`;
   }).join('');
   document.getElementById('basket').innerHTML = `
@@ -686,7 +1014,7 @@ function renderBasket() {
     const name = meta ? (meta.name[country.lang] || meta.name.bg) : id;
     const price = p ? money(p.current_price) : '';
     return `<div class="irow">
-      <span>${emojiOf(id)} ${name}</span>
+      <span>${picon(id)} ${name}</span>
       <span>${price} <button class="cadd in" style="width:22px;height:22px;font-size:12px;margin-left:6px" onclick="toggleCart('${id}')">✕</button></span>
     </div>`;
   }).join('');
@@ -738,7 +1066,7 @@ function renderTable() {
       const isBest = Math.abs(o.price - minPrice) < 0.005;
       return `<td class="${isBest ? 'tmin' : ''}">${money(o.price)}</td>`;
     }).join('');
-    return `<tr><td>${emojiOf(p.id)} ${name}<br><span class="tpack">${pack}</span></td>${cells}</tr>`;
+    return `<tr><td>${picon(p.id)} ${name}<br><span class="tpack">${pack}</span></td>${cells}</tr>`;
   }).join('');
   document.getElementById('basket').innerHTML = `
     <div class="panel" style="padding:0;overflow-x:auto;border-radius:16px">
@@ -905,27 +1233,306 @@ function renderTitans() {
     ${cards || '<div style="color:var(--muted);font-size:14px;text-align:center;padding:20px">—</div>'}`;
 }
 
-function render() {
-  renderFlags(); renderChrome(); renderHero(); renderTabs();
-  const prod = view === 'products';
-  document.getElementById('cards').style.display = prod ? '' : 'none';
-  document.getElementById('panel').style.display = 'none';
-  document.getElementById('basket').style.display = prod ? 'none' : '';
-  const sw = document.getElementById('search-wrap');
-  sw.style.display = prod ? '' : 'none';
-  if (prod) document.getElementById('search-input').placeholder = BX[country.lang].search;
-  if (prod) { renderProducts(); }
-  else if (view === 'basket') { renderBasket(); }
-  else if (view === 'table') { renderTable(); }
-  else if (view === 'brochures') { renderBrochures(); }
-  else if (view === 'titans') { renderTitans(); }
-  else { renderFridge(); }
+function renderHome() {
+  const X = BX[country.lang], H = HX[country.lang];
+
+  // Savings from REAL promotions only (verdict green), summed over the cart items
+  // — or all tracked products when the cart is empty. Each item contributes how much
+  // its current price is below its usual 90-day price.
+  const cartItems = cartIds();
+  const targetIds = cartItems.length ? cartItems : products.map(p => p.id);
+  let saved = 0, realCount = 0;
+  targetIds.forEach(id => {
+    const p = products.find(p => p.id === id);
+    if (!p || p.median_90 == null || p.current_price == null) return;
+    if (p.verdict === 'green' && p.median_90 - p.current_price > 0) {
+      saved += p.median_90 - p.current_price;
+      realCount++;
+    }
+  });
+
+  const fakesCaught = (DEMO.titans || []).reduce((s, t) => s + (t.fake || 0), 0);
+
+  const titans = (DEMO.titans || []).slice()
+    .sort((a, b) => {
+      const ra = a.total_promos ? a.real / a.total_promos : -1;
+      const rb = b.total_promos ? b.real / b.total_promos : -1;
+      return rb - ra;
+    }).slice(0, 3);
+
+  const titansHTML = titans.map((t, i) => {
+    const medals = ['🥇','🥈','🥉'];
+    const pct = t.total_promos ? Math.round(100 * t.real / t.total_promos) : null;
+    const col = pct == null ? 'var(--muted)' : pct >= 70 ? 'var(--green)' : pct >= 40 ? 'var(--yellow)' : 'var(--red)';
+    return `<div class="mini-titan">
+      <span style="font-size:18px;line-height:1">${medals[i]}</span>
+      <span style="flex:1;font-weight:700;font-size:var(--t-base)">${t.chain}</span>
+      <span style="font-weight:900;font-size:var(--t-lg);color:${col}">${pct != null ? pct+'%' : '—'}</span>
+    </div>`;
+  }).join('');
+
+  document.getElementById('basket').innerHTML = `
+    <div class="home-hero">
+      <div class="hh-left">
+        <div class="hh-lbl">${H.saved}</div>
+        <div class="hh-amt">${disp(saved * country.fx)} ${country.sym}</div>
+        <div class="hh-sub">🟢 ${realCount} ${H.promos}</div>
+      </div>
+      <div class="hh-banner" style="background-image:url('./img/hero-banner.png')"></div>
+    </div>
+    ${fakesCaught ? `
+    <div class="fake-hook" onclick="setView('promos');promosTab='brochures';render()">
+      <span class="fh-ic">⚠️</span>
+      <span class="fh-tx"><div class="fh-big">${fakesCaught} ${H.fakes}</div><div class="fh-sub">${H.period}</div></span>
+      <span class="fh-arr">›</span>
+    </div>` : ''}
+    ${titans.length ? `
+    <div class="section-label" style="margin-top:14px">${X.titansTitle}</div>
+    <div class="card-block">${titansHTML}
+      <div style="text-align:center;padding:9px;border-top:1px solid var(--line);font-size:var(--t-sm);color:var(--green);font-weight:700;cursor:pointer"
+           onclick="setView('promos');promosTab='titans';render()">→ ${X.tabTitans}</div>
+    </div>` : ''}`;
 }
+
+function renderScan() {
+  const X = BX[country.lang];
+  document.getElementById('basket').innerHTML = `
+    <button class="scan-btn" onclick="startScanner()">${X.scanBtn}</button>
+    <div id="scan-output"></div>`;
+}
+
+// Barcode scanning works through two engines: the native BarcodeDetector
+// (Chrome/Android) when present, otherwise the ZXing library loaded from CDN
+// — which also covers iOS Safari, where BarcodeDetector is unavailable.
+let zxingReader = null;
+function getZxingReader() {
+  if (!zxingReader && window.ZXing) zxingReader = new ZXing.BrowserMultiFormatReader();
+  return zxingReader;
+}
+const hasNativeBD = () => ('BarcodeDetector' in window);
+const fileFallbackHTML = X => `<div class="scan-result-card" style="text-align:center">
+    <div style="color:var(--muted);margin-bottom:10px">${X.scanNoBD}</div>
+    <label style="display:inline-block;background:var(--green);color:#fff;padding:8px 16px;border-radius:10px;cursor:pointer;font-weight:700;font-size:14px">
+      ${X.scanFile}<input type="file" accept="image/*" capture="environment" style="display:none" onchange="scanFile(this)">
+    </label>
+  </div>`;
+
+async function startScanner() {
+  const X = BX[country.lang];
+  const output = document.getElementById('scan-output');
+  // No live engine at all → offer photo upload.
+  if (!hasNativeBD() && !window.ZXing) { output.innerHTML = fileFallbackHTML(X); return; }
+  output.innerHTML = `<div class="scan-wrap"><video id="scan-video" autoplay playsinline muted></video>
+    <div class="scan-frame"></div><div class="scan-hint">${X.scanHint}</div></div>`;
+  const video = document.getElementById('scan-video');
+  try {
+    if (hasNativeBD()) {
+      scanStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+      video.srcObject = scanStream;
+      const detector = new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e']});
+      const detect = async () => {
+        if (!scanStream) return;
+        try {
+          const codes = await detector.detect(video);
+          if (codes.length) { stopScanner(); await handleBarcode(codes[0].rawValue); }
+          else requestAnimationFrame(detect);
+        } catch(e) { requestAnimationFrame(detect); }
+      };
+      await video.play(); detect();
+    } else {
+      // ZXing path (iOS Safari etc.)
+      const reader = getZxingReader();
+      await reader.decodeFromConstraints({video:{facingMode:'environment'}}, video, (result) => {
+        if (result) { stopScanner(); handleBarcode(result.getText()); }
+      });
+      scanStream = video.srcObject || null;
+    }
+  } catch(e) {
+    output.innerHTML = `<div class="scan-result-card" style="text-align:center;color:var(--red)">Camera error: ${e.message}</div>`;
+  }
+}
+
+function stopScanner() {
+  if (zxingReader) { try { zxingReader.reset(); } catch(e){} }
+  if (scanStream && scanStream.getTracks) scanStream.getTracks().forEach(t => t.stop());
+  scanStream = null;
+}
+
+async function scanFile(input) {
+  const file = input.files[0]; if (!file) return;
+  const X = BX[country.lang];
+  const output = document.getElementById('scan-output');
+  output.innerHTML = `<div class="scan-result-card" style="text-align:center;color:var(--muted)">${X.scanLookup}</div>`;
+  const url = URL.createObjectURL(file);
+  const notFound = () => {
+    output.innerHTML =
+      `<div class="scan-result-card" style="text-align:center;color:var(--muted)">${X.scanUnknown}</div>
+       <button class="scan-btn" style="margin-top:12px" onclick="renderScan()">${X.scanAgain}</button>`;
+  };
+  try {
+    let raw = null;
+    if (hasNativeBD()) {
+      const img = await new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = url; });
+      const detector = new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e']});
+      const codes = await detector.detect(img);
+      if (codes.length) raw = codes[0].rawValue;
+    } else if (window.ZXing) {
+      const result = await getZxingReader().decodeFromImageUrl(url);
+      raw = result && result.getText();
+    }
+    if (raw) await handleBarcode(raw); else notFound();
+  } catch(e) { notFound(); }
+  URL.revokeObjectURL(url);
+}
+
+async function handleBarcode(ean) {
+  const X = BX[country.lang];
+  document.getElementById('scan-output').innerHTML =
+    `<div class="scan-result-card" style="text-align:center;color:var(--muted)">${X.scanLookup} ${ean}…</div>`;
+  try {
+    const r = await fetch(`https://world.openfoodfacts.org/api/v2/product/${ean}?fields=product_name_bg,product_name`);
+    const d = await r.json();
+    const name = d.status === 1 ? (d.product.product_name_bg || d.product.product_name || '') : '';
+    showScanResult(ean, name, matchToBasket(name));
+  } catch(e) { showScanResult(ean, '', null); }
+}
+
+function matchToBasket(name) {
+  if (!name) return null;
+  const nl = name.toLowerCase();
+  for (const p of products) {
+    const meta = PRODUCTS[p.id]; if (!meta) continue;
+    const bg = (meta.name.bg || '').toLowerCase();
+    const kws = bg.split(/\s+/).filter(w => w.length > 3);
+    if (kws.some(kw => nl.includes(kw))) return p;
+  }
+  return null;
+}
+
+function showScanResult(ean, name, match) {
+  const X = BX[country.lang];
+  let html = '';
+  if (match) {
+    const col = C[match.verdict];
+    html = `<div class="scan-result-card">
+      <span class="badge" style="background:${col}"><span class="ico">${ICON[match.verdict]}</span>${BADGE[match.verdict][country.lang]}</span>
+      <div class="ptitle">${PRODUCTS[match.id].name[country.lang]}
+        <span style="font-size:12px;color:var(--muted);font-weight:500">${X.scanMatched} "${name}"</span>
+      </div>
+      <div class="reason">${REASONS[match.reason_code][country.lang](match.discount_pct)}</div>
+      <table class="sum">
+        ${row(col, t().now, money(match.current_price))}
+        ${row('#94a3b8', t().avg, money(match.median_90))}
+        ${row(C.green, t().low, money(match.min_90))}
+        ${row(null, t().floor30, money(match.min_30_prior))}
+      </table>
+      <div class="scan-ean">EAN ${ean}</div>
+    </div>`;
+  } else if (name) {
+    html = `<div class="scan-result-card" style="text-align:center">
+      <div style="font-size:28px;margin-bottom:8px">🔍</div>
+      <div style="font-weight:700;font-size:15px">${name}</div>
+      <div style="color:var(--muted);font-size:12px;margin-top:6px">${X.scanNotTracked}</div>
+      <div class="scan-ean">EAN ${ean}</div>
+    </div>`;
+  } else {
+    html = `<div class="scan-result-card" style="text-align:center;color:var(--muted)">${X.scanUnknown} · EAN ${ean}</div>`;
+  }
+  html += `<button class="scan-btn" style="margin-top:12px" onclick="renderScan()">${X.scanAgain}</button>`;
+  document.getElementById('scan-output').innerHTML = html;
+}
+
+function render() {
+  renderFlags(); renderChrome(); renderTabs();
+  const X = BX[country.lang];
+  const isShop = view === 'shop';
+  const isProd = isShop && shopTab === 'products';
+
+  document.getElementById('hero').style.display = 'none';
+  document.getElementById('cards').style.display = isProd ? '' : 'none';
+  document.getElementById('panel').style.display = 'none';
+  document.getElementById('basket').style.display = isProd ? 'none' : '';
+
+  document.getElementById('search-input').placeholder = X.search;
+
+  const fw = document.getElementById('filter-wrap');
+  fw.style.display = isProd ? '' : 'none';
+  if (isProd) renderFilters();
+
+  // Sub-tabs
+  const stw = document.getElementById('sub-tabs-wrap');
+  if (isShop) {
+    const n = cartSize();
+    const cb = n ? `<span style="background:var(--green);color:#fff;font-size:9px;border-radius:999px;padding:0 5px;font-weight:800;margin-left:3px;line-height:1.6">${n}</span>` : '';
+    stw.innerHTML = `<div class="sub-tabs">
+      <button class="${shopTab==='products'?'active':''}" onclick="setShopTab('products')">${X.tabProducts}</button>
+      <button class="${shopTab==='basket'?'active':''}" onclick="setShopTab('basket')">${X.tabBasket}${cb}</button>
+      <button class="${shopTab==='fridge'?'active':''}" onclick="setShopTab('fridge')">${X.tabFridge}</button>
+    </div>`;
+  } else if (view === 'promos') {
+    stw.innerHTML = `<div class="sub-tabs">
+      <button class="${promosTab==='brochures'?'active':''}" onclick="setPromosTab('brochures')">${X.tabBrochures}</button>
+      <button class="${promosTab==='titans'?'active':''}" onclick="setPromosTab('titans')">${X.tabTitans}</button>
+    </div>`;
+  } else {
+    stw.innerHTML = '';
+  }
+
+  if (view === 'home') { renderHome(); }
+  else if (isShop) {
+    if (shopTab === 'products') renderProducts();
+    else if (shopTab === 'basket') renderBasket();
+    else renderFridge();
+  }
+  else if (view === 'promos') {
+    if (promosTab === 'brochures') renderBrochures();
+    else renderTitans();
+  }
+  else if (view === 'scan') { renderScan(); }
+}
+function animIn(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('anim-in');
+  void el.offsetWidth;
+  el.classList.add('anim-in');
+}
+function setShopTab(t) { shopTab = t; render(); animIn(t === 'products' ? 'cards' : 'basket'); }
+function setPromosTab(t) { promosTab = t; render(); animIn('basket'); }
 function select(i){ active = (active === i ? -1 : i); renderProducts(); }
 function setCountry(i){ country = COUNTRIES[i]; document.documentElement.lang = country.lang; render(); }
-function setView(v){ view = v; if(v !== 'products'){ query=''; } render(); }
+function setView(v){
+  if (v !== 'scan') stopScanner();
+  view = v;
+  if (v !== 'shop' || shopTab !== 'products') {
+    query = '';
+    const si = document.getElementById('search-input'); if (si) si.value = '';
+  }
+  render();
+  animIn(v === 'shop' && shopTab === 'products' ? 'cards' : 'basket');
+}
 
 render();
+
+// ── Theme (dark / light) ──────────────────────────────────────────────────
+const MOON = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+const SUN  = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>';
+
+function applyTheme(t) {
+  document.documentElement.dataset.theme = t;
+  const icon = document.getElementById('theme-icon');
+  if (icon) icon.innerHTML = t === 'dark' ? SUN : MOON;
+}
+function toggleTheme() {
+  const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('sc-theme', next);
+  applyTheme(next);
+}
+(function initTheme() {
+  const saved = localStorage.getItem('sc-theme');
+  const sys   = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  applyTheme(saved || sys);
+})();
 </script>
 </body>
 </html>
