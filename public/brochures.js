@@ -1,23 +1,11 @@
 window.SAVECHECK_BROCHURES = {
-  "for_date": "2026-07-14",
-  "week_label": "14.7 – 19.7.2026",
+  "for_date": "2026-07-15",
+  "week_label": "15.7 – 19.7.2026",
   "chains": [
     {
       "chain": "Lidl",
-      "total_promos": 40,
+      "total_promos": 41,
       "items": [
-        {
-          "name": "Домати на кг",
-          "price": 0.99,
-          "retail": 2.49,
-          "claimed_pct": 60,
-          "category": "54",
-          "basket_id": "tomatoes",
-          "verdict": "green",
-          "omnibus_pct": 50,
-          "min_30_prior": 0.99,
-          "median_90": 1.99
-        },
         {
           "name": "Банани на кг",
           "price": 1.39,
@@ -111,7 +99,7 @@ window.SAVECHECK_BROCHURES = {
           "basket_id": "bread",
           "verdict": "yellow",
           "omnibus_pct": 0,
-          "min_30_prior": 0.49,
+          "min_30_prior": 0.69,
           "median_90": 0.76
         },
         {
@@ -216,18 +204,18 @@ window.SAVECHECK_BROCHURES = {
           "category": "7"
         },
         {
-          "name": "Спагети от твърда пшеница",
-          "price": 0.79,
-          "retail": 0.99,
-          "claimed_pct": 20,
-          "category": "37"
-        },
-        {
           "name": "Zlatno Dobrudzhansko Слънч. масло",
           "price": 1.59,
           "retail": 1.99,
           "claimed_pct": 20,
           "category": "42"
+        },
+        {
+          "name": "Спагети от твърда пшеница",
+          "price": 0.79,
+          "retail": 0.99,
+          "claimed_pct": 20,
+          "category": "37"
         },
         {
           "name": "Железница Кашкавал от краве мляко",
@@ -258,6 +246,20 @@ window.SAVECHECK_BROCHURES = {
           "category": "33"
         },
         {
+          "name": "Nashe Selo Краве сирене",
+          "price": 5.99,
+          "retail": 7.15,
+          "claimed_pct": 16,
+          "category": "9"
+        },
+        {
+          "name": "Точени кори одрински",
+          "price": 1.59,
+          "retail": 1.89,
+          "claimed_pct": 16,
+          "category": "5"
+        },
+        {
           "name": "Шпек Стара планина",
           "price": 2.79,
           "retail": 3.32,
@@ -272,25 +274,18 @@ window.SAVECHECK_BROCHURES = {
           "category": "35"
         },
         {
-          "name": "Точени кори одрински",
-          "price": 1.59,
-          "retail": 1.89,
-          "claimed_pct": 16,
-          "category": "5"
-        },
-        {
-          "name": "Nashe Selo Краве сирене",
-          "price": 5.99,
-          "retail": 7.15,
-          "claimed_pct": 16,
-          "category": "9"
-        },
-        {
           "name": "Zahira Захар",
           "price": 0.95,
           "retail": 1.12,
           "claimed_pct": 15,
           "category": "38"
+        },
+        {
+          "name": "Моркови на кг",
+          "price": 1.09,
+          "retail": 1.27,
+          "claimed_pct": 14,
+          "category": "56"
         },
         {
           "name": "Вита баница със сирене",
@@ -314,18 +309,18 @@ window.SAVECHECK_BROCHURES = {
           "category": "81"
         },
         {
+          "name": "Ябълки, червени, сладки на кг",
+          "price": 1.79,
+          "retail": 2.04,
+          "claimed_pct": 12,
+          "category": "53"
+        },
+        {
           "name": "Detstvo moe Детски бисквити, 200гр.",
           "price": 0.99,
           "retail": 1.12,
           "claimed_pct": 12,
           "category": "66"
-        },
-        {
-          "name": "Milki Dream Кашкавал",
-          "price": 8.49,
-          "retail": 9.45,
-          "claimed_pct": 10,
-          "category": "11"
         },
         {
           "name": "Гулаш от свински бут, ок.750г-атм.",
@@ -335,11 +330,1475 @@ window.SAVECHECK_BROCHURES = {
           "category": "19"
         },
         {
+          "name": "Milki Dream Кашкавал",
+          "price": 8.49,
+          "retail": 9.45,
+          "claimed_pct": 10,
+          "category": "11"
+        },
+        {
           "name": "Бяло пшеничено брашно тип 500",
           "price": 0.69,
           "retail": 0.76,
           "claimed_pct": 9,
           "category": "40"
+        }
+      ]
+    },
+    {
+      "chain": "Kaufland",
+      "total_promos": 80,
+      "items": [
+        {
+          "name": "K-Bio Банани кг",
+          "price": 1.49,
+          "retail": 2.49,
+          "claimed_pct": 40,
+          "category": "52",
+          "basket_id": "bananas",
+          "verdict": "red",
+          "omnibus_pct": -16,
+          "min_30_prior": 1.27,
+          "median_90": 1.29
+        },
+        {
+          "name": "Пилешко бутче с част от гърба",
+          "price": 1.89,
+          "retail": 3.06,
+          "claimed_pct": 38,
+          "category": "17",
+          "basket_id": "chicken",
+          "verdict": "red",
+          "omnibus_pct": 0,
+          "min_30_prior": 1.99,
+          "median_90": 1.89
+        },
+        {
+          "name": "Mestemacher Хляб Био ръж.-пълноз. 500 г",
+          "price": 2.09,
+          "retail": 3.16,
+          "claimed_pct": 34,
+          "category": "3",
+          "basket_id": "bread",
+          "verdict": "red",
+          "omnibus_pct": 0,
+          "min_30_prior": 0.61,
+          "median_90": 0.66
+        },
+        {
+          "name": "Верея Прясно мляко 3% 1л",
+          "price": 1.29,
+          "retail": 1.73,
+          "claimed_pct": 25,
+          "category": "6",
+          "basket_id": "milk",
+          "verdict": "red",
+          "omnibus_pct": 4,
+          "min_30_prior": 1.25,
+          "median_90": 1.35
+        },
+        {
+          "name": "Маджаров Сирене Краве PVC кутия 900грЗНП",
+          "price": 9.69,
+          "retail": 12.78,
+          "claimed_pct": 24,
+          "category": "9",
+          "basket_id": "feta",
+          "verdict": "red",
+          "omnibus_pct": 9,
+          "min_30_prior": 2.7,
+          "median_90": 6.22
+        },
+        {
+          "name": "Симид Хляб Добруджа нарязан 830 гр",
+          "price": 1.02,
+          "retail": 1.32,
+          "claimed_pct": 23,
+          "category": "2",
+          "basket_id": "bread",
+          "verdict": "red",
+          "omnibus_pct": 0,
+          "min_30_prior": 0.61,
+          "median_90": 0.66
+        },
+        {
+          "name": "Мелко брашно тип 500 1 кг",
+          "price": 0.75,
+          "retail": 0.97,
+          "claimed_pct": 23,
+          "category": "40",
+          "basket_id": "flour",
+          "verdict": "red",
+          "omnibus_pct": 0,
+          "min_30_prior": 0.64,
+          "median_90": 0.75
+        },
+        {
+          "name": "Верея Кисело мляко 2,9% 400 гр",
+          "price": 0.69,
+          "retail": 0.89,
+          "claimed_pct": 22,
+          "category": "7",
+          "basket_id": "yogurt",
+          "verdict": "red",
+          "omnibus_pct": 15,
+          "min_30_prior": 0.45,
+          "median_90": 0.65
+        },
+        {
+          "name": "President Био Краве масло 82% масл 250 г",
+          "price": 6.69,
+          "retail": 8.38,
+          "claimed_pct": 20,
+          "category": "12",
+          "basket_id": "butter",
+          "verdict": "red",
+          "omnibus_pct": 24,
+          "min_30_prior": 1.15,
+          "median_90": 2.09
+        },
+        {
+          "name": "Мероне Био сирене краве мляко 350г",
+          "price": 5.69,
+          "retail": 7.15,
+          "claimed_pct": 20,
+          "category": "9",
+          "basket_id": "feta",
+          "verdict": "red",
+          "omnibus_pct": 9,
+          "min_30_prior": 2.7,
+          "median_90": 6.22
+        },
+        {
+          "name": "Саяна Краве масло 82% масл 125г",
+          "price": 1.59,
+          "retail": 1.99,
+          "claimed_pct": 20,
+          "category": "12",
+          "basket_id": "butter",
+          "verdict": "red",
+          "omnibus_pct": 24,
+          "min_30_prior": 1.15,
+          "median_90": 2.09
+        },
+        {
+          "name": "Беленско Сирене от краве мляко кофа ~8кг",
+          "price": 7.79,
+          "retail": 9.71,
+          "claimed_pct": 20,
+          "category": "8",
+          "basket_id": "feta",
+          "verdict": "red",
+          "omnibus_pct": 9,
+          "min_30_prior": 2.7,
+          "median_90": 6.22
+        },
+        {
+          "name": "My Day Сирене краве мляко 700г",
+          "price": 7.35,
+          "retail": 9.2,
+          "claimed_pct": 20,
+          "category": "9",
+          "basket_id": "feta",
+          "verdict": "red",
+          "omnibus_pct": 9,
+          "min_30_prior": 2.7,
+          "median_90": 6.22
+        },
+        {
+          "name": "Бор Чвор Сирене от краве мляко 800г вак",
+          "price": 7.99,
+          "retail": 9.71,
+          "claimed_pct": 18,
+          "category": "9",
+          "basket_id": "feta",
+          "verdict": "red",
+          "omnibus_pct": 9,
+          "min_30_prior": 2.7,
+          "median_90": 6.22
+        },
+        {
+          "name": "Кисело мляко 3,6% 400 г",
+          "price": 0.55,
+          "retail": 0.66,
+          "claimed_pct": 17,
+          "category": "7",
+          "basket_id": "yogurt",
+          "verdict": "red",
+          "omnibus_pct": 15,
+          "min_30_prior": 0.45,
+          "median_90": 0.65
+        },
+        {
+          "name": "KLC Gold мляно кафе RFA 250г",
+          "price": 3.69,
+          "retail": 4.34,
+          "claimed_pct": 15,
+          "category": "70",
+          "basket_id": "coffee",
+          "verdict": "red",
+          "omnibus_pct": -5,
+          "min_30_prior": 2.82,
+          "median_90": 3.5
+        },
+        {
+          "name": "NN Хляб бял 650 гр",
+          "price": 0.66,
+          "retail": 0.76,
+          "claimed_pct": 13,
+          "category": "1",
+          "basket_id": "bread",
+          "verdict": "red",
+          "omnibus_pct": 0,
+          "min_30_prior": 0.61,
+          "median_90": 0.66
+        },
+        {
+          "name": "NN Хляб бял 650 г",
+          "price": 0.66,
+          "retail": 0.76,
+          "claimed_pct": 13,
+          "category": "1",
+          "basket_id": "bread",
+          "verdict": "red",
+          "omnibus_pct": 0,
+          "min_30_prior": 0.61,
+          "median_90": 0.66
+        },
+        {
+          "name": "NN Хляб бял нарязан 650 г",
+          "price": 0.66,
+          "retail": 0.76,
+          "claimed_pct": 13,
+          "category": "1",
+          "basket_id": "bread",
+          "verdict": "red",
+          "omnibus_pct": 0,
+          "min_30_prior": 0.61,
+          "median_90": 0.66
+        },
+        {
+          "name": "NN Хляб бял 650 гр",
+          "price": 0.66,
+          "retail": 0.76,
+          "claimed_pct": 13,
+          "category": "1",
+          "basket_id": "bread",
+          "verdict": "red",
+          "omnibus_pct": 0,
+          "min_30_prior": 0.61,
+          "median_90": 0.66
+        },
+        {
+          "name": "NN Хляб бял нарязан 650 г",
+          "price": 0.66,
+          "retail": 0.76,
+          "claimed_pct": 13,
+          "category": "1",
+          "basket_id": "bread",
+          "verdict": "red",
+          "omnibus_pct": 0,
+          "min_30_prior": 0.61,
+          "median_90": 0.66
+        },
+        {
+          "name": "NN Хляб Бял нарязан 650 г",
+          "price": 0.66,
+          "retail": 0.76,
+          "claimed_pct": 13,
+          "category": "1",
+          "basket_id": "bread",
+          "verdict": "red",
+          "omnibus_pct": 0,
+          "min_30_prior": 0.61,
+          "median_90": 0.66
+        },
+        {
+          "name": "NN Бял хляб нарязан 650 г",
+          "price": 0.66,
+          "retail": 0.76,
+          "claimed_pct": 13,
+          "category": "1",
+          "basket_id": "bread",
+          "verdict": "red",
+          "omnibus_pct": 0,
+          "min_30_prior": 0.61,
+          "median_90": 0.66
+        },
+        {
+          "name": "NN Хляб бял 650 гр.",
+          "price": 0.66,
+          "retail": 0.76,
+          "claimed_pct": 13,
+          "category": "1",
+          "basket_id": "bread",
+          "verdict": "red",
+          "omnibus_pct": 0,
+          "min_30_prior": 0.61,
+          "median_90": 0.66
+        },
+        {
+          "name": "LAB K-Bio краве масло 82%, без сол 200г",
+          "price": 2.69,
+          "retail": 3.06,
+          "claimed_pct": 12,
+          "category": "12",
+          "basket_id": "butter",
+          "verdict": "red",
+          "omnibus_pct": 24,
+          "min_30_prior": 1.15,
+          "median_90": 2.09
+        },
+        {
+          "name": "Campese Спагети 10 400г",
+          "price": 1.09,
+          "retail": 1.17,
+          "claimed_pct": 7,
+          "category": "37",
+          "basket_id": "pasta",
+          "verdict": "red",
+          "omnibus_pct": -7,
+          "min_30_prior": 0.89,
+          "median_90": 1.02
+        },
+        {
+          "name": "Домати на клонка кг",
+          "price": 1.19,
+          "retail": null,
+          "claimed_pct": null,
+          "category": "54",
+          "basket_id": "tomatoes",
+          "verdict": "red",
+          "omnibus_pct": 46,
+          "min_30_prior": 0.99,
+          "median_90": 2.19
+        },
+        {
+          "name": "Пилешко филе от гърди",
+          "price": 5.69,
+          "retail": null,
+          "claimed_pct": null,
+          "category": "16",
+          "basket_id": "chicken",
+          "verdict": "red",
+          "omnibus_pct": 0,
+          "min_30_prior": 1.99,
+          "median_90": 1.89
+        },
+        {
+          "name": "Домати Рома кг",
+          "price": 1.99,
+          "retail": null,
+          "claimed_pct": null,
+          "category": "54",
+          "basket_id": "tomatoes",
+          "verdict": "red",
+          "omnibus_pct": 46,
+          "min_30_prior": 0.99,
+          "median_90": 2.19
+        },
+        {
+          "name": "Бояна Кашкавал от краве мляко 400 г",
+          "price": 3.29,
+          "retail": 9.15,
+          "claimed_pct": 64,
+          "category": "11",
+          "basket_id": "cheese",
+          "verdict": "green",
+          "omnibus_pct": 55,
+          "min_30_prior": 1.59,
+          "median_90": 3.57
+        },
+        {
+          "name": "Olympus Извара кашкавалена обезмасл.400г",
+          "price": 1.59,
+          "retail": 2.09,
+          "claimed_pct": 24,
+          "category": "14",
+          "basket_id": "cheese",
+          "verdict": "green",
+          "omnibus_pct": 55,
+          "min_30_prior": 1.59,
+          "median_90": 3.57
+        },
+        {
+          "name": "Milki Dream Кашкавал Краве 400г",
+          "price": 4.39,
+          "retail": 5.52,
+          "claimed_pct": 20,
+          "category": "11",
+          "basket_id": "cheese",
+          "verdict": "green",
+          "omnibus_pct": 55,
+          "min_30_prior": 1.59,
+          "median_90": 3.57
+        },
+        {
+          "name": "Домлян Кашкавал от краве мляко БДС 400г",
+          "price": 6.69,
+          "retail": 7.66,
+          "claimed_pct": 13,
+          "category": "11",
+          "basket_id": "cheese",
+          "verdict": "green",
+          "omnibus_pct": 55,
+          "min_30_prior": 1.59,
+          "median_90": 3.57
+        },
+        {
+          "name": "R Яйца Зора L 10 бр подови",
+          "price": 2.29,
+          "retail": 3.57,
+          "claimed_pct": 36,
+          "category": "32",
+          "basket_id": "eggs",
+          "verdict": "yellow",
+          "omnibus_pct": 6,
+          "min_30_prior": 2.29,
+          "median_90": 2.435
+        },
+        {
+          "name": "Лук жълт кг",
+          "price": 0.45,
+          "retail": 0.66,
+          "claimed_pct": 32,
+          "category": "55",
+          "basket_id": "onion",
+          "verdict": "yellow",
+          "omnibus_pct": 8,
+          "min_30_prior": 0.45,
+          "median_90": 0.49
+        },
+        {
+          "name": "TchiboEsprMilano кафе з. 1кг+0,1кг,1,1кг",
+          "price": 2.0,
+          "retail": 15.33,
+          "claimed_pct": 87,
+          "category": "71"
+        },
+        {
+          "name": "ИНКОМ Леща българска 1кг",
+          "price": 1.65,
+          "retail": 4.17,
+          "claimed_pct": 60,
+          "category": "34"
+        },
+        {
+          "name": "Melitta CafeExcellent каф.мл.100%ар 250г",
+          "price": 3.29,
+          "retail": 7.59,
+          "claimed_pct": 57,
+          "category": "70"
+        },
+        {
+          "name": "Diana твърд сапун Minerals 150 гр",
+          "price": 0.55,
+          "retail": 1.27,
+          "claimed_pct": 57,
+          "category": "83"
+        },
+        {
+          "name": "Diana твърд сапун Pearl Protein 150 гр",
+          "price": 0.55,
+          "retail": 1.27,
+          "claimed_pct": 57,
+          "category": "83"
+        },
+        {
+          "name": "Diana твърд сапун Seaweed 150 гр",
+          "price": 0.55,
+          "retail": 1.27,
+          "claimed_pct": 57,
+          "category": "83"
+        },
+        {
+          "name": "Свинска плешка без кост, кг",
+          "price": 2.99,
+          "retail": 6.64,
+          "claimed_pct": 55,
+          "category": "18"
+        },
+        {
+          "name": "Milka Noisette млеч.шокол.млян лешн.90г",
+          "price": 1.15,
+          "retail": 2.55,
+          "claimed_pct": 55,
+          "category": "69"
+        },
+        {
+          "name": "Свинска плешка без кост",
+          "price": 2.99,
+          "retail": 6.64,
+          "claimed_pct": 55,
+          "category": "18"
+        },
+        {
+          "name": "Kimbo Aroma Intenso кафе на зърна 1кг",
+          "price": 14.79,
+          "retail": 30.67,
+          "claimed_pct": 52,
+          "category": "71"
+        },
+        {
+          "name": "Баничка U-образна със сирене и извара120",
+          "price": 0.43,
+          "retail": 0.89,
+          "claimed_pct": 52,
+          "category": "68"
+        },
+        {
+          "name": "БаничкаU-образна сирене,извара,спанак120",
+          "price": 0.43,
+          "retail": 0.89,
+          "claimed_pct": 52,
+          "category": "68"
+        },
+        {
+          "name": "KimboEspressoNapoli кафе мл.вак.250г",
+          "price": 4.65,
+          "retail": 9.71,
+          "claimed_pct": 52,
+          "category": "70"
+        },
+        {
+          "name": "Schauma Men шампоан Sports Power 400 мл",
+          "price": 1.99,
+          "retail": 4.09,
+          "claimed_pct": 51,
+          "category": "82"
+        },
+        {
+          "name": "Schauma шампоан Fresh it up 400мл",
+          "price": 1.99,
+          "retail": 4.09,
+          "claimed_pct": 51,
+          "category": "82"
+        },
+        {
+          "name": "Schauma Men шампоан 3в1 Charcoal 400 мл",
+          "price": 1.99,
+          "retail": 4.09,
+          "claimed_pct": 51,
+          "category": "82"
+        },
+        {
+          "name": "Schauma шампоан Chamomile 400 мл",
+          "price": 1.99,
+          "retail": 4.09,
+          "claimed_pct": 51,
+          "category": "82"
+        },
+        {
+          "name": "Schauma Kids шампоан Girls 400 мл",
+          "price": 1.99,
+          "retail": 4.09,
+          "claimed_pct": 51,
+          "category": "82"
+        },
+        {
+          "name": "Schauma Kids шампоан Boys 400 мл",
+          "price": 1.99,
+          "retail": 4.09,
+          "claimed_pct": 51,
+          "category": "82"
+        },
+        {
+          "name": "Schauma шампоан Argan Oil & Repair 400мл",
+          "price": 1.99,
+          "retail": 4.09,
+          "claimed_pct": 51,
+          "category": "82"
+        },
+        {
+          "name": "Schauma шампоан Rose Oil 2 in 1 400 мл",
+          "price": 1.99,
+          "retail": 4.09,
+          "claimed_pct": 51,
+          "category": "82"
+        },
+        {
+          "name": "Schauma шампоан Repair&Care 400 мл",
+          "price": 1.99,
+          "retail": 4.09,
+          "claimed_pct": 51,
+          "category": "82"
+        },
+        {
+          "name": "Schauma Men шампоан за мъже 400 мл",
+          "price": 1.99,
+          "retail": 4.09,
+          "claimed_pct": 51,
+          "category": "82"
+        },
+        {
+          "name": "Schauma шампоан Q10 400 мл",
+          "price": 1.99,
+          "retail": 4.09,
+          "claimed_pct": 51,
+          "category": "82"
+        },
+        {
+          "name": "Schauma шампоан Power Volume 400 мл",
+          "price": 1.99,
+          "retail": 4.09,
+          "claimed_pct": 51,
+          "category": "82"
+        },
+        {
+          "name": "Schauma шампоан 7 Herbs 400 мл",
+          "price": 1.99,
+          "retail": 4.09,
+          "claimed_pct": 51,
+          "category": "82"
+        },
+        {
+          "name": "Schauma шампоан Stronger for Longer400мл",
+          "price": 1.99,
+          "retail": 4.09,
+          "claimed_pct": 51,
+          "category": "82"
+        },
+        {
+          "name": "Monarch Френско масло 82% 250г",
+          "price": 2.09,
+          "retail": 4.29,
+          "claimed_pct": 51,
+          "category": "12"
+        },
+        {
+          "name": "Фермата пилешки кренвирш, нас. Кг",
+          "price": 2.17,
+          "retail": 4.45,
+          "claimed_pct": 51,
+          "category": "26"
+        },
+        {
+          "name": "МаслиниКаламатаСтафидата натур5кг181/260",
+          "price": 3.83,
+          "retail": 7.66,
+          "claimed_pct": 50,
+          "category": "62"
+        },
+        {
+          "name": "Fivepi Кашкавал от краве мляко 350гр",
+          "price": 3.24,
+          "retail": 6.49,
+          "claimed_pct": 50,
+          "category": "11"
+        },
+        {
+          "name": "Свински бут без кост",
+          "price": 2.69,
+          "retail": 5.43,
+          "claimed_pct": 50,
+          "category": "19"
+        },
+        {
+          "name": "bevola твърд крем сапун Sensitive 150 г",
+          "price": 0.32,
+          "retail": 0.64,
+          "claimed_pct": 50,
+          "category": "83"
+        },
+        {
+          "name": "Yummy млечен шоколад с череша 100 г",
+          "price": 0.43,
+          "retail": 0.86,
+          "claimed_pct": 50,
+          "category": "69"
+        },
+        {
+          "name": "Eduscho Family кафе на зърна 1 кг",
+          "price": 11.99,
+          "retail": 23.99,
+          "claimed_pct": 50,
+          "category": "71"
+        },
+        {
+          "name": "bevola тв. крем сапун бадем. масло 150 г",
+          "price": 0.32,
+          "retail": 0.64,
+          "claimed_pct": 50,
+          "category": "83"
+        },
+        {
+          "name": "bevola твърд крем сапун мед мляко 150 г",
+          "price": 0.32,
+          "retail": 0.64,
+          "claimed_pct": 50,
+          "category": "83"
+        },
+        {
+          "name": "Krispa твърд сапун Глицерин & Мед 75 г",
+          "price": 0.43,
+          "retail": 0.86,
+          "claimed_pct": 50,
+          "category": "83"
+        },
+        {
+          "name": "Велико Търново бял винен оцет 700мл",
+          "price": 0.73,
+          "retail": 1.46,
+          "claimed_pct": 50,
+          "category": "44"
+        },
+        {
+          "name": "Свински бут без кост",
+          "price": 2.69,
+          "retail": 5.43,
+          "claimed_pct": 50,
+          "category": "19"
+        },
+        {
+          "name": "Melitta CaféBar мл.кафеCrema Intense250г",
+          "price": 4.85,
+          "retail": 9.49,
+          "claimed_pct": 49,
+          "category": "70"
+        },
+        {
+          "name": "Melitta CaféBar мл.кафе Espr.Intense250г",
+          "price": 4.85,
+          "retail": 9.49,
+          "claimed_pct": 49,
+          "category": "70"
+        },
+        {
+          "name": "Melitta CaféBar Espr.мл.кафеClassic250г",
+          "price": 4.85,
+          "retail": 9.49,
+          "claimed_pct": 49,
+          "category": "70"
+        },
+        {
+          "name": "Hosso Омега 9 кулинарно масло пърж. 1л",
+          "price": 2.1,
+          "retail": 4.09,
+          "claimed_pct": 49,
+          "category": "42"
+        },
+        {
+          "name": "Веган кроасан с пълнеж кайсия 85г/102г",
+          "price": 0.26,
+          "retail": 0.51,
+          "claimed_pct": 49,
+          "category": "67"
+        }
+      ]
+    },
+    {
+      "chain": "Billa",
+      "total_promos": 80,
+      "items": [
+        {
+          "name": "ФРЕНСКО КРАВЕ МАСЛО MONARCH 250Г",
+          "price": 2.14,
+          "retail": 4.59,
+          "claimed_pct": 53,
+          "category": "12",
+          "basket_id": "butter",
+          "verdict": "red",
+          "omnibus_pct": 22,
+          "min_30_prior": 0.99,
+          "median_90": 1.39
+        },
+        {
+          "name": "КРАВЕ МАСЛО САЯНА 250ГР",
+          "price": 1.89,
+          "retail": 3.85,
+          "claimed_pct": 51,
+          "category": "12",
+          "basket_id": "butter",
+          "verdict": "red",
+          "omnibus_pct": 22,
+          "min_30_prior": 0.99,
+          "median_90": 1.39
+        },
+        {
+          "name": "КРАВЕ МАСЛО D.MARKENBUTTER 250ГР",
+          "price": 1.89,
+          "retail": 3.85,
+          "claimed_pct": 51,
+          "category": "12",
+          "basket_id": "butter",
+          "verdict": "red",
+          "omnibus_pct": 22,
+          "min_30_prior": 0.99,
+          "median_90": 1.39
+        },
+        {
+          "name": "КРАВЕ МАСЛО D.MARKENBUTTER 250ГР",
+          "price": 1.99,
+          "retail": 3.79,
+          "claimed_pct": 47,
+          "category": "12",
+          "basket_id": "butter",
+          "verdict": "red",
+          "omnibus_pct": 22,
+          "min_30_prior": 0.99,
+          "median_90": 1.39
+        },
+        {
+          "name": "КРАВЕ МАСЛО D.MARKENBUTTER 250ГР",
+          "price": 2.49,
+          "retail": 3.99,
+          "claimed_pct": 38,
+          "category": "12",
+          "basket_id": "butter",
+          "verdict": "red",
+          "omnibus_pct": 22,
+          "min_30_prior": 0.99,
+          "median_90": 1.39
+        },
+        {
+          "name": "МИНЕРАЛНА ВОДА МУЛТИПАК  6Х1.5Л  БАНКЯ",
+          "price": 2.55,
+          "retail": 3.91,
+          "claimed_pct": 35,
+          "category": "73",
+          "basket_id": "water",
+          "verdict": "red",
+          "omnibus_pct": -8,
+          "min_30_prior": 0.35,
+          "median_90": 0.4
+        },
+        {
+          "name": "МИНЕРАЛНА ВОДА 1.5Л DEVIN",
+          "price": 0.43,
+          "retail": 0.59,
+          "claimed_pct": 27,
+          "category": "73",
+          "basket_id": "water",
+          "verdict": "red",
+          "omnibus_pct": -8,
+          "min_30_prior": 0.35,
+          "median_90": 0.4
+        },
+        {
+          "name": "КРАВЕ МАСЛО D.MARKENBUTTER 125ГР",
+          "price": 1.39,
+          "retail": 1.85,
+          "claimed_pct": 25,
+          "category": "12",
+          "basket_id": "butter",
+          "verdict": "red",
+          "omnibus_pct": 22,
+          "min_30_prior": 0.99,
+          "median_90": 1.39
+        },
+        {
+          "name": "КРАВЕ МАСЛО 125 ГР CLEVER",
+          "price": 1.09,
+          "retail": 1.39,
+          "claimed_pct": 22,
+          "category": "12",
+          "basket_id": "butter",
+          "verdict": "red",
+          "omnibus_pct": 22,
+          "min_30_prior": 0.99,
+          "median_90": 1.39
+        },
+        {
+          "name": "ПРЯСНО МЛЯКО 3% ВЕРЕЯ 1Л",
+          "price": 1.45,
+          "retail": 1.73,
+          "claimed_pct": 16,
+          "category": "6",
+          "basket_id": "milk",
+          "verdict": "red",
+          "omnibus_pct": -2,
+          "min_30_prior": 1.19,
+          "median_90": 1.42
+        },
+        {
+          "name": "КАШКАВАЛ ОТ КРАВЕ МЛЯКО БЕЛИИСА 400Г",
+          "price": 4.29,
+          "retail": 7.15,
+          "claimed_pct": 40,
+          "category": "11",
+          "basket_id": "cheese",
+          "verdict": "yellow",
+          "omnibus_pct": 23,
+          "min_30_prior": 2.99,
+          "median_90": 3.89
+        },
+        {
+          "name": "КАШКАВАЛ ОТ КР МЛЯКО МОЕ ТВОЕ НАШЕ 400ГР",
+          "price": 3.99,
+          "retail": 6.39,
+          "claimed_pct": 38,
+          "category": "11",
+          "basket_id": "cheese",
+          "verdict": "yellow",
+          "omnibus_pct": 23,
+          "min_30_prior": 2.99,
+          "median_90": 3.89
+        },
+        {
+          "name": "КИСЕЛО МЛЯКО БАЛКАН 3.6% 500Г",
+          "price": 0.65,
+          "retail": 1.02,
+          "claimed_pct": 36,
+          "category": "7",
+          "basket_id": "yogurt",
+          "verdict": "yellow",
+          "omnibus_pct": 31,
+          "min_30_prior": 0.35,
+          "median_90": 0.51
+        },
+        {
+          "name": "053 ПИЛЕШКО ФИЛЕ СЛАЙС КФМ 160 ГР",
+          "price": 2.79,
+          "retail": 4.24,
+          "claimed_pct": 34,
+          "category": "27",
+          "basket_id": "chicken",
+          "verdict": "yellow",
+          "omnibus_pct": 0,
+          "min_30_prior": 1.68,
+          "median_90": 1.68
+        },
+        {
+          "name": "КАШКАВАЛ ОТ КР.МЛЯКО РИКАС 400Г",
+          "price": 2.99,
+          "retail": 4.55,
+          "claimed_pct": 34,
+          "category": "11",
+          "basket_id": "cheese",
+          "verdict": "yellow",
+          "omnibus_pct": 23,
+          "min_30_prior": 2.99,
+          "median_90": 3.89
+        },
+        {
+          "name": "КИСЕЛО МЛЯКО ВЕРЕЯ 2.9% 400ГР",
+          "price": 0.59,
+          "retail": 0.89,
+          "claimed_pct": 34,
+          "category": "7",
+          "basket_id": "yogurt",
+          "verdict": "yellow",
+          "omnibus_pct": 31,
+          "min_30_prior": 0.35,
+          "median_90": 0.51
+        },
+        {
+          "name": "285 SOC ПРЯСНО ПИЛЕШКО ФИЛЕ БЕЗ КОЖА",
+          "price": 4.49,
+          "retail": 6.64,
+          "claimed_pct": 32,
+          "category": "16",
+          "basket_id": "chicken",
+          "verdict": "yellow",
+          "omnibus_pct": 0,
+          "min_30_prior": 1.68,
+          "median_90": 1.68
+        },
+        {
+          "name": "КИСЕЛО МЛЯКО 3,6% ЕЛЕНА 400Г",
+          "price": 0.69,
+          "retail": 1.02,
+          "claimed_pct": 32,
+          "category": "7",
+          "basket_id": "yogurt",
+          "verdict": "yellow",
+          "omnibus_pct": 31,
+          "min_30_prior": 0.35,
+          "median_90": 0.51
+        },
+        {
+          "name": "КАШКАВАЛ ОТ КР.МЛЯКО BILLA PREMIUM 400Г",
+          "price": 4.99,
+          "retail": 7.38,
+          "claimed_pct": 32,
+          "category": "11",
+          "basket_id": "cheese",
+          "verdict": "yellow",
+          "omnibus_pct": 23,
+          "min_30_prior": 2.99,
+          "median_90": 3.89
+        },
+        {
+          "name": "250ГР МЛЯНО КАФЕ LAVAZZA CREMA E GUSTO",
+          "price": 5.11,
+          "retail": 7.41,
+          "claimed_pct": 31,
+          "category": "70",
+          "basket_id": "coffee",
+          "verdict": "yellow",
+          "omnibus_pct": 0,
+          "min_30_prior": 4.09,
+          "median_90": 4.09
+        },
+        {
+          "name": "КИСЕЛО МЛЯКО 3,6% БАДЖАНАШКО 400Г",
+          "price": 0.35,
+          "retail": 0.51,
+          "claimed_pct": 31,
+          "category": "7",
+          "basket_id": "yogurt",
+          "verdict": "yellow",
+          "omnibus_pct": 31,
+          "min_30_prior": 0.35,
+          "median_90": 0.51
+        },
+        {
+          "name": "КИСЕЛО МЛЯКО ЕЛ БИ БДС 3,6% 400ГР",
+          "price": 0.69,
+          "retail": 1.0,
+          "claimed_pct": 31,
+          "category": "7",
+          "basket_id": "yogurt",
+          "verdict": "yellow",
+          "omnibus_pct": 31,
+          "min_30_prior": 0.35,
+          "median_90": 0.51
+        },
+        {
+          "name": "КИСЕЛО МЛЯКО БОЛЯРЧЕ 3,6% 400ГР",
+          "price": 0.69,
+          "retail": 0.92,
+          "claimed_pct": 25,
+          "category": "7",
+          "basket_id": "yogurt",
+          "verdict": "yellow",
+          "omnibus_pct": 31,
+          "min_30_prior": 0.35,
+          "median_90": 0.51
+        },
+        {
+          "name": "SOC ПИЛЕШКО ФИЛЕ ОХЛАДЕНО ROSO",
+          "price": 8.94,
+          "retail": 11.57,
+          "claimed_pct": 23,
+          "category": "16",
+          "basket_id": "chicken",
+          "verdict": "yellow",
+          "omnibus_pct": 0,
+          "min_30_prior": 1.68,
+          "median_90": 1.68
+        },
+        {
+          "name": "КИСЕЛО МЛЯКО ЗНП МАДЖАРОВ 3,6% 400ГР",
+          "price": 0.79,
+          "retail": 1.02,
+          "claimed_pct": 23,
+          "category": "7",
+          "basket_id": "yogurt",
+          "verdict": "yellow",
+          "omnibus_pct": 31,
+          "min_30_prior": 0.35,
+          "median_90": 0.51
+        },
+        {
+          "name": "КИСЕЛО МЛЯКО ВЕРЕЯ 3,6% 400ГР",
+          "price": 0.69,
+          "retail": 0.89,
+          "claimed_pct": 22,
+          "category": "7",
+          "basket_id": "yogurt",
+          "verdict": "yellow",
+          "omnibus_pct": 31,
+          "min_30_prior": 0.35,
+          "median_90": 0.51
+        },
+        {
+          "name": "КИСЕЛО МЛЯКО 3.6% 400Г BILLA",
+          "price": 0.49,
+          "retail": 0.62,
+          "claimed_pct": 21,
+          "category": "7",
+          "basket_id": "yogurt",
+          "verdict": "yellow",
+          "omnibus_pct": 31,
+          "min_30_prior": 0.35,
+          "median_90": 0.51
+        },
+        {
+          "name": "КИСЕЛО МЛЯКО 3.6% 400Г CLEVER",
+          "price": 0.55,
+          "retail": 0.66,
+          "claimed_pct": 17,
+          "category": "7",
+          "basket_id": "yogurt",
+          "verdict": "yellow",
+          "omnibus_pct": 31,
+          "min_30_prior": 0.35,
+          "median_90": 0.51
+        },
+        {
+          "name": "КИСЕЛО МЛЯКО 3.6% ЗНП  BILLA 400 ГР",
+          "price": 0.55,
+          "retail": 0.64,
+          "claimed_pct": 14,
+          "category": "7",
+          "basket_id": "yogurt",
+          "verdict": "yellow",
+          "omnibus_pct": 31,
+          "min_30_prior": 0.35,
+          "median_90": 0.51
+        },
+        {
+          "name": "1КГ БРАШНО ПШЕН.ТИП 500 МЕЛНИЦА СЪЕД.",
+          "price": 0.89,
+          "retail": 1.0,
+          "claimed_pct": 11,
+          "category": "40",
+          "basket_id": "flour",
+          "verdict": "yellow",
+          "omnibus_pct": 15,
+          "min_30_prior": 0.72,
+          "median_90": 0.86
+        },
+        {
+          "name": "400Г ГРАХ OBERON",
+          "price": 0.29,
+          "retail": 1.49,
+          "claimed_pct": 81,
+          "category": "47"
+        },
+        {
+          "name": "SOC КАЙМА СМЕС 60/40 СВ./ГОВ.ГАСТРО",
+          "price": 2.99,
+          "retail": 7.15,
+          "claimed_pct": 58,
+          "category": "25"
+        },
+        {
+          "name": "БЕЛЛА 120ГР БАНИЧКА СЪС СИРЕНЕ 84БР",
+          "price": 0.45,
+          "retail": 1.03,
+          "claimed_pct": 56,
+          "category": "68"
+        },
+        {
+          "name": "БЕЛЛА 120ГР БАНИЧКА СЪС СПАНАК 84БР",
+          "price": 0.45,
+          "retail": 1.03,
+          "claimed_pct": 56,
+          "category": "68"
+        },
+        {
+          "name": "MAP СВИНСКИ ВРАТ С КОСТ НАРЯЗАН БГ",
+          "price": 2.99,
+          "retail": 6.64,
+          "claimed_pct": 55,
+          "category": "21"
+        },
+        {
+          "name": "100ГР ШОКОЛАД БИСК,МЛ.ПЪЛНЕЖ,КАРАМ LACMI",
+          "price": 0.79,
+          "retail": 1.72,
+          "claimed_pct": 54,
+          "category": "69"
+        },
+        {
+          "name": "100ГР ШОКОЛАД МЛЕЧ.ПЪЛНЕЖ И БИСКВ LACMI",
+          "price": 0.79,
+          "retail": 1.72,
+          "claimed_pct": 54,
+          "category": "69"
+        },
+        {
+          "name": "85Г МЛ. АЕРО ШОКОЛАД BUBBLE CRISP LACMI",
+          "price": 0.79,
+          "retail": 1.72,
+          "claimed_pct": 54,
+          "category": "69"
+        },
+        {
+          "name": "87ГР ШОКОЛАД С ФЪСТЪЦИ И КАРАМЕЛ LACMI",
+          "price": 0.79,
+          "retail": 1.72,
+          "claimed_pct": 54,
+          "category": "69"
+        },
+        {
+          "name": "90ГР МЛЕЧЕН ШОКОЛАД LACMI",
+          "price": 0.79,
+          "retail": 1.72,
+          "claimed_pct": 54,
+          "category": "69"
+        },
+        {
+          "name": "90ГР ШОКОЛАД ВАФЛА,ШОК.ПЪЛНЕЖ LACMI",
+          "price": 0.79,
+          "retail": 1.72,
+          "claimed_pct": 54,
+          "category": "69"
+        },
+        {
+          "name": "90ГР ШОКОЛАД МЛЕЧ.ПЪЛНЕЖ И ВАФЛИ LACMI",
+          "price": 0.79,
+          "retail": 1.72,
+          "claimed_pct": 54,
+          "category": "69"
+        },
+        {
+          "name": "100ГР ШОКОЛАД TRILOGIA SCHOGETTEN",
+          "price": 0.99,
+          "retail": 2.09,
+          "claimed_pct": 53,
+          "category": "69"
+        },
+        {
+          "name": "КАШКАВАЛ ОТ КРАВЕ МЛЯКО НЕВЕННА 750Г",
+          "price": 4.99,
+          "retail": 10.17,
+          "claimed_pct": 51,
+          "category": "11"
+        },
+        {
+          "name": "FAMILIA MAGIC FLOWERS TX 3ПЛ 8БР",
+          "price": 2.04,
+          "retail": 4.09,
+          "claimed_pct": 50,
+          "category": "85"
+        },
+        {
+          "name": "FAMILIA MUGUET FLOWER ТХ 3ПЛ 8БР",
+          "price": 2.04,
+          "retail": 4.09,
+          "claimed_pct": 50,
+          "category": "85"
+        },
+        {
+          "name": "FAMILIA POMPOMS ТХ 3ПЛ 8БР",
+          "price": 2.04,
+          "retail": 4.09,
+          "claimed_pct": 50,
+          "category": "85"
+        },
+        {
+          "name": "PARODONTAX CLASSIC ПАСТА ЗА ЗЪБИ 75МЛ",
+          "price": 2.85,
+          "retail": 5.7,
+          "claimed_pct": 50,
+          "category": "81"
+        },
+        {
+          "name": "PARODONTAX FLUROIDE ПАСТА ЗА ЗЪБИ 75МЛ",
+          "price": 2.85,
+          "retail": 5.7,
+          "claimed_pct": 50,
+          "category": "81"
+        },
+        {
+          "name": "PARODONTAX ULTRA CLEAN П-ТА ЗА ЗЪБИ 75МЛ",
+          "price": 2.85,
+          "retail": 5.7,
+          "claimed_pct": 50,
+          "category": "81"
+        },
+        {
+          "name": "КАРТОФИ ПРЕСНИ",
+          "price": 0.59,
+          "retail": 1.19,
+          "claimed_pct": 50,
+          "category": "61"
+        },
+        {
+          "name": "SOC СВ.ВРАТ С КОСТ НАРЯЗАН ГАСТРО БГ",
+          "price": 3.39,
+          "retail": 6.64,
+          "claimed_pct": 49,
+          "category": "21"
+        },
+        {
+          "name": "070 ШУНКА 300 ТАНДЕМ",
+          "price": 2.39,
+          "retail": 4.6,
+          "claimed_pct": 48,
+          "category": "27"
+        },
+        {
+          "name": "SOC ПРЕСЕН ПИЛЕШКИ БУТ ЦЯЛ БГ",
+          "price": 1.59,
+          "retail": 3.06,
+          "claimed_pct": 48,
+          "category": "17"
+        },
+        {
+          "name": "КАБ СОВИНЬОН&МЕРЛО РЕЗЕРВА 0.75Л EMINE",
+          "price": 4.29,
+          "retail": 7.98,
+          "claimed_pct": 46,
+          "category": "76"
+        },
+        {
+          "name": "СОВИНЬОН БЛАН 0.75 EMINE",
+          "price": 4.29,
+          "retail": 7.98,
+          "claimed_pct": 46,
+          "category": "75"
+        },
+        {
+          "name": "ШАРДОНЕ РЕЗЕРВА 0.75Л EMINE",
+          "price": 4.29,
+          "retail": 7.98,
+          "claimed_pct": 46,
+          "category": "75"
+        },
+        {
+          "name": "520Г ГОРНОТРАК.ЕДРОСМЛ.ЛЮТЕНИЦА DERONI",
+          "price": 2.29,
+          "retail": 4.09,
+          "claimed_pct": 44,
+          "category": "49"
+        },
+        {
+          "name": "COLGATE MAX WHITE CHARCOAL ПАСТА 75МЛ",
+          "price": 2.15,
+          "retail": 3.81,
+          "claimed_pct": 44,
+          "category": "81"
+        },
+        {
+          "name": "COLGATE MAX WHITE ONE OPTIC ПАСТА 75МЛ",
+          "price": 2.15,
+          "retail": 3.81,
+          "claimed_pct": 44,
+          "category": "81"
+        },
+        {
+          "name": "COLGATE MAX WHITE ONE ПАСТА ЗЪБИ 75МЛ",
+          "price": 2.15,
+          "retail": 3.81,
+          "claimed_pct": 44,
+          "category": "81"
+        },
+        {
+          "name": "COLGATE MAX.WHITE PURPLE П-ТА ЗЪБИ 75МЛ",
+          "price": 2.15,
+          "retail": 3.81,
+          "claimed_pct": 44,
+          "category": "81"
+        },
+        {
+          "name": "415ГР ПЕЧЕН БОБ В ДОМ.СОС HEINZ",
+          "price": 1.39,
+          "retail": 2.5,
+          "claimed_pct": 44,
+          "category": "46"
+        },
+        {
+          "name": "ДОМАТИ РОЗОВИ",
+          "price": 1.69,
+          "retail": 2.99,
+          "claimed_pct": 43,
+          "category": "54"
+        },
+        {
+          "name": "107 КОЛБАС КАМЧИЯ 320ГР НАРОДЕН",
+          "price": 1.65,
+          "retail": 2.86,
+          "claimed_pct": 42,
+          "category": "27"
+        },
+        {
+          "name": "107 КОЛБАС ТИП ТЕЛЕШКИ 320 НАРОДЕН",
+          "price": 1.65,
+          "retail": 2.86,
+          "claimed_pct": 42,
+          "category": "27"
+        },
+        {
+          "name": "107 КОЛБАС ХАМБУРГСКИ 320 НАРОДЕН",
+          "price": 1.65,
+          "retail": 2.86,
+          "claimed_pct": 42,
+          "category": "27"
+        },
+        {
+          "name": "КА ЗЕЛЕНИ МАСЛИНИ БЕЗ КОСТ.161-180/3КГ",
+          "price": 5.62,
+          "retail": 9.45,
+          "claimed_pct": 41,
+          "category": "62"
+        },
+        {
+          "name": "1КГ КАФЕ НА ЗЪР. ESPRESSO SICILIA TCHIBO",
+          "price": 18.91,
+          "retail": 31.49,
+          "claimed_pct": 40,
+          "category": "71"
+        },
+        {
+          "name": "1КГ КАФЕ НА ЗЪРНА ESPRESSO MILANO TCHIBO",
+          "price": 18.91,
+          "retail": 31.49,
+          "claimed_pct": 40,
+          "category": "71"
+        },
+        {
+          "name": "SOC СВИНСКО МЕСО ЗА ГОТВЕНЕ ГАСТРО БГ",
+          "price": 2.99,
+          "retail": 4.98,
+          "claimed_pct": 40,
+          "category": "22"
+        },
+        {
+          "name": "SYOSS MEN CLEAN&COOL ШАМПОАН 440МЛ",
+          "price": 3.83,
+          "retail": 6.28,
+          "claimed_pct": 39,
+          "category": "82"
+        },
+        {
+          "name": "КРАВЕ СИРЕНЕ НАРОДЕН ДАР 400ГР КУТИЯ",
+          "price": 2.49,
+          "retail": 4.09,
+          "claimed_pct": 39,
+          "category": "9"
+        },
+        {
+          "name": "ТА ПЕЧЕН СВИНСКИ БУТ БЕЗ КОСТ",
+          "price": 11.24,
+          "retail": 18.4,
+          "claimed_pct": 39,
+          "category": "27"
+        },
+        {
+          "name": "ЧЕХ КРАВЕ СИРЕНЕ БОЛЯРЧЕ / 8КГ",
+          "price": 6.29,
+          "retail": 10.27,
+          "claimed_pct": 39,
+          "category": "8"
+        },
+        {
+          "name": "070 ПАСТЕТ АПЕТИТ 180 ТАНДЕМ",
+          "price": 0.99,
+          "retail": 1.63,
+          "claimed_pct": 39,
+          "category": "27"
+        },
+        {
+          "name": "ПРЯСНО МЛЯКО 3,5% BILLA 1Л БУТИЛКА",
+          "price": 0.99,
+          "retail": 1.63,
+          "claimed_pct": 39,
+          "category": "6"
+        },
+        {
+          "name": "400ГР БЯЛ БОБ CANNELLINI BILLA",
+          "price": 0.79,
+          "retail": 1.27,
+          "claimed_pct": 38,
+          "category": "46"
+        },
+        {
+          "name": "400ГР ЧЕРВЕН БОБ  BILLA",
+          "price": 0.79,
+          "retail": 1.27,
+          "claimed_pct": 38,
+          "category": "46"
+        },
+        {
+          "name": "420ГР ПЕЧЕН БОБ В ДОМАТЕН СОС BILLA",
+          "price": 0.79,
+          "retail": 1.27,
+          "claimed_pct": 38,
+          "category": "46"
         }
       ]
     },
@@ -488,7 +1947,7 @@ window.SAVECHECK_BROCHURES = {
           "basket_id": "cheese",
           "verdict": "yellow",
           "omnibus_pct": -2,
-          "min_30_prior": 2.93,
+          "min_30_prior": 3.44,
           "median_90": 3.49
         },
         {
@@ -504,7 +1963,7 @@ window.SAVECHECK_BROCHURES = {
           "median_90": 2.39
         },
         {
-          "name": "МАКАРОНИ ДЕРОНИ ФУСИЛИ 400 ГР",
+          "name": "МАКАРОНИ ДЕРОНИ ПЕНЕ РИГАТЕ 400 ГР",
           "price": 0.75,
           "retail": 1.02,
           "claimed_pct": 26,
@@ -516,7 +1975,7 @@ window.SAVECHECK_BROCHURES = {
           "median_90": 0.61
         },
         {
-          "name": "МАКАРОНИ ДЕРОНИ ПЕНЕ РИГАТЕ 400 ГР",
+          "name": "МАКАРОНИ ДЕРОНИ ФУСИЛИ 400 ГР",
           "price": 0.75,
           "retail": 1.02,
           "claimed_pct": 26,
@@ -716,7 +2175,7 @@ window.SAVECHECK_BROCHURES = {
           "basket_id": "cheese",
           "verdict": "yellow",
           "omnibus_pct": -2,
-          "min_30_prior": 2.93,
+          "min_30_prior": 3.44,
           "median_90": 3.49
         },
         {
@@ -744,18 +2203,6 @@ window.SAVECHECK_BROCHURES = {
           "median_90": 2.39
         },
         {
-          "name": "СИРЕНЕ КРАВЕ МАДЖАРОВ ЗНП 400 Г ВАКУУМ РП ДАР",
-          "price": 5.29,
-          "retail": 5.99,
-          "claimed_pct": 12,
-          "category": "9",
-          "basket_id": "feta",
-          "verdict": "yellow",
-          "omnibus_pct": -1,
-          "min_30_prior": 1.89,
-          "median_90": 2.39
-        },
-        {
           "name": "КАШКАВАЛ ОТ КРАВЕ МЛЯКО YORUKOGLU 400 Г ВАКУУМ",
           "price": 6.65,
           "retail": 7.59,
@@ -764,7 +2211,7 @@ window.SAVECHECK_BROCHURES = {
           "basket_id": "cheese",
           "verdict": "yellow",
           "omnibus_pct": -2,
-          "min_30_prior": 2.93,
+          "min_30_prior": 3.44,
           "median_90": 3.49
         },
         {
@@ -783,6 +2230,18 @@ window.SAVECHECK_BROCHURES = {
           "name": "СИРЕНЕ КРАВЕ HOCHLAND 400 ГР КУТИЯ",
           "price": 6.74,
           "retail": 7.66,
+          "claimed_pct": 12,
+          "category": "9",
+          "basket_id": "feta",
+          "verdict": "yellow",
+          "omnibus_pct": -1,
+          "min_30_prior": 1.89,
+          "median_90": 2.39
+        },
+        {
+          "name": "СИРЕНЕ КРАВЕ МАДЖАРОВ ЗНП 400 Г ВАКУУМ РП ДАР",
+          "price": 5.29,
+          "retail": 5.99,
           "claimed_pct": 12,
           "category": "9",
           "basket_id": "feta",
@@ -811,18 +2270,18 @@ window.SAVECHECK_BROCHURES = {
           "category": "71"
         },
         {
-          "name": "МАСЛО КРАВЕ ФРЕНСКО MONARCH 250 ГР",
-          "price": 2.14,
-          "retail": 4.28,
-          "claimed_pct": 50,
-          "category": "12"
-        },
-        {
           "name": "КАШКАВАЛ ОТ КРАВЕ МЛЯКО ЛЕСИДРЕН 350 ГР ВАКУУМ РП FARM",
           "price": 3.24,
           "retail": 6.48,
           "claimed_pct": 50,
           "category": "11"
+        },
+        {
+          "name": "МАСЛО КРАВЕ ФРЕНСКО MONARCH 250 ГР",
+          "price": 2.14,
+          "retail": 4.28,
+          "claimed_pct": 50,
+          "category": "12"
         },
         {
           "name": "*МАКАРОНИ DELVERDE ПЕНЕ ЗИТА РИГАТЕ 500 ГР ПАКЕТ IMPORT",
@@ -867,14 +2326,14 @@ window.SAVECHECK_BROCHURES = {
           "category": "83"
         },
         {
-          "name": "САПУН ТЕО MILK ULTRA HYGIENE 90 Г АНТИБАКТ. СЪСТАВКА",
+          "name": "САПУН ТЕО GENTLE CARE 90 Г",
           "price": 0.59,
           "retail": 1.02,
           "claimed_pct": 42,
           "category": "83"
         },
         {
-          "name": "САПУН ТЕО GENTLE CARE 90 Г",
+          "name": "САПУН ТЕО MILK ULTRA HYGIENE 90 Г АНТИБАКТ. СЪСТАВКА",
           "price": 0.59,
           "retail": 1.02,
           "claimed_pct": 42,
@@ -902,18 +2361,18 @@ window.SAVECHECK_BROCHURES = {
           "category": "81"
         },
         {
-          "name": "ТХ MILDE PREMIUM COOL BLUE 8 БР 3 ПЛАСТА АРОМАТИЗИРАНА",
+          "name": "ТХ MILDE PREMIUM RELAX PURPLE 8 БР 3 ПЛАСТА АРОМАТИЗИРАНА",
           "price": 2.99,
           "retail": 4.95,
           "claimed_pct": 40,
           "category": "85"
         },
         {
-          "name": "ТХ MILDE PREMIUM RELAX PURPLE 8 БР 3 ПЛАСТА АРОМАТИЗИРАНА",
-          "price": 2.99,
-          "retail": 4.95,
+          "name": "ПАСТА ЗА ЗЪБИ COLGATE ADVANCED WHITE 75 МЛ",
+          "price": 1.85,
+          "retail": 3.06,
           "claimed_pct": 40,
-          "category": "85"
+          "category": "81"
         },
         {
           "name": "ПАСТА ЗА ЗЪБИ COLGATE MAX FRESH COOLING CRYSTALS 75 МЛ",
@@ -937,6 +2396,13 @@ window.SAVECHECK_BROCHURES = {
           "category": "85"
         },
         {
+          "name": "ТХ MILDE PREMIUM COOL BLUE 8 БР 3 ПЛАСТА АРОМАТИЗИРАНА",
+          "price": 2.99,
+          "retail": 4.95,
+          "claimed_pct": 40,
+          "category": "85"
+        },
+        {
           "name": "ТХ MILDE PREMIUM ENERGY GREEN 8 БР 3 ПЛАСТА  АРОМАТИЗИРАНА",
           "price": 2.99,
           "retail": 4.95,
@@ -951,20 +2417,6 @@ window.SAVECHECK_BROCHURES = {
           "category": "81"
         },
         {
-          "name": "** ПАСТА ЗА ЗЪБИ COLGATE MAX FRESH GREEN TEA 75 МЛ",
-          "price": 1.85,
-          "retail": 3.06,
-          "claimed_pct": 40,
-          "category": "81"
-        },
-        {
-          "name": "ПАСТА ЗА ЗЪБИ COLGATE ADVANCED WHITE 75 МЛ",
-          "price": 1.85,
-          "retail": 3.06,
-          "claimed_pct": 40,
-          "category": "81"
-        },
-        {
           "name": "ПАСТА ЗА ЗЪБИ COLGATE ADVANCED BAKING SODA & VOLCANO 75 МЛ",
           "price": 1.85,
           "retail": 3.06,
@@ -972,7 +2424,7 @@ window.SAVECHECK_BROCHURES = {
           "category": "81"
         },
         {
-          "name": "ПАСТА ЗА ЗЪБИ COLGATE MAX WHITE SPARKLING DIAMONDS 75 МЛ",
+          "name": "** ПАСТА ЗА ЗЪБИ COLGATE MAX FRESH GREEN TEA 75 МЛ",
           "price": 1.85,
           "retail": 3.06,
           "claimed_pct": 40,
@@ -987,6 +2439,13 @@ window.SAVECHECK_BROCHURES = {
         },
         {
           "name": "ПАСТА ЗА ЗЪБИ COLGATE ADVANCED WHITE PURPLE 75 МЛ",
+          "price": 1.85,
+          "retail": 3.06,
+          "claimed_pct": 40,
+          "category": "81"
+        },
+        {
+          "name": "ПАСТА ЗА ЗЪБИ COLGATE MAX WHITE SPARKLING DIAMONDS 75 МЛ",
           "price": 1.85,
           "retail": 3.06,
           "claimed_pct": 40,
@@ -1021,13 +2480,6 @@ window.SAVECHECK_BROCHURES = {
           "category": "69"
         },
         {
-          "name": "КАШКАВАЛ ОТ КРАВЕ МЛЯКО САКАРЕЛА НАСИПЕН ДАР",
-          "price": 6.99,
-          "retail": 11.24,
-          "claimed_pct": 38,
-          "category": "10"
-        },
-        {
           "name": "ПЪСТЪРВА ЧИСТЕНА ПРОИЗХОД БЪЛГАРИЯ ОХЛАДЕНА КГ МОРСКИ ДАР РП",
           "price": 4.99,
           "retail": 7.99,
@@ -1035,11 +2487,11 @@ window.SAVECHECK_BROCHURES = {
           "category": "30"
         },
         {
-          "name": "КАФЕ SEGAFREDO ESPRESSO CASA 250 Г МЛЯНО",
-          "price": 4.25,
-          "retail": 6.64,
-          "claimed_pct": 36,
-          "category": "70"
+          "name": "КАШКАВАЛ ОТ КРАВЕ МЛЯКО САКАРЕЛА НАСИПЕН ДАР",
+          "price": 6.99,
+          "retail": 11.24,
+          "claimed_pct": 38,
+          "category": "10"
         },
         {
           "name": "ДОМАТИ Ф ВКУС БЕЛЕНИ НА КУБЧЕТА 400 ГР КОНСЕРВА IMPORT",
@@ -1056,6 +2508,20 @@ window.SAVECHECK_BROCHURES = {
           "category": "48"
         },
         {
+          "name": "КАФЕ SEGAFREDO ESPRESSO CASA 250 Г МЛЯНО",
+          "price": 4.25,
+          "retail": 6.64,
+          "claimed_pct": 36,
+          "category": "70"
+        },
+        {
+          "name": "ВИНО МЕРЛО ХИПНОЗА РЕЗЕРВА 750 МЛ ЛОГОДАЖ",
+          "price": 13.99,
+          "retail": 21.98,
+          "claimed_pct": 36,
+          "category": "76"
+        },
+        {
           "name": "МЛЯКО КИСЕЛО БАЛКАН 3.6 % 400 +100 ГР",
           "price": 0.65,
           "retail": 1.02,
@@ -1068,13 +2534,6 @@ window.SAVECHECK_BROCHURES = {
           "retail": 5.11,
           "claimed_pct": 36,
           "category": "81"
-        },
-        {
-          "name": "ВИНО МЕРЛО ХИПНОЗА РЕЗЕРВА 750 МЛ ЛОГОДАЖ",
-          "price": 13.99,
-          "retail": 21.98,
-          "claimed_pct": 36,
-          "category": "76"
         },
         {
           "name": "ПАСТА ЗА ЗЪБИ ORAL-B 3DW PRO ARCTIC FRESH 125 МЛ",
@@ -1172,7 +2631,7 @@ window.SAVECHECK_BROCHURES = {
           "basket_id": "rice",
           "verdict": "green",
           "omnibus_pct": 21,
-          "min_30_prior": 2.28,
+          "min_30_prior": 1.79,
           "median_90": 2.28
         },
         {
