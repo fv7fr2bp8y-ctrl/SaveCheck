@@ -1,5 +1,5 @@
 window.SAVECHECK_DEMO = {
-  "generated_for": "2026-09-29",
+  "generated_for": "2026-09-30",
   "base_currency": "BGN",
   "products": [
     {
@@ -15,8 +15,8 @@ window.SAVECHECK_DEMO = {
       "min_90": 1.35,
       "max_90": 1.35,
       "min_30_prior": 1.35,
-      "lowest_day": "2026-09-29",
-      "highest_day": "2026-09-29",
+      "lowest_day": "2026-09-30",
+      "highest_day": "2026-09-30",
       "series": [
         {
           "day": "2026-07-03",
@@ -373,12 +373,16 @@ window.SAVECHECK_DEMO = {
         {
           "day": "2026-09-29",
           "price": 1.35
+        },
+        {
+          "day": "2026-09-30",
+          "price": 1.35
         }
       ],
       "offers": [
         {
           "chain": "Kaufland",
-          "price": 1.29
+          "price": 1.25
         },
         {
           "chain": "Lidl",
@@ -407,7 +411,7 @@ window.SAVECHECK_DEMO = {
       "min_90": 1.39,
       "max_90": 1.68,
       "min_30_prior": 1.39,
-      "lowest_day": "2026-09-29",
+      "lowest_day": "2026-09-30",
       "highest_day": "2026-09-27",
       "series": [
         {
@@ -765,6 +769,10 @@ window.SAVECHECK_DEMO = {
         {
           "day": "2026-09-29",
           "price": 1.39
+        },
+        {
+          "day": "2026-09-30",
+          "price": 1.39
         }
       ],
       "offers": [
@@ -796,7 +804,7 @@ window.SAVECHECK_DEMO = {
       "max_90": 6.13,
       "min_30_prior": 6.13,
       "lowest_day": "2026-07-31",
-      "highest_day": "2026-09-29",
+      "highest_day": "2026-09-30",
       "series": [
         {
           "day": "2026-07-03",
@@ -1152,6 +1160,10 @@ window.SAVECHECK_DEMO = {
         },
         {
           "day": "2026-09-29",
+          "price": 6.13
+        },
+        {
+          "day": "2026-09-30",
           "price": 6.13
         }
       ],
@@ -1191,8 +1203,8 @@ window.SAVECHECK_DEMO = {
       "min_90": 1.39,
       "max_90": 1.39,
       "min_30_prior": 1.39,
-      "lowest_day": "2026-09-29",
-      "highest_day": "2026-09-29",
+      "lowest_day": "2026-09-30",
+      "highest_day": "2026-09-30",
       "series": [
         {
           "day": "2026-07-03",
@@ -1549,6 +1561,10 @@ window.SAVECHECK_DEMO = {
         {
           "day": "2026-09-29",
           "price": 1.39
+        },
+        {
+          "day": "2026-09-30",
+          "price": 1.39
         }
       ],
       "offers": [
@@ -1583,8 +1599,8 @@ window.SAVECHECK_DEMO = {
       "min_90": 0.65,
       "max_90": 0.65,
       "min_30_prior": null,
-      "lowest_day": "2026-09-29",
-      "highest_day": "2026-09-29",
+      "lowest_day": "2026-09-30",
+      "highest_day": "2026-09-30",
       "series": [
         {
           "day": "2026-08-22",
@@ -1741,6 +1757,10 @@ window.SAVECHECK_DEMO = {
         {
           "day": "2026-09-29",
           "price": 0.65
+        },
+        {
+          "day": "2026-09-30",
+          "price": 0.65
         }
       ],
       "offers": [
@@ -1762,16 +1782,16 @@ window.SAVECHECK_DEMO = {
       "id": "flour",
       "unit_kind": "kg",
       "is_promo": true,
-      "verdict": "red",
-      "reason_code": "fake_not_below",
-      "discount_pct": 15,
-      "current_price": 0.55,
-      "current_unit_price": 0.55,
-      "median_90": 0.65,
+      "verdict": "green",
+      "reason_code": "real",
+      "discount_pct": 18,
+      "current_price": 0.49,
+      "current_unit_price": 0.49,
+      "median_90": 0.6,
       "min_90": 0.49,
       "max_90": 0.79,
       "min_30_prior": 0.49,
-      "lowest_day": "2026-09-18",
+      "lowest_day": "2026-09-30",
       "highest_day": "2026-09-04",
       "series": [
         {
@@ -2101,12 +2121,16 @@ window.SAVECHECK_DEMO = {
         {
           "day": "2026-09-29",
           "price": 0.55
+        },
+        {
+          "day": "2026-09-30",
+          "price": 0.49
         }
       ],
       "offers": [
         {
           "chain": "Kaufland",
-          "price": 0.55
+          "price": 0.49
         },
         {
           "chain": "Fantastico",
@@ -2136,7 +2160,7 @@ window.SAVECHECK_DEMO = {
       "max_90": 1.38,
       "min_30_prior": 1.29,
       "lowest_day": "2026-09-10",
-      "highest_day": "2026-09-29",
+      "highest_day": "2026-09-30",
       "series": [
         {
           "day": "2026-07-03",
@@ -2493,6 +2517,10 @@ window.SAVECHECK_DEMO = {
         {
           "day": "2026-09-29",
           "price": 1.38
+        },
+        {
+          "day": "2026-09-30",
+          "price": 1.38
         }
       ],
       "offers": [
@@ -2527,7 +2555,7 @@ window.SAVECHECK_DEMO = {
       "min_90": 2.95,
       "max_90": 3.01,
       "min_30_prior": 2.95,
-      "lowest_day": "2026-09-29",
+      "lowest_day": "2026-09-30",
       "highest_day": "2026-09-03",
       "series": [
         {
@@ -2885,6 +2913,10 @@ window.SAVECHECK_DEMO = {
         {
           "day": "2026-09-29",
           "price": 2.95
+        },
+        {
+          "day": "2026-09-30",
+          "price": 2.95
         }
       ],
       "offers": [
@@ -2915,7 +2947,7 @@ window.SAVECHECK_DEMO = {
       "min_90": 2.35,
       "max_90": 3.06,
       "min_30_prior": 2.35,
-      "lowest_day": "2026-09-29",
+      "lowest_day": "2026-09-30",
       "highest_day": "2026-09-24",
       "series": [
         {
@@ -3273,6 +3305,10 @@ window.SAVECHECK_DEMO = {
         {
           "day": "2026-09-29",
           "price": 2.35
+        },
+        {
+          "day": "2026-09-30",
+          "price": 2.35
         }
       ],
       "offers": [
@@ -3296,10 +3332,10 @@ window.SAVECHECK_DEMO = {
       "is_promo": true,
       "verdict": "red",
       "reason_code": "fake_not_below",
-      "discount_pct": 28,
+      "discount_pct": 22,
       "current_price": 0.55,
       "current_unit_price": 0.7857,
-      "median_90": 0.76,
+      "median_90": 0.705,
       "min_90": 0.49,
       "max_90": 0.76,
       "min_30_prior": 0.49,
@@ -3661,6 +3697,10 @@ window.SAVECHECK_DEMO = {
         {
           "day": "2026-09-29",
           "price": 0.55
+        },
+        {
+          "day": "2026-09-30",
+          "price": 0.55
         }
       ],
       "offers": [
@@ -3699,8 +3739,8 @@ window.SAVECHECK_DEMO = {
       "min_90": 0.46,
       "max_90": 0.46,
       "min_30_prior": 0.46,
-      "lowest_day": "2026-09-29",
-      "highest_day": "2026-09-29",
+      "lowest_day": "2026-09-30",
+      "highest_day": "2026-09-30",
       "series": [
         {
           "day": "2026-07-03",
@@ -4056,6 +4096,10 @@ window.SAVECHECK_DEMO = {
         },
         {
           "day": "2026-09-29",
+          "price": 0.46
+        },
+        {
+          "day": "2026-09-30",
           "price": 0.46
         }
       ],
@@ -4091,8 +4135,8 @@ window.SAVECHECK_DEMO = {
       "min_90": 3.57,
       "max_90": 3.57,
       "min_30_prior": 3.57,
-      "lowest_day": "2026-09-29",
-      "highest_day": "2026-09-29",
+      "lowest_day": "2026-09-30",
+      "highest_day": "2026-09-30",
       "series": [
         {
           "day": "2026-07-03",
@@ -4448,6 +4492,10 @@ window.SAVECHECK_DEMO = {
         },
         {
           "day": "2026-09-29",
+          "price": 3.57
+        },
+        {
+          "day": "2026-09-30",
           "price": 3.57
         }
       ],
@@ -4845,6 +4893,10 @@ window.SAVECHECK_DEMO = {
         {
           "day": "2026-09-29",
           "price": 1.69
+        },
+        {
+          "day": "2026-09-30",
+          "price": 1.69
         }
       ],
       "offers": [
@@ -4872,15 +4924,15 @@ window.SAVECHECK_DEMO = {
       "is_promo": false,
       "verdict": "yellow",
       "reason_code": "cosmetic",
-      "discount_pct": -27,
+      "discount_pct": -20,
       "current_price": 1.89,
       "current_unit_price": 1.89,
-      "median_90": 1.49,
+      "median_90": 1.57,
       "min_90": 0.99,
       "max_90": 1.89,
       "min_30_prior": 0.99,
       "lowest_day": "2026-09-19",
-      "highest_day": "2026-09-29",
+      "highest_day": "2026-09-30",
       "series": [
         {
           "day": "2026-07-03",
@@ -5237,6 +5289,10 @@ window.SAVECHECK_DEMO = {
         {
           "day": "2026-09-29",
           "price": 1.89
+        },
+        {
+          "day": "2026-09-30",
+          "price": 1.89
         }
       ],
       "offers": [
@@ -5246,6 +5302,10 @@ window.SAVECHECK_DEMO = {
         },
         {
           "chain": "Lidl",
+          "price": 1.89
+        },
+        {
+          "chain": "Kaufland",
           "price": 1.89
         }
       ]
@@ -5621,6 +5681,10 @@ window.SAVECHECK_DEMO = {
         {
           "day": "2026-09-29",
           "price": 1.69
+        },
+        {
+          "day": "2026-09-30",
+          "price": 1.69
         }
       ],
       "offers": [
@@ -5648,7 +5712,7 @@ window.SAVECHECK_DEMO = {
       "max_90": 1.84,
       "min_30_prior": 1.15,
       "lowest_day": "2026-09-27",
-      "highest_day": "2026-09-29",
+      "highest_day": "2026-09-30",
       "series": [
         {
           "day": "2026-07-03",
@@ -6005,13 +6069,13 @@ window.SAVECHECK_DEMO = {
         {
           "day": "2026-09-29",
           "price": 1.84
+        },
+        {
+          "day": "2026-09-30",
+          "price": 1.84
         }
       ],
       "offers": [
-        {
-          "chain": "Kaufland",
-          "price": 0.42
-        },
         {
           "chain": "Fantastico",
           "price": 0.61
@@ -6019,10 +6083,6 @@ window.SAVECHECK_DEMO = {
         {
           "chain": "T Market",
           "price": 0.64
-        },
-        {
-          "chain": "Billa",
-          "price": 1.49
         },
         {
           "chain": "Lidl",
@@ -6043,7 +6103,7 @@ window.SAVECHECK_DEMO = {
       "min_90": 0.3,
       "max_90": 0.36,
       "min_30_prior": 0.3,
-      "lowest_day": "2026-09-29",
+      "lowest_day": "2026-09-30",
       "highest_day": "2026-09-03",
       "series": [
         {
@@ -6401,6 +6461,10 @@ window.SAVECHECK_DEMO = {
         {
           "day": "2026-09-29",
           "price": 0.3
+        },
+        {
+          "day": "2026-09-30",
+          "price": 0.3
         }
       ],
       "offers": [
@@ -6410,7 +6474,7 @@ window.SAVECHECK_DEMO = {
         },
         {
           "chain": "Kaufland",
-          "price": 0.32
+          "price": 0.41
         },
         {
           "chain": "Billa",
@@ -6792,6 +6856,10 @@ window.SAVECHECK_DEMO = {
         },
         {
           "day": "2026-09-29",
+          "price": 0.76
+        },
+        {
+          "day": "2026-09-30",
           "price": 0.76
         }
       ],
@@ -7177,6 +7245,10 @@ window.SAVECHECK_DEMO = {
         {
           "day": "2026-09-29",
           "price": 0.35
+        },
+        {
+          "day": "2026-09-30",
+          "price": 0.35
         }
       ],
       "offers": [
@@ -7207,8 +7279,8 @@ window.SAVECHECK_DEMO = {
       "min_90": 0.28,
       "max_90": 0.28,
       "min_30_prior": 0.28,
-      "lowest_day": "2026-09-29",
-      "highest_day": "2026-09-29",
+      "lowest_day": "2026-09-30",
+      "highest_day": "2026-09-30",
       "series": [
         {
           "day": "2026-07-03",
@@ -7564,6 +7636,10 @@ window.SAVECHECK_DEMO = {
         },
         {
           "day": "2026-09-29",
+          "price": 0.28
+        },
+        {
+          "day": "2026-09-30",
           "price": 0.28
         }
       ],
@@ -7596,7 +7672,7 @@ window.SAVECHECK_DEMO = {
       "max_90": 1.73,
       "min_30_prior": 1.27,
       "lowest_day": "2026-08-13",
-      "highest_day": "2026-09-29",
+      "highest_day": "2026-09-30",
       "series": [
         {
           "day": "2026-07-03",
@@ -7952,6 +8028,10 @@ window.SAVECHECK_DEMO = {
         },
         {
           "day": "2026-09-29",
+          "price": 1.73
+        },
+        {
+          "day": "2026-09-30",
           "price": 1.73
         }
       ],
@@ -8337,6 +8417,10 @@ window.SAVECHECK_DEMO = {
         {
           "day": "2026-09-29",
           "price": 0.99
+        },
+        {
+          "day": "2026-09-30",
+          "price": 0.99
         }
       ],
       "offers": [
@@ -8408,41 +8492,41 @@ window.SAVECHECK_DEMO = {
   "titans": [
     {
       "chain": "Lidl",
-      "real": 56,
-      "fake": 44,
-      "total_promos": 100,
-      "real_pct": 56,
+      "real": 58,
+      "fake": 48,
+      "total_promos": 106,
+      "real_pct": 55,
       "products_tracked": 20
     },
     {
       "chain": "Kaufland",
-      "real": 57,
+      "real": 60,
       "fake": 82,
-      "total_promos": 139,
-      "real_pct": 41,
+      "total_promos": 142,
+      "real_pct": 42,
       "products_tracked": 22
     },
     {
       "chain": "Billa",
-      "real": 14,
-      "fake": 14,
-      "total_promos": 28,
-      "real_pct": 50,
+      "real": 13,
+      "fake": 10,
+      "total_promos": 23,
+      "real_pct": 57,
       "products_tracked": 17
     },
     {
       "chain": "Fantastico",
-      "real": 60,
-      "fake": 4,
-      "total_promos": 64,
-      "real_pct": 94,
+      "real": 56,
+      "fake": 5,
+      "total_promos": 61,
+      "real_pct": 92,
       "products_tracked": 10
     },
     {
       "chain": "T Market",
-      "real": 36,
-      "fake": 30,
-      "total_promos": 66,
+      "real": 35,
+      "fake": 29,
+      "total_promos": 64,
       "real_pct": 55,
       "products_tracked": 16
     }
