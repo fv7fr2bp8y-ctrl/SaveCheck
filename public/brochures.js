@@ -1,10 +1,10 @@
 window.SAVECHECK_BROCHURES = {
-  "for_date": "2026-11-19",
-  "week_label": "19.11 – 22.11.2026",
+  "for_date": "2026-11-20",
+  "week_label": "20.11 – 22.11.2026",
   "chains": [
     {
       "chain": "Lidl",
-      "total_promos": 64,
+      "total_promos": 61,
       "items": [
         {
           "name": "Домати на кг",
@@ -31,18 +31,6 @@ window.SAVECHECK_BROCHURES = {
           "median_90": 1.42
         },
         {
-          "name": "Банани на кг",
-          "price": 1.69,
-          "retail": 1.89,
-          "claimed_pct": 11,
-          "category": "52",
-          "basket_id": "bananas",
-          "verdict": "red",
-          "omnibus_pct": 0,
-          "min_30_prior": 1.09,
-          "median_90": 1.69
-        },
-        {
           "name": "Лук на кг",
           "price": 0.29,
           "retail": 0.66,
@@ -50,9 +38,9 @@ window.SAVECHECK_BROCHURES = {
           "category": "55",
           "basket_id": "onion",
           "verdict": "green",
-          "omnibus_pct": 34,
+          "omnibus_pct": 41,
           "min_30_prior": 0.29,
-          "median_90": 0.44
+          "median_90": 0.49
         },
         {
           "name": "Ръжен хляб с малц и течна ръж. закв",
@@ -179,13 +167,6 @@ window.SAVECHECK_BROCHURES = {
           "category": "51"
         },
         {
-          "name": "Немско масло",
-          "price": 1.45,
-          "retail": 2.49,
-          "claimed_pct": 42,
-          "category": "12"
-        },
-        {
           "name": "Ябълки, зелени, български на кг",
           "price": 0.89,
           "retail": 1.53,
@@ -193,18 +174,18 @@ window.SAVECHECK_BROCHURES = {
           "category": "53"
         },
         {
+          "name": "Немско масло",
+          "price": 1.45,
+          "retail": 2.49,
+          "claimed_pct": 42,
+          "category": "12"
+        },
+        {
           "name": "Бяло пшеничено брашно тип 500",
           "price": 0.39,
           "retail": 0.64,
           "claimed_pct": 39,
           "category": "40"
-        },
-        {
-          "name": "Ябълки, червени, български на кг",
-          "price": 0.99,
-          "retail": 1.59,
-          "claimed_pct": 38,
-          "category": "53"
         },
         {
           "name": "Картофи, сладки на кг",
@@ -235,18 +216,18 @@ window.SAVECHECK_BROCHURES = {
           "category": "72"
         },
         {
-          "name": "Гулаш от свински бут, ок.750г-атм.",
-          "price": 5.19,
-          "retail": 7.66,
-          "claimed_pct": 32,
-          "category": "19"
-        },
-        {
           "name": "Свинско месо за готвене, ок.750г-ат",
           "price": 3.99,
           "retail": 5.87,
           "claimed_pct": 32,
           "category": "22"
+        },
+        {
+          "name": "Гулаш от свински бут, ок.750г-атм.",
+          "price": 5.19,
+          "retail": 7.66,
+          "claimed_pct": 32,
+          "category": "19"
         },
         {
           "name": "Shumensko Бира 4,8% алк. 10,4°Р",
@@ -263,18 +244,18 @@ window.SAVECHECK_BROCHURES = {
           "category": "46"
         },
         {
-          "name": "La Gloria Чоризо",
-          "price": 2.99,
-          "retail": 4.29,
-          "claimed_pct": 30,
-          "category": "28"
-        },
-        {
           "name": "Ritter Sport Шоколад сорт. СК1",
           "price": 1.79,
           "retail": 2.55,
           "claimed_pct": 30,
           "category": "69"
+        },
+        {
+          "name": "La Gloria Чоризо",
+          "price": 2.99,
+          "retail": 4.29,
+          "claimed_pct": 30,
+          "category": "28"
         },
         {
           "name": "Kinder Шоколад 8 бр.",
@@ -298,18 +279,18 @@ window.SAVECHECK_BROCHURES = {
           "category": "45"
         },
         {
-          "name": "Права баница със сирене",
-          "price": 0.85,
-          "retail": 1.15,
-          "claimed_pct": 26,
-          "category": "68"
-        },
-        {
           "name": "Спагети от мека пшеница",
           "price": 0.45,
           "retail": 0.61,
           "claimed_pct": 26,
           "category": "37"
+        },
+        {
+          "name": "Права баница със сирене",
+          "price": 0.85,
+          "retail": 1.15,
+          "claimed_pct": 26,
+          "category": "68"
         },
         {
           "name": "Пушени свински ребра",
@@ -340,11 +321,11 @@ window.SAVECHECK_BROCHURES = {
           "category": "27"
         },
         {
-          "name": "Ябълки червени Ред Чиф на кг",
-          "price": 1.49,
-          "retail": 1.89,
-          "claimed_pct": 21,
-          "category": "53"
+          "name": "Макарони от твърда пшеница",
+          "price": 0.79,
+          "retail": 0.99,
+          "claimed_pct": 20,
+          "category": "36"
         },
         {
           "name": "Бриош кроасан с шоколад",
@@ -352,13 +333,6 @@ window.SAVECHECK_BROCHURES = {
           "retail": 0.99,
           "claimed_pct": 20,
           "category": "67"
-        },
-        {
-          "name": "Макарони от твърда пшеница",
-          "price": 0.79,
-          "retail": 0.99,
-          "claimed_pct": 20,
-          "category": "36"
         },
         {
           "name": "Жълт фасул ОНТ 350 г",
@@ -375,18 +349,18 @@ window.SAVECHECK_BROCHURES = {
           "category": "12"
         },
         {
-          "name": "Familia Фини точени кори",
-          "price": 1.79,
-          "retail": 2.19,
-          "claimed_pct": 18,
-          "category": "5"
-        },
-        {
           "name": "Gimoka кафе гран густо",
           "price": 2.09,
           "retail": 2.55,
           "claimed_pct": 18,
           "category": "70"
+        },
+        {
+          "name": "Familia Фини точени кори",
+          "price": 1.79,
+          "retail": 2.19,
+          "claimed_pct": 18,
+          "category": "5"
         },
         {
           "name": "Slavyantsi Сунгурларска грозд.ракия",
@@ -396,18 +370,18 @@ window.SAVECHECK_BROCHURES = {
           "category": "77"
         },
         {
-          "name": "КЕН Шунка от бут",
-          "price": 2.89,
-          "retail": 3.49,
-          "claimed_pct": 17,
-          "category": "27"
-        },
-        {
           "name": "Кисело мляко 2% ЗНП",
           "price": 0.59,
           "retail": 0.71,
           "claimed_pct": 17,
           "category": "7"
+        },
+        {
+          "name": "КЕН Шунка от бут",
+          "price": 2.89,
+          "retail": 3.49,
+          "claimed_pct": 17,
+          "category": "27"
         },
         {
           "name": "Маслиново масло от маслиново кюспе",
@@ -431,11 +405,11 @@ window.SAVECHECK_BROCHURES = {
           "category": "35"
         },
         {
-          "name": "Пушен кашкавал",
-          "price": 6.49,
-          "retail": 7.66,
+          "name": "Дългозърнест ориз Арборио",
+          "price": 2.79,
+          "retail": 3.29,
           "claimed_pct": 15,
-          "category": "11"
+          "category": "35"
         },
         {
           "name": "Milka шоколад СК19",
@@ -445,18 +419,18 @@ window.SAVECHECK_BROCHURES = {
           "category": "69"
         },
         {
-          "name": "Дългозърнест ориз Арборио",
-          "price": 2.79,
-          "retail": 3.29,
-          "claimed_pct": 15,
-          "category": "35"
-        },
-        {
           "name": "Прясно мляко 3%",
           "price": 1.22,
           "retail": 1.43,
           "claimed_pct": 15,
           "category": "6"
+        },
+        {
+          "name": "Пушен кашкавал",
+          "price": 6.49,
+          "retail": 7.66,
+          "claimed_pct": 15,
+          "category": "11"
         },
         {
           "name": "Vereya Прясно мляко 3%",
@@ -576,7 +550,7 @@ window.SAVECHECK_BROCHURES = {
           "category": "6",
           "basket_id": "milk",
           "verdict": "red",
-          "omnibus_pct": 0,
+          "omnibus_pct": 3,
           "min_30_prior": 1.23,
           "median_90": 1.29
         },
@@ -593,6 +567,18 @@ window.SAVECHECK_BROCHURES = {
           "median_90": 3.99
         },
         {
+          "name": "ПРЯСНО МЛЯКО 3% ВЕРЕЯ 1Л",
+          "price": 1.25,
+          "retail": 1.73,
+          "claimed_pct": 28,
+          "category": "6",
+          "basket_id": "milk",
+          "verdict": "red",
+          "omnibus_pct": 3,
+          "min_30_prior": 1.23,
+          "median_90": 1.29
+        },
+        {
           "name": "МИНЕРАЛНА ВОДА 1.5Л ГОРНА БАНЯ",
           "price": 0.35,
           "retail": 0.61,
@@ -601,7 +587,7 @@ window.SAVECHECK_BROCHURES = {
           "basket_id": "water",
           "verdict": "green",
           "omnibus_pct": 41,
-          "min_30_prior": 0.42,
+          "min_30_prior": 0.35,
           "median_90": 0.59
         },
         {
@@ -701,9 +687,9 @@ window.SAVECHECK_BROCHURES = {
           "median_90": 0.41
         },
         {
-          "name": "КИСЕЛО МЛЯКО САЯНА 3,6% 400ГР",
-          "price": 0.69,
-          "retail": 0.95,
+          "name": "КИСЕЛО МЛЯКО ВЕРЕЯ 3,6% 400ГР",
+          "price": 0.65,
+          "retail": 0.89,
           "claimed_pct": 27,
           "category": "7",
           "basket_id": "yogurt",
@@ -713,9 +699,9 @@ window.SAVECHECK_BROCHURES = {
           "median_90": 0.41
         },
         {
-          "name": "КИСЕЛО МЛЯКО ВЕРЕЯ 3,6% 400ГР",
-          "price": 0.65,
-          "retail": 0.89,
+          "name": "КИСЕЛО МЛЯКО САЯНА 3,6% 400ГР",
+          "price": 0.69,
+          "retail": 0.95,
           "claimed_pct": 27,
           "category": "7",
           "basket_id": "yogurt",
@@ -761,7 +747,7 @@ window.SAVECHECK_BROCHURES = {
           "median_90": 0.41
         },
         {
-          "name": "КИСЕЛО МЛЯКО ЗНП МАДЖАРОВ 3,6% 400ГР",
+          "name": "КИСЕЛО МЛЯКО 3,6% ЕЛЕНА 400Г",
           "price": 0.79,
           "retail": 1.02,
           "claimed_pct": 23,
@@ -773,7 +759,7 @@ window.SAVECHECK_BROCHURES = {
           "median_90": 0.41
         },
         {
-          "name": "КИСЕЛО МЛЯКО 3,6% ЕЛЕНА 400Г",
+          "name": "КИСЕЛО МЛЯКО ЗНП МАДЖАРОВ 3,6% 400ГР",
           "price": 0.79,
           "retail": 1.02,
           "claimed_pct": 23,
@@ -797,9 +783,9 @@ window.SAVECHECK_BROCHURES = {
           "median_90": 0.41
         },
         {
-          "name": "КИСЕЛО МЛЯКО 3.6% РАЛИЦА 400 ГР",
-          "price": 0.69,
-          "retail": 0.86,
+          "name": "КИСЕЛО МЛЯКО OLYMPUS 3,6% 400ГР",
+          "price": 0.88,
+          "retail": 1.1,
           "claimed_pct": 20,
           "category": "7",
           "basket_id": "yogurt",
@@ -821,6 +807,18 @@ window.SAVECHECK_BROCHURES = {
           "median_90": 0.41
         },
         {
+          "name": "КИСЕЛО МЛЯКО ДОМЛЯН 3,6% 500ГР",
+          "price": 0.79,
+          "retail": 0.97,
+          "claimed_pct": 19,
+          "category": "7",
+          "basket_id": "yogurt",
+          "verdict": "yellow",
+          "omnibus_pct": 5,
+          "min_30_prior": 0.39,
+          "median_90": 0.41
+        },
+        {
           "name": "КИСЕЛО МЛЯКО 3,6% КАЙМАКАНИ 400Г",
           "price": 0.89,
           "retail": 1.07,
@@ -833,17 +831,31 @@ window.SAVECHECK_BROCHURES = {
           "median_90": 0.41
         },
         {
-          "name": "294 СВИНСКИ ВРАТ БЕЗ КОСТ МАЛЪК ВАКУУМ",
-          "price": 2.99,
-          "retail": 8.65,
-          "claimed_pct": 65,
-          "category": "21"
-        },
-        {
           "name": "SOC СВИНСКИ ВРАТ БЕЗ КОСТ БГ",
           "price": 3.39,
           "retail": 8.65,
           "claimed_pct": 61,
+          "category": "21"
+        },
+        {
+          "name": "120 ПРЕСЕН ПИЛЕШКИ БУТ ЦЯЛ БГ",
+          "price": 1.29,
+          "retail": 3.06,
+          "claimed_pct": 58,
+          "category": "17"
+        },
+        {
+          "name": "SOC ПРЕСЕН ПИЛЕШКИ БУТ ЦЯЛ БГ",
+          "price": 1.29,
+          "retail": 3.06,
+          "claimed_pct": 58,
+          "category": "17"
+        },
+        {
+          "name": "MAP СВИНСКИ ВРАТ БЕЗ КОСТ БГ",
+          "price": 3.59,
+          "retail": 8.65,
+          "claimed_pct": 58,
           "category": "21"
         },
         {
@@ -859,6 +871,20 @@ window.SAVECHECK_BROCHURES = {
           "retail": 1.03,
           "claimed_pct": 56,
           "category": "68"
+        },
+        {
+          "name": "MAP СВИНСКА ПЛЕШКА БЕЗ КОСТ БГ",
+          "price": 2.99,
+          "retail": 6.75,
+          "claimed_pct": 56,
+          "category": "18"
+        },
+        {
+          "name": "SOC СВИНСКИ БУТ БЕЗ КОСТ БГ",
+          "price": 2.99,
+          "retail": 6.75,
+          "claimed_pct": 56,
+          "category": "19"
         },
         {
           "name": "МОРКОВИ",
@@ -1134,13 +1160,6 @@ window.SAVECHECK_BROCHURES = {
           "category": "28"
         },
         {
-          "name": "SOC ПРЕСЕН ПИЛЕШКИ БУТ ЦЯЛ БГ",
-          "price": 1.95,
-          "retail": 3.06,
-          "claimed_pct": 36,
-          "category": "17"
-        },
-        {
           "name": "БЕЛ КАШКАВАЛ БЕЛЕНСКО ПИТА 6КГ",
           "price": 8.69,
           "retail": 13.6,
@@ -1169,46 +1188,11 @@ window.SAVECHECK_BROCHURES = {
           "category": "8"
         },
         {
-          "name": "120 ПРЕСЕН ПИЛЕШКИ БУТ ЦЯЛ БГ",
-          "price": 1.95,
-          "retail": 3.06,
-          "claimed_pct": 36,
-          "category": "17"
-        },
-        {
           "name": "070 КРЕНВИРШИ 250 ТАНДЕМ",
           "price": 1.99,
           "retail": 3.06,
           "claimed_pct": 35,
           "category": "27"
-        },
-        {
-          "name": "520Г ЛЮТЕНИЦА ТРАДИЦИОННА БС DERONI",
-          "price": 2.29,
-          "retail": 3.53,
-          "claimed_pct": 35,
-          "category": "49"
-        },
-        {
-          "name": "525ГР ЛЮТЕНИЦА ДОМАШНА ФИНОСМЛЯНА DERONI",
-          "price": 2.29,
-          "retail": 3.53,
-          "claimed_pct": 35,
-          "category": "49"
-        },
-        {
-          "name": "87 ПРЯСНО ПИЛЕ КЛАС А 1,2-1,5 КГ. ГРАДУС",
-          "price": 2.99,
-          "retail": 4.6,
-          "claimed_pct": 35,
-          "category": "15"
-        },
-        {
-          "name": "БЕЛ САЛАМ БУРГАС ГАСТРО ОРЕХИТЕ",
-          "price": 11.9,
-          "retail": 18.19,
-          "claimed_pct": 35,
-          "category": "28"
         }
       ]
     },
@@ -1729,6 +1713,27 @@ window.SAVECHECK_BROCHURES = {
           "category": "12"
         },
         {
+          "name": "КАФЕ NOVA BRASILIA 200 Г МЛЯНО 2501006",
+          "price": 2.35,
+          "retail": 4.08,
+          "claimed_pct": 42,
+          "category": "70"
+        },
+        {
+          "name": "КАФЕ NOVA BRASILIA ЕСПРЕСО 200 Г МЛЯНО ВАКУУМ",
+          "price": 2.35,
+          "retail": 4.08,
+          "claimed_pct": 42,
+          "category": "70"
+        },
+        {
+          "name": "КАФЕ NOVA BRASILIA ДЖЕЗВЕ 200 Г МЛЯНО ВАКУУМ 2501007",
+          "price": 2.35,
+          "retail": 4.08,
+          "claimed_pct": 42,
+          "category": "70"
+        },
+        {
           "name": "ВИНО ПЕНЛИВО LA FIESTA 750 МЛ",
           "price": 1.49,
           "retail": 2.55,
@@ -1909,27 +1914,6 @@ window.SAVECHECK_BROCHURES = {
           "retail": 4.44,
           "claimed_pct": 38,
           "category": "82"
-        },
-        {
-          "name": "ШАМПОАН FRUCTIS GROW STRONG 250 МЛ LOREAL",
-          "price": 2.75,
-          "retail": 4.44,
-          "claimed_pct": 38,
-          "category": "82"
-        },
-        {
-          "name": "ШАМПОАН FRUCTIS ALOE HYDRA BOMB 250 МЛ",
-          "price": 2.75,
-          "retail": 4.44,
-          "claimed_pct": 38,
-          "category": "82"
-        },
-        {
-          "name": "ШАМПОАН FRUCTIS КОКОСОВА ВОДА 250 МЛ",
-          "price": 2.75,
-          "retail": 4.44,
-          "claimed_pct": 38,
-          "category": "82"
         }
       ]
     },
@@ -1945,9 +1929,9 @@ window.SAVECHECK_BROCHURES = {
           "category": "54",
           "basket_id": "tomatoes",
           "verdict": "red",
-          "omnibus_pct": 7,
+          "omnibus_pct": 0,
           "min_30_prior": 1.55,
-          "median_90": 2.14
+          "median_90": 1.99
         },
         {
           "name": "Прясно мляко САЯНА 3% 1л",
@@ -1957,9 +1941,9 @@ window.SAVECHECK_BROCHURES = {
           "category": "6",
           "basket_id": "milk",
           "verdict": "red",
-          "omnibus_pct": 2,
+          "omnibus_pct": 0,
           "min_30_prior": 1.39,
-          "median_90": 1.525
+          "median_90": 1.49
         },
         {
           "name": "Ябълки Златни кг. Полша (Клас I )",
@@ -1982,8 +1966,8 @@ window.SAVECHECK_BROCHURES = {
           "basket_id": "bananas",
           "verdict": "gray",
           "omnibus_pct": null,
-          "min_30_prior": 1.84,
-          "median_90": 1.84
+          "min_30_prior": 1.29,
+          "median_90": 1.29
         },
         {
           "name": "Макарони STELLA пружини аморозо 500г",
